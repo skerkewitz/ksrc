@@ -4,7 +4,7 @@ import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
 import de.skerkewitz.ksrc.ast.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
-import de.skerkewitz.ksrc.interpreter.Interpreter;
+import de.skerkewitz.ksrc.interpreter.impl.DefaultInterpreter;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -27,8 +27,8 @@ public class Main {
 
 		AstStatement s = new Builder().visit(tree);
 
-		Interpreter interpreter = new Interpreter();
-		interpreter.funcs.put("factorial", "4");
+		DefaultInterpreter interpreter = new DefaultInterpreter();
+		interpreter.build_in_funcs.put("factorial", (vm, args1) -> { return "1"; });
 
 		String ret = interpreter.exec( s);
 

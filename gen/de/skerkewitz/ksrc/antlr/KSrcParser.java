@@ -1,4 +1,4 @@
-// Generated from C:/Users/stefa/IdeaProjects/kode/src/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
+// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
 package de.skerkewitz.ksrc.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -805,7 +805,9 @@ public class KSrcParser extends Parser {
 	}
 	public static class DeclFuncContext extends Func_declContext {
 		public TerminalNode FUNC() { return getToken(KSrcParser.FUNC, 0); }
-		public TerminalNode NAME() { return getToken(KSrcParser.NAME, 0); }
+		public IdentContext ident() {
+			return getRuleContext(IdentContext.class,0);
+		}
 		public Func_bodyContext func_body() {
 			return getRuleContext(Func_bodyContext.class,0);
 		}
@@ -835,7 +837,7 @@ public class KSrcParser extends Parser {
 			setState(84);
 			match(FUNC);
 			setState(85);
-			match(NAME);
+			ident();
 			setState(86);
 			func_body();
 			}
@@ -978,8 +980,8 @@ public class KSrcParser extends Parser {
 		"\5C\67\3\2\2\2C:\3\2\2\2C=\3\2\2\2C@\3\2\2\2DG\3\2\2\2EC\3\2\2\2EF\3\2"+
 		"\2\2F\t\3\2\2\2GE\3\2\2\2HM\5\b\5\2IJ\7\n\2\2JL\5\b\5\2KI\3\2\2\2LO\3"+
 		"\2\2\2MK\3\2\2\2MN\3\2\2\2NQ\3\2\2\2OM\3\2\2\2PH\3\2\2\2PQ\3\2\2\2Q\13"+
-		"\3\2\2\2RS\7\25\2\2S\r\3\2\2\2TU\7\21\2\2U\17\3\2\2\2VW\7\16\2\2WX\7\25"+
-		"\2\2XY\5\22\n\2Y\21\3\2\2\2Z_\7\13\2\2[^\7\26\2\2\\^\5\6\4\2][\3\2\2\2"+
+		"\3\2\2\2RS\7\25\2\2S\r\3\2\2\2TU\7\21\2\2U\17\3\2\2\2VW\7\16\2\2WX\5\f"+
+		"\7\2XY\5\22\n\2Y\21\3\2\2\2Z_\7\13\2\2[^\7\26\2\2\\^\5\6\4\2][\3\2\2\2"+
 		"]\\\3\2\2\2^a\3\2\2\2_]\3\2\2\2_`\3\2\2\2`b\3\2\2\2a_\3\2\2\2bc\7\f\2"+
 		"\2c\23\3\2\2\2\r\26\30\"+\65CEMP]_";
 	public static final ATN _ATN =

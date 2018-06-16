@@ -25,9 +25,29 @@ public class Builder extends KSrcBaseVisitor<AstStatement> {
 		/* Get the parameters. */
 		final int childCount = ctx.getChildCount();
 
-		var args = new AstStatement[childCount];
+		var args = new AstStatement[childCount - 1];
 		for (int i = 0; i < childCount - 1; ++i) {
 			args[i] = visit(ctx.children.get(i));
+		}
+
+		return new AstStatements(args);
+	}
+
+	@Override
+	public AstStatement visitDeclFunc(KSrcParser.DeclFuncContext ctx) {
+		var ident = (AstExpressionIdent) visit(ctx.children.get(1));
+		var expr = (AstStatements) visit(ctx.children.get(2));
+		return new AstStatementDeclFunc(ident, expr);
+	}
+
+	@Override
+	public AstStatement visitFunc_body(KSrcParser.Func_bodyContext ctx) {
+		/* Get the parameters. */
+		final int childCount = ctx.getChildCount();
+
+		var args = new AstStatement[childCount - 2];
+		for (int i = 1; i < childCount - 1; ++i) {
+			args[i - 1] = visit(ctx.children.get(i));
 		}
 
 		return new AstStatements(args);

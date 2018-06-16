@@ -35,7 +35,7 @@ arguments: (expr (',' expr)*)? #FuncArguments;
 ident: NAME ;
 value: NUMBER;
 
-func_decl: FUNC NAME func_body #DeclFunc;
+func_decl: FUNC ident func_body #DeclFunc;
 
 func_body: '{' (NEWLINE | stmt)* '}';
 
@@ -70,7 +70,6 @@ fragment ID_START
     | [A-Z]
     | [a-z]
     ;
-
 
 fragment ID_CONTINUE: ID_START | [0-9];
 

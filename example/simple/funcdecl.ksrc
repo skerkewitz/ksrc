@@ -1,4 +1,5 @@
 fn myPrint {
+    print(998)
     print(999)
 }
 
