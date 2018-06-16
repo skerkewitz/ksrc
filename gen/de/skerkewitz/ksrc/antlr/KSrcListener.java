@@ -180,13 +180,27 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitDeclFunc(KSrcParser.DeclFuncContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link KSrcParser#func_body}.
+	 * Enter a parse tree produced by the {@code FunctionParameter}
+	 * labeled alternative in {@link KSrcParser#func_params}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunc_body(KSrcParser.Func_bodyContext ctx);
+	void enterFunctionParameter(KSrcParser.FunctionParameterContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KSrcParser#func_body}.
+	 * Exit a parse tree produced by the {@code FunctionParameter}
+	 * labeled alternative in {@link KSrcParser#func_params}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunc_body(KSrcParser.Func_bodyContext ctx);
+	void exitFunctionParameter(KSrcParser.FunctionParameterContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionBody}
+	 * labeled alternative in {@link KSrcParser#func_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionBody(KSrcParser.FunctionBodyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionBody}
+	 * labeled alternative in {@link KSrcParser#func_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionBody(KSrcParser.FunctionBodyContext ctx);
 }

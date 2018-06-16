@@ -35,9 +35,10 @@ arguments: (expr (',' expr)*)? #FuncArguments;
 ident: NAME ;
 value: NUMBER;
 
-func_decl: FUNC ident func_body #DeclFunc;
+func_decl: FUNC ident ('(' func_params ')')? func_body #DeclFunc;
 
-func_body: '{' (NEWLINE | stmt)* '}';
+func_params: (ident (',' ident)*)? #FunctionParameter;
+func_body: '{' (stmt_list)* '}' #FunctionBody;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 

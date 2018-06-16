@@ -196,13 +196,25 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunc_body(KSrcParser.Func_bodyContext ctx) { }
+	@Override public void enterFunctionParameter(KSrcParser.FunctionParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunc_body(KSrcParser.Func_bodyContext ctx) { }
+	@Override public void exitFunctionParameter(KSrcParser.FunctionParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionBody(KSrcParser.FunctionBodyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionBody(KSrcParser.FunctionBodyContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

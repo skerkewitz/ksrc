@@ -6,25 +6,12 @@ import de.skerkewitz.ksrc.interpreter.Interpreter;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Quick and dity default implementation of the ksrc {@link de.skerkewitz.ksrc.interpreter.Interpreter} */
-public class DefaultInterpreter implements Interpreter {
+/** Quick and dirty default implementation of the ksrc {@link de.skerkewitz.ksrc.interpreter.Interpreter} */
+public class DefaultVm implements Interpreter {
 
-	private final static BuildInFunc print_f = (vm, args) -> {
-		String eval = vm.eval(args[0]);
-		System.out.println(eval);
-		return eval;
-	};
-
-	public final Map<String, String> vars = new HashMap<>();
-	public final Map<String, AstStatementDeclFunc> funcs = new HashMap<>();
-	public final Map<String, BuildInFunc> build_in_funcs = new HashMap<>();
-
-	public DefaultInterpreter() {
-		build_in_funcs.put("print", print_f);
-	}
 
 	@Override
-	public final String eval(AstExpression expression) {
+	public final String eval(AstExpression expression, VmExecContext vmExecContext) {
 
 		if (expression == null) {
 			throw new IllegalArgumentException("expression can not be null");
@@ -34,26 +21,35 @@ public class DefaultInterpreter implements Interpreter {
 			return ((AstExpressionValue)expression).value;
 		} else if (expression instanceof AstExpressionMul) {
 			final AstExpressionMul expr = (AstExpressionMul)expression;
-			int l = Integer.parseInt(eval(expr.lhs));
-			int r = Integer.parseInt(eval(expr.rhs));
+			int l = Integer.parseInt(eval(expr.lhs, vmExecContext));
+			int r = Integer.parseInt(eval(expr.rhs, vmExecContext));
 			return "" + (l * r);
 		} else if (expression instanceof AstExpressionSub) {
 			final AstExpressionSub expr = (AstExpressionSub)expression;
-			return "" + (Integer.parseInt(eval(expr.lhs)) - Integer.parseInt(eval(expr.rhs)));
+			return "" + (Integer.parseInt(eval(expr.lhs, vmExecContext)) - Integer.parseInt(eval(expr.rhs, vmExecContext)));
 		} else if (expression instanceof AstExpressionIdent) {
 			final AstExpressionIdent expr = (AstExpressionIdent)expression;
-			String value = vars.get(expr.ident);
+			String value = vmExecContext.getSymbolByName(expr.ident);
 			return value != null ? "" + value : "0";
 		} else if (expression instanceof AstExpressionFuncCall) {
 			final AstExpressionFuncCall expr = (AstExpressionFuncCall)expression;
-			var stmts = funcs.get(expr.fnName);
+			var stmts = vmExecContext.getFuncByName(expr.fnName);
 			if (stmts != null) {
-				return exec(stmts.body);
-			}
+			  	if (stmts instanceof VmFuncRef) {
+			  	  var vmFuncRef = (VmFuncRef)stmts;
 
-			BuildInFunc buildInFunc = build_in_funcs.get(expr.fnName);
-			if (buildInFunc != null) {
-				return "" + buildInFunc.exec(this, expr.args);
+			  	  /* Create a new VmExeContext for the function call. And resolve parameter. */
+				  var localVmExecContext = new VmExecContext(vmExecContext);
+				  int i = 0;
+				  for (var pIdent : vmFuncRef.funcRef.paramIdents ) {
+				    localVmExecContext.declareSymbol(pIdent.ident, eval(expr.args[i], vmExecContext));
+				  }
+
+				  return exec(vmFuncRef.funcRef.body, localVmExecContext);
+				}
+
+				var vmFuncBuildIn = (VmFuncBuildIn)stmts;
+				return "" + vmFuncBuildIn.exec(this, expr.args, vmExecContext);
 			}
 
 			throw new UnknownFunctionReference(expr);
@@ -63,14 +59,14 @@ public class DefaultInterpreter implements Interpreter {
 	}
 
 	@Override
-	public String exec(AstStatement statement) {
+	public String exec(AstStatement statement, VmExecContext vmExecContext) {
 
 		if (statement == null) {
 			throw new IllegalArgumentException("statement can not be null");
 		}
 
 		if (statement instanceof AstExpression) {
-			return eval((AstExpression) statement);
+			return eval((AstExpression) statement, vmExecContext);
 		} else if (statement instanceof AstStatements) {
 			AstStatements statements = (AstStatements) statement;
 			String result = "";
@@ -79,18 +75,18 @@ public class DefaultInterpreter implements Interpreter {
 					continue;
 				}
 
-				result = exec(s);
+				result = exec(s, vmExecContext);
 			}
 
 			return result;
 		} else if (statement instanceof AstStatementDeclLet) {
 			final var stmt = (AstStatementDeclLet) statement;
-			String value = eval(stmt.value);
-			vars.put(stmt.name.ident, value);
+			String value = eval(stmt.value, vmExecContext);
+		  	vmExecContext.declareSymbol(stmt.name.ident, value);
 			return value;
 		} else if (statement instanceof AstStatementDeclFunc) {
 			final var stmt = (AstStatementDeclFunc)statement;
-			funcs.put(stmt.name.ident, stmt);
+		  	vmExecContext.declareFunc(stmt.name.ident, new VmFuncRef(stmt));
 			return "";
 	}
 

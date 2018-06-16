@@ -112,9 +112,17 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclFunc(KSrcParser.DeclFuncContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link KSrcParser#func_body}.
+	 * Visit a parse tree produced by the {@code FunctionParameter}
+	 * labeled alternative in {@link KSrcParser#func_params}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunc_body(KSrcParser.Func_bodyContext ctx);
+	T visitFunctionParameter(KSrcParser.FunctionParameterContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FunctionBody}
+	 * labeled alternative in {@link KSrcParser#func_body}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionBody(KSrcParser.FunctionBodyContext ctx);
 }

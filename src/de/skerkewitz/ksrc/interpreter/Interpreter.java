@@ -2,13 +2,85 @@ package de.skerkewitz.ksrc.interpreter;
 
 import de.skerkewitz.ksrc.ast.AstExpression;
 import de.skerkewitz.ksrc.ast.AstStatement;
+import de.skerkewitz.ksrc.ast.AstStatementDeclFunc;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A interpreter for the Ast nodes. */
 public interface Interpreter {
 
+	interface VmFunc {
+	}
+
 	/** Allows to implement build in functions. */
-	interface BuildInFunc {
-		String exec(Interpreter vm, AstExpression[] args);
+	interface VmFuncBuildIn extends VmFunc {
+		String exec(Interpreter vm, AstExpression[] args, VmExecContext execContext);
+	}
+
+	/** Allows to implement build in functions. */
+	class VmFuncRef implements VmFunc {
+		public final AstStatementDeclFunc funcRef;
+
+		public VmFuncRef(AstStatementDeclFunc funcRef) {
+			this.funcRef = funcRef;
+		}
+	}
+
+	final class VmExecContext {
+
+		/** The parent is always readonly. If null then this is the global layer. */
+		private final VmExecContext parent;
+
+		private final Map<String, String> symbolTable = new HashMap<>();
+		private final Map<String, VmFunc> funcTable = new HashMap<>();
+
+		public VmExecContext(VmExecContext parent) {
+			this.parent = parent;
+		}
+
+		public String getSymbolByName(String name) {
+			var symbol = this.symbolTable.get(name);
+			if (symbol != null) {
+			  return symbol;
+			}
+
+			if (parent != null) {
+			  return parent.getSymbolByName(name);
+			}
+
+			throw new VmUnknownSymbol(name);
+		}
+
+		public void declareSymbol(String name, String value) {
+			if (this.symbolTable.containsKey(name)) {
+			  throw new VmSymbolAlreadyDeclared(name);
+			}
+
+			this.symbolTable.put(name, value);
+		}
+
+	  public VmFunc getFuncByName(String name) {
+		var symbol = this.funcTable.get(name);
+		if (symbol != null) {
+		  return symbol;
+		}
+
+		if (parent != null) {
+		  return parent.getFuncByName(name);
+		}
+
+		throw new VmUnknownSymbol(name);
+	  }
+
+	  public void declareFunc(String name, VmFunc func) {
+		if (this.funcTable.containsKey(name)) {
+		  throw new VmSymbolAlreadyDeclared(name);
+		}
+
+		this.funcTable.put(name, func);
+	  }
+
 	}
 
 	/**
@@ -17,7 +89,7 @@ public interface Interpreter {
 	 *
 	 * @return the String value of the evaluated expression.
 	 */
-	String eval(AstExpression expression);
+	String eval(AstExpression expression, VmExecContext execContext);
 
 
 	/**
@@ -26,6 +98,6 @@ public interface Interpreter {
 	 * @param statement the {@link AstStatement} to execute.
 	 * @return
 	 */
-	String exec(AstStatement statement);
+	String exec(AstStatement statement, VmExecContext execContext);
 
 }

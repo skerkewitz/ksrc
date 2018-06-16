@@ -35,13 +35,30 @@ public class Builder extends KSrcBaseVisitor<AstStatement> {
 
 	@Override
 	public AstStatement visitDeclFunc(KSrcParser.DeclFuncContext ctx) {
+		var hasParameter = ctx.getChildCount() == 6;
+
 		var ident = (AstExpressionIdent) visit(ctx.children.get(1));
-		var expr = (AstStatements) visit(ctx.children.get(2));
-		return new AstStatementDeclFunc(ident, expr);
+		AstExpressionIdent[] params;
+		if (hasParameter) {
+			ParseTree tree = ctx.children.get(3);
+			/* Get the parameters. */
+			final int childCount = tree.getChildCount();
+
+			params = new AstExpressionIdent[childCount];
+			for (int i = 0; i < childCount; ++i) {
+				params[i] = (AstExpressionIdent) visit(tree.getChild(i));
+			}
+		} else {
+			params = null;
+		}
+
+		var expr = (AstStatements) visit(ctx.children.get(hasParameter ? 5 : 2));
+		return new AstStatementDeclFunc(ident, params, expr);
 	}
 
 	@Override
-	public AstStatement visitFunc_body(KSrcParser.Func_bodyContext ctx) {
+	public AstStatement visitFunctionBody(KSrcParser.FunctionBodyContext ctx) {
+
 		/* Get the parameters. */
 		final int childCount = ctx.getChildCount();
 

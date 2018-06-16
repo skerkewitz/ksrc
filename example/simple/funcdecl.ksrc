@@ -1,6 +1,8 @@
-fn myPrint {
-    print(998)
-    print(999)
+fn myPrint(somevalue) {
+    print(somevalue)
+    print(somevalue * 2)
 }
 
-myPrint(999)
+myPrint(1)
+myPrint(2)
+myPrint(3)
