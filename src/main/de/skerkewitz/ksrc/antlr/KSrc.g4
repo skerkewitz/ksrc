@@ -8,6 +8,7 @@ file_input: (stmt_list | func_decl)* EOF;
 // Keywords
 LET: 'let';
 FUNC: 'fn';
+IF: 'if';
 RETURN: 'return';
 
 ASSIGN: '=';
@@ -19,16 +20,21 @@ stmt_list: stmt (';' stmt)*;
 stmt
     : LET ident ASSIGN expr #DeclLet
     | RETURN expr #StmtReturn
+    | if_decl #StmtIf
     | expr #Expression
     ;
 
 expr
     : ident #ExprIdent
     | value #ExprValue
+
+    // Binary operator expressions
     | expr '*' expr #ExprMul
     | expr '/' expr #ExprDiv
     | expr '+' expr #ExprAdd
     | expr '-' expr #ExprSub
+    | expr '==' expr #ExprEqual
+
     | NAME '(' arguments ')' #ExprCall
     ;
 
@@ -37,10 +43,15 @@ arguments: (expr (',' expr)*)? #FuncArguments;
 ident: NAME ;
 value: NUMBER | STRING;
 
-func_decl: FUNC ident ('(' func_params ')')? func_body #DeclFunc;
+func_decl: FUNC ident ('(' func_params ')')? code_block #DeclFunc;
 
 func_params: (ident (',' ident)*)? #FunctionParameter;
-func_body: '{' (stmt_list)* '}' #FunctionBody;
+
+
+if_decl: IF expr code_block #DeclIf;
+
+code_block: '{' (stmt_list)* '}' #CodeBlock;
+
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 

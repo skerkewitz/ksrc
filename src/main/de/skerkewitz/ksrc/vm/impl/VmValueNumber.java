@@ -25,4 +25,9 @@ public class VmValueNumber implements Vm.Value {
   public Double num() {
     return value;
   }
+
+  @Override
+  public boolean eq(Vm.Value rhs) {
+    return Math.abs(value - rhs.num()) < 0.00001;
+  }
 }

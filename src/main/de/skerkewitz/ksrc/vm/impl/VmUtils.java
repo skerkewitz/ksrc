@@ -1,4 +1,4 @@
-package de.skerkewitz.ksrc.vm.exceptions;
+package de.skerkewitz.ksrc.vm.impl;
 
 public class VmUtils {
 

@@ -2,6 +2,9 @@ package de.skerkewitz.ksrc.ast;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
+import de.skerkewitz.ksrc.ast.nodes.AstExprFuncCall;
+import de.skerkewitz.ksrc.ast.nodes.AstExprValue;
+import de.skerkewitz.ksrc.ast.nodes.AstStmtDeclFunc;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;

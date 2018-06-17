@@ -2,7 +2,7 @@ package de.skerkewitz.ksrc;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
-import de.skerkewitz.ksrc.ast.AstStmt;
+import de.skerkewitz.ksrc.ast.nodes.AstStmt;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;

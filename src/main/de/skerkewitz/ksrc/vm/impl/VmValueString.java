@@ -2,7 +2,6 @@ package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
-import de.skerkewitz.ksrc.vm.exceptions.VmUtils;
 
 public class VmValueString implements Vm.Value {
 
@@ -25,5 +24,10 @@ public class VmValueString implements Vm.Value {
   @Override
   public Double num() {
     return VmUtils.convertStringToNumber(value);
+  }
+
+  @Override
+  public boolean eq(Vm.Value rhs) {
+    return value.equals(rhs.str());
   }
 }

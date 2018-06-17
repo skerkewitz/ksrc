@@ -10,6 +10,10 @@ public interface VmExecContext {
   Vm.Function getFuncByName(String name);
   void declareFunc(String name, Vm.Function func);
 
+  boolean shouldLeaveFrame();
+
+  void markLeaveFrame();
+
   class VmUnknownSymbol extends RuntimeException {
     private final String name;
 

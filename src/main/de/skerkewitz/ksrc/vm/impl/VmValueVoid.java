@@ -21,4 +21,9 @@ public class VmValueVoid implements Vm.Value {
   public Double num() {
       return null;
   }
+
+  @Override
+  public boolean eq(Vm.Value rhs) {
+    return false;
+  }
 }

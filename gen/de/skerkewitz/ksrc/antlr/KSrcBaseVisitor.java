@@ -45,6 +45,13 @@ public class KSrcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements K
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitStmtIf(KSrcParser.StmtIfContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitExpression(KSrcParser.ExpressionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -74,6 +81,13 @@ public class KSrcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements K
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitExprMul(KSrcParser.ExprMulContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitExprEqual(KSrcParser.ExprEqualContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -136,5 +150,12 @@ public class KSrcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements K
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunctionBody(KSrcParser.FunctionBodyContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclIf(KSrcParser.DeclIfContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitCodeBlock(KSrcParser.CodeBlockContext ctx) { return visitChildren(ctx); }
 }

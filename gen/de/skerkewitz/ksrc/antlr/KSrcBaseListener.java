@@ -64,6 +64,18 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStmtIf(KSrcParser.StmtIfContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStmtIf(KSrcParser.StmtIfContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression(KSrcParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -119,6 +131,18 @@ public class KSrcBaseListener implements KSrcListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExprMul(KSrcParser.ExprMulContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprEqual(KSrcParser.ExprEqualContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprEqual(KSrcParser.ExprEqualContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -220,13 +244,25 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionBody(KSrcParser.FunctionBodyContext ctx) { }
+	@Override public void enterDeclIf(KSrcParser.DeclIfContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionBody(KSrcParser.FunctionBodyContext ctx) { }
+	@Override public void exitDeclIf(KSrcParser.DeclIfContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCodeBlock(KSrcParser.CodeBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodeBlock(KSrcParser.CodeBlockContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

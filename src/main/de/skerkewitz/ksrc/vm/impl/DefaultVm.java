@@ -1,9 +1,8 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.*;
+import de.skerkewitz.ksrc.ast.nodes.*;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
-import de.skerkewitz.ksrc.vm.exceptions.VmUtils;
 
 /**
  * Quick and dirty default implementation of the ksrc {@link Vm}
@@ -36,6 +35,18 @@ public class DefaultVm implements Vm {
       Double lhs = eval(exprSub.lhs, vmExecContext).num();
       Double rhs = eval(exprSub.rhs, vmExecContext).num();
       return new VmValueNumber(lhs - rhs);
+    }
+    else if (expression instanceof AstExprAdd) {
+      final AstExprAdd exprSub = (AstExprAdd) expression;
+      Double lhs = eval(exprSub.lhs, vmExecContext).num();
+      Double rhs = eval(exprSub.rhs, vmExecContext).num();
+      return new VmValueNumber(lhs + rhs);
+    }
+    else if (expression instanceof AstExprEqual) {
+      final AstExprEqual exprSub = (AstExprEqual) expression;
+      Value lhs = eval(exprSub.lhs, vmExecContext);
+      Value rhs = eval(exprSub.rhs, vmExecContext);
+      return lhs.eq(rhs) ? new VmValueNumber(1.0) : new VmValueNumber(0.0);
     }
     else if (expression instanceof AstExprIdent) {
       final AstExprIdent exprIdent = (AstExprIdent) expression;
@@ -89,12 +100,17 @@ public class DefaultVm implements Vm {
         }
 
         result = exec(stmt, vmExecContext);
+        if (vmExecContext.shouldLeaveFrame()) {
+          return result;
+        }
       }
       return result;
     }
     else if (statement instanceof AstStmtReturn) {
       AstStmtReturn stmtReturn = (AstStmtReturn) statement;
-      return eval(stmtReturn.expr, vmExecContext);
+      Value value = eval(stmtReturn.expr, vmExecContext);
+      vmExecContext.markLeaveFrame();
+      return value;
     }
     else if (statement instanceof AstStmtDeclLet) {
       final var astStmtDeclLet = (AstStmtDeclLet) statement;
@@ -110,6 +126,15 @@ public class DefaultVm implements Vm {
       } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
         throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
       }
+      return VmValueVoid.shared;
+    }
+    else if (statement instanceof AstStmtDeclIf) {
+      final var stmtDeclIf = (AstStmtDeclIf) statement;
+      var value = eval(stmtDeclIf.condition, vmExecContext);
+      if (value.num() != 0) {
+        return exec(stmtDeclIf.statement, vmExecContext);
+      }
+
       return VmValueVoid.shared;
     }
 

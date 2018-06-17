@@ -1,6 +1,7 @@
-package de.skerkewitz.ksrc.ast;
+package de.skerkewitz.ksrc.ast.nodes;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
+import de.skerkewitz.ksrc.ast.Type;
 
 public class AstExprValue extends AstExpr {
 

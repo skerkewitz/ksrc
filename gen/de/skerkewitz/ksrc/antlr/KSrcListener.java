@@ -52,6 +52,18 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitStmtReturn(KSrcParser.StmtReturnContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code StmtIf}
+	 * labeled alternative in {@link KSrcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtIf(KSrcParser.StmtIfContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StmtIf}
+	 * labeled alternative in {@link KSrcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtIf(KSrcParser.StmtIfContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Expression}
 	 * labeled alternative in {@link KSrcParser#stmt}.
 	 * @param ctx the parse tree
@@ -111,6 +123,18 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprMul(KSrcParser.ExprMulContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprEqual}
+	 * labeled alternative in {@link KSrcParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprEqual(KSrcParser.ExprEqualContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprEqual}
+	 * labeled alternative in {@link KSrcParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprEqual(KSrcParser.ExprEqualContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ExprIdent}
 	 * labeled alternative in {@link KSrcParser#expr}.
@@ -204,15 +228,27 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitFunctionParameter(KSrcParser.FunctionParameterContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code FunctionBody}
-	 * labeled alternative in {@link KSrcParser#func_body}.
+	 * Enter a parse tree produced by the {@code DeclIf}
+	 * labeled alternative in {@link KSrcParser#if_decl}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionBody(KSrcParser.FunctionBodyContext ctx);
+	void enterDeclIf(KSrcParser.DeclIfContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code FunctionBody}
-	 * labeled alternative in {@link KSrcParser#func_body}.
+	 * Exit a parse tree produced by the {@code DeclIf}
+	 * labeled alternative in {@link KSrcParser#if_decl}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionBody(KSrcParser.FunctionBodyContext ctx);
+	void exitDeclIf(KSrcParser.DeclIfContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CodeBlock}
+	 * labeled alternative in {@link KSrcParser#code_block}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeBlock(KSrcParser.CodeBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CodeBlock}
+	 * labeled alternative in {@link KSrcParser#code_block}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeBlock(KSrcParser.CodeBlockContext ctx);
 }

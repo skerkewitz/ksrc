@@ -3,6 +3,7 @@ package de.skerkewitz.ksrc.ast;
 import de.skerkewitz.ksrc.antlr.KSrcBaseVisitor;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
 import de.skerkewitz.ksrc.antlr.SourceLocation;
+import de.skerkewitz.ksrc.ast.nodes.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -67,8 +68,7 @@ public class Builder extends KSrcBaseVisitor<AstStmt> {
   }
 
   @Override
-  public AstStmt visitFunctionBody(KSrcParser.FunctionBodyContext ctx) {
-
+  public AstStmt visitCodeBlock(KSrcParser.CodeBlockContext ctx) {
     /* Get the parameters. */
     final int childCount = ctx.getChildCount();
 
@@ -78,6 +78,14 @@ public class Builder extends KSrcBaseVisitor<AstStmt> {
     }
 
     return new AstStmtList(SourceLocation.fromContext(ctx), args);
+  }
+
+  @Override
+  public AstStmt visitDeclIf(KSrcParser.DeclIfContext ctx) {
+    var expr = (AstExpr) visit(ctx.children.get(1));
+    var stmt = (AstStmt) visit(ctx.children.get(2));
+
+    return new AstStmtDeclIf(SourceLocation.fromContext(ctx), expr, stmt);
   }
 
   @Override
@@ -106,6 +114,20 @@ public class Builder extends KSrcBaseVisitor<AstStmt> {
     var lhs = (AstExpr) visit(ctx.children.get(0));
     var rhs = (AstExpr) visit(ctx.children.get(2));
     return new AstExprSub(SourceLocation.fromContext(ctx), lhs, rhs);
+  }
+
+  @Override
+  public AstStmt visitExprAdd(KSrcParser.ExprAddContext ctx) {
+    var lhs = (AstExpr) visit(ctx.children.get(0));
+    var rhs = (AstExpr) visit(ctx.children.get(2));
+    return new AstExprAdd(SourceLocation.fromContext(ctx), lhs, rhs);
+  }
+
+  @Override
+  public AstStmt visitExprEqual(KSrcParser.ExprEqualContext ctx) {
+    var lhs = (AstExpr) visit(ctx.children.get(0));
+    var rhs = (AstExpr) visit(ctx.children.get(2));
+    return new AstExprEqual(SourceLocation.fromContext(ctx), lhs, rhs);
   }
 
   @Override

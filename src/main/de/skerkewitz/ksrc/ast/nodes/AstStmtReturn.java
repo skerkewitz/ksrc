@@ -1,4 +1,4 @@
-package de.skerkewitz.ksrc.ast;
+package de.skerkewitz.ksrc.ast.nodes;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
 

@@ -13,6 +13,8 @@ public final class VmDefaultExecContext implements VmExecContext {
     private final Map<String, Vm.Value> symbolTable = new HashMap<>();
     private final Map<String, Vm.Function> funcTable = new HashMap<>();
 
+    private boolean _leaveFrame = false;
+
     public VmDefaultExecContext(VmExecContext parent) {
         this.parent = parent;
     }
@@ -63,4 +65,13 @@ public final class VmDefaultExecContext implements VmExecContext {
     this.funcTable.put(name, func);
   }
 
+  @Override
+  public boolean shouldLeaveFrame() {
+    return _leaveFrame;
+  }
+
+  @Override
+  public void markLeaveFrame() {
+      _leaveFrame = true;
+  }
 }

@@ -37,6 +37,13 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStmtReturn(KSrcParser.StmtReturnContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code StmtIf}
+	 * labeled alternative in {@link KSrcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmtIf(KSrcParser.StmtIfContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Expression}
 	 * labeled alternative in {@link KSrcParser#stmt}.
 	 * @param ctx the parse tree
@@ -71,6 +78,13 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprMul(KSrcParser.ExprMulContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprEqual}
+	 * labeled alternative in {@link KSrcParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprEqual(KSrcParser.ExprEqualContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExprIdent}
 	 * labeled alternative in {@link KSrcParser#expr}.
@@ -126,10 +140,17 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionParameter(KSrcParser.FunctionParameterContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FunctionBody}
-	 * labeled alternative in {@link KSrcParser#func_body}.
+	 * Visit a parse tree produced by the {@code DeclIf}
+	 * labeled alternative in {@link KSrcParser#if_decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunctionBody(KSrcParser.FunctionBodyContext ctx);
+	T visitDeclIf(KSrcParser.DeclIfContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code CodeBlock}
+	 * labeled alternative in {@link KSrcParser#code_block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCodeBlock(KSrcParser.CodeBlockContext ctx);
 }

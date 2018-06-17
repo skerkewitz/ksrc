@@ -1,8 +1,8 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.AstExpr;
-import de.skerkewitz.ksrc.ast.AstStmt;
-import de.skerkewitz.ksrc.ast.AstStmtDeclFunc;
+import de.skerkewitz.ksrc.ast.nodes.AstExpr;
+import de.skerkewitz.ksrc.ast.nodes.AstStmt;
+import de.skerkewitz.ksrc.ast.nodes.AstStmtDeclFunc;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 
@@ -22,6 +22,9 @@ public interface Vm {
 
     /** The number representation of the value. */
     Double num();
+
+    /** Returns true if this value equals the other value. */
+    boolean eq(Value rhs);
   }
 
   interface Function {
