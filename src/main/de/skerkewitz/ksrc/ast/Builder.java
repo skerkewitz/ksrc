@@ -81,6 +81,13 @@ public class Builder extends KSrcBaseVisitor<AstStmt> {
   }
 
   @Override
+  public AstStmt visitStmtReturn(KSrcParser.StmtReturnContext ctx) {
+    //return super.visitStmtReturn(ctx);
+    var expr = (AstExpr) visit(ctx.children.get(1));
+    return new AstStmtReturn(SourceLocation.fromContext(ctx), expr);
+  }
+
+  @Override
   public AstStmt visitDeclLet(KSrcParser.DeclLetContext ctx) {
     var ident = (AstExprIdent) visit(ctx.children.get(1));
     var expr = (AstExpr) visit(ctx.children.get(3));

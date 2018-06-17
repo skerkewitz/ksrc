@@ -92,6 +92,10 @@ public class DefaultVm implements Vm {
       }
       return result;
     }
+    else if (statement instanceof AstStmtReturn) {
+      AstStmtReturn stmtReturn = (AstStmtReturn) statement;
+      return eval(stmtReturn.expr, vmExecContext);
+    }
     else if (statement instanceof AstStmtDeclLet) {
       final var astStmtDeclLet = (AstStmtDeclLet) statement;
       var value = eval(astStmtDeclLet.value, vmExecContext);

@@ -8,6 +8,7 @@ file_input: (stmt_list | func_decl)* EOF;
 // Keywords
 LET: 'let';
 FUNC: 'fn';
+RETURN: 'return';
 
 ASSIGN: '=';
 
@@ -17,6 +18,7 @@ stmt_list: stmt (';' stmt)*;
 
 stmt
     : LET ident ASSIGN expr #DeclLet
+    | RETURN expr #StmtReturn
     | expr #Expression
     ;
 

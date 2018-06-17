@@ -1,18 +1,11 @@
-fn myPrint(somevalue, othervalue) {
-    print(somevalue * othervalue)
-    print(somevalue * 2)
+fn foo(a, b) {
+    return a * b
 }
 
-fn myPrint2(somevalue, othervalue) {
-    print(somevalue * othervalue)
-    print(somevalue * 2)
-}
+let t = foo(2, 3)
 
-fn p(s) {
-    print(s)
-}
+print(t)
+print(foo(5, 10))
 
-print("Test")
-p("Hallo Welt")
-myPrint(2, 6)
-myPrint(3, 7)
+t
+

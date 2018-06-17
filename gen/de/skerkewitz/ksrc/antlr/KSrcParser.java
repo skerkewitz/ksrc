@@ -18,8 +18,8 @@ public class KSrcParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, LET=11, FUNC=12, ASSIGN=13, WS=14, NUMBER=15, INTEGER=16, DECIMAL_INTEGER=17, 
-		FLOAT_NUMBER=18, STRING=19, NAME=20;
+		T__9=10, LET=11, FUNC=12, RETURN=13, ASSIGN=14, WS=15, NUMBER=16, INTEGER=17, 
+		DECIMAL_INTEGER=18, FLOAT_NUMBER=19, STRING=20, NAME=21;
 	public static final int
 		RULE_file_input = 0, RULE_stmt_list = 1, RULE_stmt = 2, RULE_expr = 3, 
 		RULE_arguments = 4, RULE_ident = 5, RULE_value = 6, RULE_func_decl = 7, 
@@ -31,12 +31,12 @@ public class KSrcParser extends Parser {
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "';'", "'*'", "'/'", "'+'", "'-'", "'('", "')'", "','", "'{'", "'}'", 
-		"'let'", "'fn'", "'='"
+		"'let'", "'fn'", "'return'", "'='"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, "LET", 
-		"FUNC", "ASSIGN", "WS", "NUMBER", "INTEGER", "DECIMAL_INTEGER", "FLOAT_NUMBER", 
-		"STRING", "NAME"
+		"FUNC", "RETURN", "ASSIGN", "WS", "NUMBER", "INTEGER", "DECIMAL_INTEGER", 
+		"FLOAT_NUMBER", "STRING", "NAME"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -130,12 +130,13 @@ public class KSrcParser extends Parser {
 			setState(24);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << FUNC) | (1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << FUNC) | (1L << RETURN) | (1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
 				{
 				setState(22);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case LET:
+				case RETURN:
 				case NUMBER:
 				case STRING:
 				case NAME:
@@ -248,6 +249,26 @@ public class KSrcParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
+	public static class StmtReturnContext extends StmtContext {
+		public TerminalNode RETURN() { return getToken(KSrcParser.RETURN, 0); }
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public StmtReturnContext(StmtContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof KSrcListener ) ((KSrcListener)listener).enterStmtReturn(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof KSrcListener ) ((KSrcListener)listener).exitStmtReturn(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof KSrcVisitor ) return ((KSrcVisitor<? extends T>)visitor).visitStmtReturn(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ExpressionContext extends StmtContext {
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
@@ -296,7 +317,7 @@ public class KSrcParser extends Parser {
 		StmtContext _localctx = new StmtContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_stmt);
 		try {
-			setState(43);
+			setState(45);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LET:
@@ -313,13 +334,23 @@ public class KSrcParser extends Parser {
 				expr(0);
 				}
 				break;
+			case RETURN:
+				_localctx = new StmtReturnContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(42);
+				match(RETURN);
+				setState(43);
+				expr(0);
+				}
+				break;
 			case NUMBER:
 			case STRING:
 			case NAME:
 				_localctx = new ExpressionContext(_localctx);
-				enterOuterAlt(_localctx, 2);
+				enterOuterAlt(_localctx, 3);
 				{
-				setState(42);
+				setState(44);
 				expr(0);
 				}
 				break;
@@ -511,7 +542,7 @@ public class KSrcParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(53);
+			setState(55);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
@@ -520,7 +551,7 @@ public class KSrcParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(46);
+				setState(48);
 				ident();
 				}
 				break;
@@ -529,7 +560,7 @@ public class KSrcParser extends Parser {
 				_localctx = new ExprValueContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(47);
+				setState(49);
 				value();
 				}
 				break;
@@ -538,19 +569,19 @@ public class KSrcParser extends Parser {
 				_localctx = new ExprCallContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(48);
-				match(NAME);
-				setState(49);
-				match(T__5);
 				setState(50);
-				arguments();
+				match(NAME);
 				setState(51);
+				match(T__5);
+				setState(52);
+				arguments();
+				setState(53);
 				match(T__6);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(69);
+			setState(71);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -558,18 +589,18 @@ public class KSrcParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(67);
+					setState(69);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 					case 1:
 						{
 						_localctx = new ExprMulContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(55);
-						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(56);
-						match(T__1);
 						setState(57);
+						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
+						setState(58);
+						match(T__1);
+						setState(59);
 						expr(6);
 						}
 						break;
@@ -577,11 +608,11 @@ public class KSrcParser extends Parser {
 						{
 						_localctx = new ExprDivContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(58);
-						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(59);
-						match(T__2);
 						setState(60);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(61);
+						match(T__2);
+						setState(62);
 						expr(5);
 						}
 						break;
@@ -589,11 +620,11 @@ public class KSrcParser extends Parser {
 						{
 						_localctx = new ExprAddContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(61);
-						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(62);
-						match(T__3);
 						setState(63);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(64);
+						match(T__3);
+						setState(65);
 						expr(4);
 						}
 						break;
@@ -601,18 +632,18 @@ public class KSrcParser extends Parser {
 						{
 						_localctx = new ExprSubContext(new ExprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expr);
-						setState(64);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(65);
-						match(T__4);
 						setState(66);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(67);
+						match(T__4);
+						setState(68);
 						expr(3);
 						}
 						break;
 					}
 					} 
 				}
-				setState(71);
+				setState(73);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
@@ -671,26 +702,26 @@ public class KSrcParser extends Parser {
 			_localctx = new FuncArgumentsContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(80);
+			setState(82);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
 				{
-				setState(72);
+				setState(74);
 				expr(0);
-				setState(77);
+				setState(79);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__7) {
 					{
 					{
-					setState(73);
+					setState(75);
 					match(T__7);
-					setState(74);
+					setState(76);
 					expr(0);
 					}
 					}
-					setState(79);
+					setState(81);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -737,7 +768,7 @@ public class KSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(82);
+			setState(84);
 			match(NAME);
 			}
 		}
@@ -781,7 +812,7 @@ public class KSrcParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
+			setState(86);
 			_la = _input.LA(1);
 			if ( !(_la==NUMBER || _la==STRING) ) {
 			_errHandler.recoverInline(this);
@@ -850,25 +881,25 @@ public class KSrcParser extends Parser {
 			_localctx = new DeclFuncContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(86);
+			setState(88);
 			match(FUNC);
-			setState(87);
+			setState(89);
 			ident();
-			setState(92);
+			setState(94);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__5) {
 				{
-				setState(88);
-				match(T__5);
-				setState(89);
-				func_params();
 				setState(90);
+				match(T__5);
+				setState(91);
+				func_params();
+				setState(92);
 				match(T__6);
 				}
 			}
 
-			setState(94);
+			setState(96);
 			func_body();
 			}
 		}
@@ -925,26 +956,26 @@ public class KSrcParser extends Parser {
 			_localctx = new FunctionParameterContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104);
+			setState(106);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NAME) {
 				{
-				setState(96);
+				setState(98);
 				ident();
-				setState(101);
+				setState(103);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__7) {
 					{
 					{
-					setState(97);
+					setState(99);
 					match(T__7);
-					setState(98);
+					setState(100);
 					ident();
 					}
 					}
-					setState(103);
+					setState(105);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -1006,23 +1037,23 @@ public class KSrcParser extends Parser {
 			_localctx = new FunctionBodyContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(106);
+			setState(108);
 			match(T__8);
-			setState(110);
+			setState(112);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << RETURN) | (1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
 				{
 				{
-				setState(107);
+				setState(109);
 				stmt_list();
 				}
 				}
-				setState(112);
+				setState(114);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(113);
+			setState(115);
 			match(T__9);
 			}
 		}
@@ -1059,35 +1090,36 @@ public class KSrcParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\26v\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\27x\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
 		"\2\3\2\7\2\31\n\2\f\2\16\2\34\13\2\3\2\3\2\3\3\3\3\3\3\7\3#\n\3\f\3\16"+
-		"\3&\13\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4.\n\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
-		"\3\5\5\58\n\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\7\5F\n\5"+
-		"\f\5\16\5I\13\5\3\6\3\6\3\6\7\6N\n\6\f\6\16\6Q\13\6\5\6S\n\6\3\7\3\7\3"+
-		"\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\5\t_\n\t\3\t\3\t\3\n\3\n\3\n\7\nf\n\n\f"+
-		"\n\16\ni\13\n\5\nk\n\n\3\13\3\13\7\13o\n\13\f\13\16\13r\13\13\3\13\3\13"+
-		"\3\13\2\3\b\f\2\4\6\b\n\f\16\20\22\24\2\3\4\2\21\21\25\25\2{\2\32\3\2"+
-		"\2\2\4\37\3\2\2\2\6-\3\2\2\2\b\67\3\2\2\2\nR\3\2\2\2\fT\3\2\2\2\16V\3"+
-		"\2\2\2\20X\3\2\2\2\22j\3\2\2\2\24l\3\2\2\2\26\31\5\4\3\2\27\31\5\20\t"+
-		"\2\30\26\3\2\2\2\30\27\3\2\2\2\31\34\3\2\2\2\32\30\3\2\2\2\32\33\3\2\2"+
-		"\2\33\35\3\2\2\2\34\32\3\2\2\2\35\36\7\2\2\3\36\3\3\2\2\2\37$\5\6\4\2"+
-		" !\7\3\2\2!#\5\6\4\2\" \3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\5\3\2"+
-		"\2\2&$\3\2\2\2\'(\7\r\2\2()\5\f\7\2)*\7\17\2\2*+\5\b\5\2+.\3\2\2\2,.\5"+
-		"\b\5\2-\'\3\2\2\2-,\3\2\2\2.\7\3\2\2\2/\60\b\5\1\2\608\5\f\7\2\618\5\16"+
-		"\b\2\62\63\7\26\2\2\63\64\7\b\2\2\64\65\5\n\6\2\65\66\7\t\2\2\668\3\2"+
-		"\2\2\67/\3\2\2\2\67\61\3\2\2\2\67\62\3\2\2\28G\3\2\2\29:\f\7\2\2:;\7\4"+
-		"\2\2;F\5\b\5\b<=\f\6\2\2=>\7\5\2\2>F\5\b\5\7?@\f\5\2\2@A\7\6\2\2AF\5\b"+
-		"\5\6BC\f\4\2\2CD\7\7\2\2DF\5\b\5\5E9\3\2\2\2E<\3\2\2\2E?\3\2\2\2EB\3\2"+
-		"\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2\2\2H\t\3\2\2\2IG\3\2\2\2JO\5\b\5\2KL\7"+
-		"\n\2\2LN\5\b\5\2MK\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2\2\2PS\3\2\2\2QO\3"+
-		"\2\2\2RJ\3\2\2\2RS\3\2\2\2S\13\3\2\2\2TU\7\26\2\2U\r\3\2\2\2VW\t\2\2\2"+
-		"W\17\3\2\2\2XY\7\16\2\2Y^\5\f\7\2Z[\7\b\2\2[\\\5\22\n\2\\]\7\t\2\2]_\3"+
-		"\2\2\2^Z\3\2\2\2^_\3\2\2\2_`\3\2\2\2`a\5\24\13\2a\21\3\2\2\2bg\5\f\7\2"+
-		"cd\7\n\2\2df\5\f\7\2ec\3\2\2\2fi\3\2\2\2ge\3\2\2\2gh\3\2\2\2hk\3\2\2\2"+
-		"ig\3\2\2\2jb\3\2\2\2jk\3\2\2\2k\23\3\2\2\2lp\7\13\2\2mo\5\4\3\2nm\3\2"+
-		"\2\2or\3\2\2\2pn\3\2\2\2pq\3\2\2\2qs\3\2\2\2rp\3\2\2\2st\7\f\2\2t\25\3"+
-		"\2\2\2\17\30\32$-\67EGOR^gjp";
+		"\3&\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\60\n\4\3\5\3\5\3\5\3\5\3"+
+		"\5\3\5\3\5\3\5\5\5:\n\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3"+
+		"\5\7\5H\n\5\f\5\16\5K\13\5\3\6\3\6\3\6\7\6P\n\6\f\6\16\6S\13\6\5\6U\n"+
+		"\6\3\7\3\7\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\5\ta\n\t\3\t\3\t\3\n\3\n\3"+
+		"\n\7\nh\n\n\f\n\16\nk\13\n\5\nm\n\n\3\13\3\13\7\13q\n\13\f\13\16\13t\13"+
+		"\13\3\13\3\13\3\13\2\3\b\f\2\4\6\b\n\f\16\20\22\24\2\3\4\2\22\22\26\26"+
+		"\2~\2\32\3\2\2\2\4\37\3\2\2\2\6/\3\2\2\2\b9\3\2\2\2\nT\3\2\2\2\fV\3\2"+
+		"\2\2\16X\3\2\2\2\20Z\3\2\2\2\22l\3\2\2\2\24n\3\2\2\2\26\31\5\4\3\2\27"+
+		"\31\5\20\t\2\30\26\3\2\2\2\30\27\3\2\2\2\31\34\3\2\2\2\32\30\3\2\2\2\32"+
+		"\33\3\2\2\2\33\35\3\2\2\2\34\32\3\2\2\2\35\36\7\2\2\3\36\3\3\2\2\2\37"+
+		"$\5\6\4\2 !\7\3\2\2!#\5\6\4\2\" \3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2"+
+		"\2%\5\3\2\2\2&$\3\2\2\2\'(\7\r\2\2()\5\f\7\2)*\7\20\2\2*+\5\b\5\2+\60"+
+		"\3\2\2\2,-\7\17\2\2-\60\5\b\5\2.\60\5\b\5\2/\'\3\2\2\2/,\3\2\2\2/.\3\2"+
+		"\2\2\60\7\3\2\2\2\61\62\b\5\1\2\62:\5\f\7\2\63:\5\16\b\2\64\65\7\27\2"+
+		"\2\65\66\7\b\2\2\66\67\5\n\6\2\678\7\t\2\28:\3\2\2\29\61\3\2\2\29\63\3"+
+		"\2\2\29\64\3\2\2\2:I\3\2\2\2;<\f\7\2\2<=\7\4\2\2=H\5\b\5\b>?\f\6\2\2?"+
+		"@\7\5\2\2@H\5\b\5\7AB\f\5\2\2BC\7\6\2\2CH\5\b\5\6DE\f\4\2\2EF\7\7\2\2"+
+		"FH\5\b\5\5G;\3\2\2\2G>\3\2\2\2GA\3\2\2\2GD\3\2\2\2HK\3\2\2\2IG\3\2\2\2"+
+		"IJ\3\2\2\2J\t\3\2\2\2KI\3\2\2\2LQ\5\b\5\2MN\7\n\2\2NP\5\b\5\2OM\3\2\2"+
+		"\2PS\3\2\2\2QO\3\2\2\2QR\3\2\2\2RU\3\2\2\2SQ\3\2\2\2TL\3\2\2\2TU\3\2\2"+
+		"\2U\13\3\2\2\2VW\7\27\2\2W\r\3\2\2\2XY\t\2\2\2Y\17\3\2\2\2Z[\7\16\2\2"+
+		"[`\5\f\7\2\\]\7\b\2\2]^\5\22\n\2^_\7\t\2\2_a\3\2\2\2`\\\3\2\2\2`a\3\2"+
+		"\2\2ab\3\2\2\2bc\5\24\13\2c\21\3\2\2\2di\5\f\7\2ef\7\n\2\2fh\5\f\7\2g"+
+		"e\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2jm\3\2\2\2ki\3\2\2\2ld\3\2\2\2"+
+		"lm\3\2\2\2m\23\3\2\2\2nr\7\13\2\2oq\5\4\3\2po\3\2\2\2qt\3\2\2\2rp\3\2"+
+		"\2\2rs\3\2\2\2su\3\2\2\2tr\3\2\2\2uv\7\f\2\2v\25\3\2\2\2\17\30\32$/9G"+
+		"IQT`ilr";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

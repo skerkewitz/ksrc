@@ -52,6 +52,18 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStmtReturn(KSrcParser.StmtReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStmtReturn(KSrcParser.StmtReturnContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression(KSrcParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}

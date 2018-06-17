@@ -40,6 +40,18 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitDeclLet(KSrcParser.DeclLetContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code StmtReturn}
+	 * labeled alternative in {@link KSrcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterStmtReturn(KSrcParser.StmtReturnContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StmtReturn}
+	 * labeled alternative in {@link KSrcParser#stmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitStmtReturn(KSrcParser.StmtReturnContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Expression}
 	 * labeled alternative in {@link KSrcParser#stmt}.
 	 * @param ctx the parse tree

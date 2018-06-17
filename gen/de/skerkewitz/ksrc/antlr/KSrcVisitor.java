@@ -30,6 +30,13 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclLet(KSrcParser.DeclLetContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code StmtReturn}
+	 * labeled alternative in {@link KSrcParser#stmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStmtReturn(KSrcParser.StmtReturnContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Expression}
 	 * labeled alternative in {@link KSrcParser#stmt}.
 	 * @param ctx the parse tree
