@@ -1,4 +1,4 @@
-// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
+// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/main/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
 package de.skerkewitz.ksrc.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -19,7 +19,7 @@ public class KSrcParser extends Parser {
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, LET=11, FUNC=12, ASSIGN=13, WS=14, NUMBER=15, INTEGER=16, DECIMAL_INTEGER=17, 
-		FLOAT_NUMBER=18, NAME=19;
+		FLOAT_NUMBER=18, STRING=19, NAME=20;
 	public static final int
 		RULE_file_input = 0, RULE_stmt_list = 1, RULE_stmt = 2, RULE_expr = 3, 
 		RULE_arguments = 4, RULE_ident = 5, RULE_value = 6, RULE_func_decl = 7, 
@@ -36,7 +36,7 @@ public class KSrcParser extends Parser {
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, "LET", 
 		"FUNC", "ASSIGN", "WS", "NUMBER", "INTEGER", "DECIMAL_INTEGER", "FLOAT_NUMBER", 
-		"NAME"
+		"STRING", "NAME"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -130,13 +130,14 @@ public class KSrcParser extends Parser {
 			setState(24);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << FUNC) | (1L << NUMBER) | (1L << NAME))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << FUNC) | (1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
 				{
 				setState(22);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case LET:
 				case NUMBER:
+				case STRING:
 				case NAME:
 					{
 					setState(20);
@@ -313,6 +314,7 @@ public class KSrcParser extends Parser {
 				}
 				break;
 			case NUMBER:
+			case STRING:
 			case NAME:
 				_localctx = new ExpressionContext(_localctx);
 				enterOuterAlt(_localctx, 2);
@@ -672,7 +674,7 @@ public class KSrcParser extends Parser {
 			setState(80);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==NUMBER || _la==NAME) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
 				{
 				setState(72);
 				expr(0);
@@ -752,6 +754,7 @@ public class KSrcParser extends Parser {
 
 	public static class ValueContext extends ParserRuleContext {
 		public TerminalNode NUMBER() { return getToken(KSrcParser.NUMBER, 0); }
+		public TerminalNode STRING() { return getToken(KSrcParser.STRING, 0); }
 		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -774,11 +777,20 @@ public class KSrcParser extends Parser {
 	public final ValueContext value() throws RecognitionException {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_value);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(84);
-			match(NUMBER);
+			_la = _input.LA(1);
+			if ( !(_la==NUMBER || _la==STRING) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -999,7 +1011,7 @@ public class KSrcParser extends Parser {
 			setState(110);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << NUMBER) | (1L << NAME))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LET) | (1L << NUMBER) | (1L << STRING) | (1L << NAME))) != 0)) {
 				{
 				{
 				setState(107);
@@ -1047,7 +1059,7 @@ public class KSrcParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25v\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\26v\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
 		"\2\3\2\7\2\31\n\2\f\2\16\2\34\13\2\3\2\3\2\3\3\3\3\3\3\7\3#\n\3\f\3\16"+
 		"\3&\13\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4.\n\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
@@ -1055,27 +1067,27 @@ public class KSrcParser extends Parser {
 		"\f\5\16\5I\13\5\3\6\3\6\3\6\7\6N\n\6\f\6\16\6Q\13\6\5\6S\n\6\3\7\3\7\3"+
 		"\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\5\t_\n\t\3\t\3\t\3\n\3\n\3\n\7\nf\n\n\f"+
 		"\n\16\ni\13\n\5\nk\n\n\3\13\3\13\7\13o\n\13\f\13\16\13r\13\13\3\13\3\13"+
-		"\3\13\2\3\b\f\2\4\6\b\n\f\16\20\22\24\2\2\2{\2\32\3\2\2\2\4\37\3\2\2\2"+
-		"\6-\3\2\2\2\b\67\3\2\2\2\nR\3\2\2\2\fT\3\2\2\2\16V\3\2\2\2\20X\3\2\2\2"+
-		"\22j\3\2\2\2\24l\3\2\2\2\26\31\5\4\3\2\27\31\5\20\t\2\30\26\3\2\2\2\30"+
-		"\27\3\2\2\2\31\34\3\2\2\2\32\30\3\2\2\2\32\33\3\2\2\2\33\35\3\2\2\2\34"+
-		"\32\3\2\2\2\35\36\7\2\2\3\36\3\3\2\2\2\37$\5\6\4\2 !\7\3\2\2!#\5\6\4\2"+
-		"\" \3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\5\3\2\2\2&$\3\2\2\2\'(\7\r"+
-		"\2\2()\5\f\7\2)*\7\17\2\2*+\5\b\5\2+.\3\2\2\2,.\5\b\5\2-\'\3\2\2\2-,\3"+
-		"\2\2\2.\7\3\2\2\2/\60\b\5\1\2\608\5\f\7\2\618\5\16\b\2\62\63\7\25\2\2"+
-		"\63\64\7\b\2\2\64\65\5\n\6\2\65\66\7\t\2\2\668\3\2\2\2\67/\3\2\2\2\67"+
-		"\61\3\2\2\2\67\62\3\2\2\28G\3\2\2\29:\f\7\2\2:;\7\4\2\2;F\5\b\5\b<=\f"+
-		"\6\2\2=>\7\5\2\2>F\5\b\5\7?@\f\5\2\2@A\7\6\2\2AF\5\b\5\6BC\f\4\2\2CD\7"+
-		"\7\2\2DF\5\b\5\5E9\3\2\2\2E<\3\2\2\2E?\3\2\2\2EB\3\2\2\2FI\3\2\2\2GE\3"+
-		"\2\2\2GH\3\2\2\2H\t\3\2\2\2IG\3\2\2\2JO\5\b\5\2KL\7\n\2\2LN\5\b\5\2MK"+
-		"\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2\2\2PS\3\2\2\2QO\3\2\2\2RJ\3\2\2\2R"+
-		"S\3\2\2\2S\13\3\2\2\2TU\7\25\2\2U\r\3\2\2\2VW\7\21\2\2W\17\3\2\2\2XY\7"+
-		"\16\2\2Y^\5\f\7\2Z[\7\b\2\2[\\\5\22\n\2\\]\7\t\2\2]_\3\2\2\2^Z\3\2\2\2"+
-		"^_\3\2\2\2_`\3\2\2\2`a\5\24\13\2a\21\3\2\2\2bg\5\f\7\2cd\7\n\2\2df\5\f"+
-		"\7\2ec\3\2\2\2fi\3\2\2\2ge\3\2\2\2gh\3\2\2\2hk\3\2\2\2ig\3\2\2\2jb\3\2"+
-		"\2\2jk\3\2\2\2k\23\3\2\2\2lp\7\13\2\2mo\5\4\3\2nm\3\2\2\2or\3\2\2\2pn"+
-		"\3\2\2\2pq\3\2\2\2qs\3\2\2\2rp\3\2\2\2st\7\f\2\2t\25\3\2\2\2\17\30\32"+
-		"$-\67EGOR^gjp";
+		"\3\13\2\3\b\f\2\4\6\b\n\f\16\20\22\24\2\3\4\2\21\21\25\25\2{\2\32\3\2"+
+		"\2\2\4\37\3\2\2\2\6-\3\2\2\2\b\67\3\2\2\2\nR\3\2\2\2\fT\3\2\2\2\16V\3"+
+		"\2\2\2\20X\3\2\2\2\22j\3\2\2\2\24l\3\2\2\2\26\31\5\4\3\2\27\31\5\20\t"+
+		"\2\30\26\3\2\2\2\30\27\3\2\2\2\31\34\3\2\2\2\32\30\3\2\2\2\32\33\3\2\2"+
+		"\2\33\35\3\2\2\2\34\32\3\2\2\2\35\36\7\2\2\3\36\3\3\2\2\2\37$\5\6\4\2"+
+		" !\7\3\2\2!#\5\6\4\2\" \3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\5\3\2"+
+		"\2\2&$\3\2\2\2\'(\7\r\2\2()\5\f\7\2)*\7\17\2\2*+\5\b\5\2+.\3\2\2\2,.\5"+
+		"\b\5\2-\'\3\2\2\2-,\3\2\2\2.\7\3\2\2\2/\60\b\5\1\2\608\5\f\7\2\618\5\16"+
+		"\b\2\62\63\7\26\2\2\63\64\7\b\2\2\64\65\5\n\6\2\65\66\7\t\2\2\668\3\2"+
+		"\2\2\67/\3\2\2\2\67\61\3\2\2\2\67\62\3\2\2\28G\3\2\2\29:\f\7\2\2:;\7\4"+
+		"\2\2;F\5\b\5\b<=\f\6\2\2=>\7\5\2\2>F\5\b\5\7?@\f\5\2\2@A\7\6\2\2AF\5\b"+
+		"\5\6BC\f\4\2\2CD\7\7\2\2DF\5\b\5\5E9\3\2\2\2E<\3\2\2\2E?\3\2\2\2EB\3\2"+
+		"\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2\2\2H\t\3\2\2\2IG\3\2\2\2JO\5\b\5\2KL\7"+
+		"\n\2\2LN\5\b\5\2MK\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2\2\2PS\3\2\2\2QO\3"+
+		"\2\2\2RJ\3\2\2\2RS\3\2\2\2S\13\3\2\2\2TU\7\26\2\2U\r\3\2\2\2VW\t\2\2\2"+
+		"W\17\3\2\2\2XY\7\16\2\2Y^\5\f\7\2Z[\7\b\2\2[\\\5\22\n\2\\]\7\t\2\2]_\3"+
+		"\2\2\2^Z\3\2\2\2^_\3\2\2\2_`\3\2\2\2`a\5\24\13\2a\21\3\2\2\2bg\5\f\7\2"+
+		"cd\7\n\2\2df\5\f\7\2ec\3\2\2\2fi\3\2\2\2ge\3\2\2\2gh\3\2\2\2hk\3\2\2\2"+
+		"ig\3\2\2\2jb\3\2\2\2jk\3\2\2\2k\23\3\2\2\2lp\7\13\2\2mo\5\4\3\2nm\3\2"+
+		"\2\2or\3\2\2\2pn\3\2\2\2pq\3\2\2\2qs\3\2\2\2rp\3\2\2\2st\7\f\2\2t\25\3"+
+		"\2\2\2\17\30\32$-\67EGOR^gjp";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

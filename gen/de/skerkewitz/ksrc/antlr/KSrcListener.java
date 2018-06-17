@@ -1,4 +1,4 @@
-// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
+// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/main/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
 package de.skerkewitz.ksrc.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

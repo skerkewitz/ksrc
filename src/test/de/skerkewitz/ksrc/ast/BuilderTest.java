@@ -32,7 +32,7 @@ class BuilderTest {
 			+ "}\n";
 
     ParseTree tree = parserForString(input).func_decl();
-    var sut = (AstStatementDeclFunc) new Builder().visit(tree);
+    var sut = (AstStmtDeclFunc) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
 	assertEquals(2, sut.paramIdents.length);

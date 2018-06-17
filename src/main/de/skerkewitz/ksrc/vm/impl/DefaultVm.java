@@ -1,100 +1,112 @@
 package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.*;
-import de.skerkewitz.ksrc.vm.Interpreter;
+import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
-import de.skerkewitz.ksrc.vm.VmSymbolAlreadyDeclared;
+import de.skerkewitz.ksrc.vm.exceptions.VmUtils;
 
 /**
- * Quick and dirty default implementation of the ksrc {@link de.skerkewitz.ksrc.vm.Interpreter}
+ * Quick and dirty default implementation of the ksrc {@link Vm}
  */
-public class DefaultVm implements Interpreter {
-
+public class DefaultVm implements Vm {
 
   @Override
-  public final String eval(AstExpr expression, VmExecContext vmExecContext) {
+  public final Value eval(AstExpr expression, VmExecContext vmExecContext) {
 
     if (expression == null) {
       throw new IllegalArgumentException("expression can not be null");
     }
 
     if (expression instanceof AstExprValue) {
-      return ((AstExprValue) expression).value;
-    } else if (expression instanceof AstExprMul) {
-      final AstExprMul expr = (AstExprMul) expression;
-      int l = Integer.parseInt(eval(expr.lhs, vmExecContext));
-      int r = Integer.parseInt(eval(expr.rhs, vmExecContext));
-      return "" + (l * r);
-    } else if (expression instanceof AstExprSub) {
-      final AstExprSub expr = (AstExprSub) expression;
-      return "" + (Integer.parseInt(eval(expr.lhs, vmExecContext)) - Integer.parseInt(eval(expr.rhs, vmExecContext)));
-    } else if (expression instanceof AstExprIdent) {
-      final AstExprIdent expr = (AstExprIdent) expression;
-      String value = vmExecContext.getSymbolByName(expr.ident);
-      return value != null ? "" + value : "0";
-    } else if (expression instanceof AstExprFuncCall) {
-      final AstExprFuncCall expr = (AstExprFuncCall) expression;
-      var stmts = vmExecContext.getFuncByName(expr.fnName);
+      final AstExprValue exprValue = (AstExprValue) expression;
+      switch (exprValue.type) {
+        case STRING: return new VmValueString(exprValue.value);
+        case NUMBER: return new VmValueNumber(VmUtils.convertStringToNumber(exprValue.value));
+        default: return VmValueVoid.shared;
+      }
+    }
+    else if (expression instanceof AstExprMul) {
+      final AstExprMul exprMul = (AstExprMul) expression;
+      Double lhs = eval(exprMul.lhs, vmExecContext).num();
+      Double rhs = eval(exprMul.rhs, vmExecContext).num();
+      return new VmValueNumber(lhs * rhs);
+    }
+    else if (expression instanceof AstExprSub) {
+      final AstExprSub exprSub = (AstExprSub) expression;
+      Double lhs = eval(exprSub.lhs, vmExecContext).num();
+      Double rhs = eval(exprSub.rhs, vmExecContext).num();
+      return new VmValueNumber(lhs - rhs);
+    }
+    else if (expression instanceof AstExprIdent) {
+      final AstExprIdent exprIdent = (AstExprIdent) expression;
+      return vmExecContext.getSymbolByName(exprIdent.ident);
+    }
+    else if (expression instanceof AstExprFuncCall) {
+      final AstExprFuncCall exprFuncCall = (AstExprFuncCall) expression;
+      var stmts = vmExecContext.getFuncByName(exprFuncCall.fnName);
       if (stmts != null) {
-        if (stmts instanceof VmFuncRef) {
-          var vmFuncRef = (VmFuncRef) stmts;
+        if (stmts instanceof FunctionRef) {
+          var vmFuncRef = (FunctionRef) stmts;
 
           /* Create a new VmExeContext for the function call. And resolve parameter. */
-          var localVmExecContext = new VmExecContext(vmExecContext);
+          var localVmExecContext = new VmDefaultExecContext(vmExecContext);
           int i = 0;
           for (var pIdent : vmFuncRef.funcRef.paramIdents) {
-            localVmExecContext.declareSymbol(pIdent.ident, eval(expr.args[i], vmExecContext));
+            localVmExecContext.declareSymbol(pIdent.ident, eval(exprFuncCall.args[i], vmExecContext));
             i += 1;
           }
 
           return exec(vmFuncRef.funcRef.body, localVmExecContext);
         }
 
-        var vmFuncBuildIn = (VmFuncBuildIn) stmts;
-        return "" + vmFuncBuildIn.exec(this, expr.args, vmExecContext);
+        var vmFuncBuildIn = (FunctionBuildIn) stmts;
+        return vmFuncBuildIn.exec(this, exprFuncCall.args, vmExecContext);
       }
 
-      throw new UnknownFunctionReference(expr);
+      throw new UnknownFunctionReference(exprFuncCall);
     }
 
     throw new UnknownExpression(expression);
   }
 
   @Override
-  public String exec(AstStatement statement, VmExecContext vmExecContext) {
+  public Value exec(AstStmt statement, VmExecContext vmExecContext) {
 
     if (statement == null) {
       throw new IllegalArgumentException("statement can not be null");
     }
 
     if (statement instanceof AstExpr) {
-      return eval((AstExpr) statement, vmExecContext);
-    } else if (statement instanceof AstStatements) {
-      AstStatements statements = (AstStatements) statement;
-      String result = "";
-      for (AstStatement s : statements.statements) {
-        if (s == null) {
+      AstExpr expr = (AstExpr) statement;
+      return eval(expr, vmExecContext);
+    }
+    else if (statement instanceof AstStmtList) {
+      AstStmtList stmtList = (AstStmtList) statement;
+      Vm.Value result = VmValueVoid.shared;
+      for (AstStmt stmt : stmtList.statements) {
+        if (stmt == null) {
           continue;
         }
 
-        result = exec(s, vmExecContext);
+        result = exec(stmt, vmExecContext);
       }
-
       return result;
-    } else if (statement instanceof AstStatementDeclLet) {
-      final var stmt = (AstStatementDeclLet) statement;
-      String value = eval(stmt.value, vmExecContext);
-      vmExecContext.declareSymbol(stmt.name.ident, value);
+    }
+    else if (statement instanceof AstStmtDeclLet) {
+      final var astStmtDeclLet = (AstStmtDeclLet) statement;
+      var value = eval(astStmtDeclLet.value, vmExecContext);
+      vmExecContext.declareSymbol(astStmtDeclLet.name.ident, value);
       return value;
-    } else if (statement instanceof AstStatementDeclFunc) {
-      final var stmt = (AstStatementDeclFunc) statement;
-      final var functionName = stmt.name.ident;
+    }
+    else if (statement instanceof AstStmtDeclFunc) {
+      final var stmtDeclFunc = (AstStmtDeclFunc) statement;
+      final var funcIdent = stmtDeclFunc.name.ident;
       try {
-        vmExecContext.declareFunc(functionName, new VmFuncRef(stmt));
-      } catch (VmSymbolAlreadyDeclared e) {
-        throw new VmInvalidFuncRedeclaration(functionName, stmt.srcLocation);
+        vmExecContext.declareFunc(funcIdent, new FunctionRef(stmtDeclFunc));
+      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
+        throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
       }
-      return "";
+      return VmValueVoid.shared;
     }
 
     throw new UnknownStatement(statement);
@@ -116,9 +128,9 @@ public class DefaultVm implements Interpreter {
   }
 
   private class UnknownStatement extends RuntimeException {
-    private final AstStatement statement;
+    private final AstStmt statement;
 
-    public UnknownStatement(AstStatement statement) {
+    public UnknownStatement(AstStmt statement) {
       this.statement = statement;
     }
 

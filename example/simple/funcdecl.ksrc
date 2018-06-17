@@ -8,6 +8,11 @@ fn myPrint2(somevalue, othervalue) {
     print(somevalue * 2)
 }
 
-myPrint(1, 5)
+fn p(s) {
+    print(s)
+}
+
+print("Test")
+p("Hallo Welt")
 myPrint(2, 6)
 myPrint(3, 7)

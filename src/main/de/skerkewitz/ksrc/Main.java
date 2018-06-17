@@ -2,11 +2,12 @@ package de.skerkewitz.ksrc;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
-import de.skerkewitz.ksrc.ast.AstStatement;
+import de.skerkewitz.ksrc.ast.AstStmt;
 import de.skerkewitz.ksrc.ast.Builder;
-import de.skerkewitz.ksrc.vm.Interpreter;
+import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
+import de.skerkewitz.ksrc.vm.impl.VmValueNumber;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -27,15 +28,15 @@ public class Main {
 		ParseTree tree = parser.file_input();
 
 		/* Build AST tree. */
-		AstStatement rootStatement = new Builder().visit(tree);
+		AstStmt rootStatement = new Builder().visit(tree);
 
 		var vmExecContext = VmExecContextFactory.initialContext();
-		vmExecContext.declareFunc("factorial", (Interpreter.VmFuncBuildIn) (vm, args1, execContext) -> "1");
+		vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueNumber(1.0));
 
 		DefaultVm vm = new DefaultVm();
-		String ret = vm.exec(rootStatement, vmExecContext);
+		Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
-		System.out.println("Done: " + ret);
+		System.out.println("Done: " + ret.str());
 	}
 
 }

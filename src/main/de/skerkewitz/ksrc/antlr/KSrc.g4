@@ -33,7 +33,7 @@ expr
 arguments: (expr (',' expr)*)? #FuncArguments;
 
 ident: NAME ;
-value: NUMBER;
+value: NUMBER | STRING;
 
 func_decl: FUNC ident ('(' func_params ')')? func_body #DeclFunc;
 
@@ -61,6 +61,8 @@ DECIMAL_INTEGER
 FLOAT_NUMBER
     : POINT_FLOAT
     ;
+
+STRING: '"' (~'"')* '"';
 
 /// Name
 NAME: ID_START ID_CONTINUE*;
