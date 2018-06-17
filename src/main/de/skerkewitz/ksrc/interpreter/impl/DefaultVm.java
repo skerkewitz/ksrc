@@ -43,6 +43,7 @@ public class DefaultVm implements Interpreter {
 				  int i = 0;
 				  for (var pIdent : vmFuncRef.funcRef.paramIdents ) {
 				    localVmExecContext.declareSymbol(pIdent.ident, eval(expr.args[i], vmExecContext));
+				    i +=1;
 				  }
 
 				  return exec(vmFuncRef.funcRef.body, localVmExecContext);
