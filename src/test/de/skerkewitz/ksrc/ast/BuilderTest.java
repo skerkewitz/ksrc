@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,11 +47,11 @@ class BuilderTest {
     var input = "myPrint(2, 6)\n";
 
     ParseTree tree = parserForString(input).expr();
-    var sut = (AstExpressionFuncCall) new Builder().visit(tree);
+    var sut = (AstExprFuncCall) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.fnName);
     assertEquals(2, sut.args.length);
-    assertEquals("2", ((AstExpressionValue)sut.args[0]).value);
-    assertEquals("6", ((AstExpressionValue)sut.args[1]).value);
+    assertEquals("2", ((AstExprValue)sut.args[0]).value);
+    assertEquals("6", ((AstExprValue)sut.args[1]).value);
   }
 }

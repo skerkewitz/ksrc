@@ -1,14 +1,17 @@
 package de.skerkewitz.ksrc.ast;
 
+import de.skerkewitz.ksrc.antlr.SourceLocation;
+
 public class AstStatementDeclFunc extends AstStatement {
 
-	public final AstExpressionIdent name;
-	public final AstExpressionIdent[] paramIdents;
-	public final AstStatements body;
+  public final AstExprIdent name;
+  public final AstExprIdent[] paramIdents;
+  public final AstStatements body;
 
-	public AstStatementDeclFunc(AstExpressionIdent name, AstExpressionIdent[] paramIdents, AstStatements body) {
-		this.name = name;
-		this.paramIdents = paramIdents;
-		this.body = body;
-	}
+  public AstStatementDeclFunc(SourceLocation srcLoc, AstExprIdent name, AstExprIdent[] paramIdents, AstStatements body) {
+    super(srcLoc);
+    this.name = name;
+    this.paramIdents = paramIdents;
+    this.body = body;
+  }
 }

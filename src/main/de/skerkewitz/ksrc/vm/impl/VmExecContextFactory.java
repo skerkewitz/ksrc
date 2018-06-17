@@ -1,6 +1,6 @@
-package de.skerkewitz.ksrc.interpreter.impl;
+package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.interpreter.Interpreter;
+import de.skerkewitz.ksrc.vm.Interpreter;
 
 public final class VmExecContextFactory {
 

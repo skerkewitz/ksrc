@@ -1,13 +1,13 @@
-package de.skerkewitz.ksrc.interpreter;
+package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.AstExpression;
+import de.skerkewitz.ksrc.ast.AstExpr;
 import de.skerkewitz.ksrc.ast.AstStatement;
 import de.skerkewitz.ksrc.ast.AstStatementDeclFunc;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/** A interpreter for the Ast nodes. */
+/** A vm for the Ast nodes. */
 public interface Interpreter {
 
 	interface VmFunc {
@@ -15,7 +15,7 @@ public interface Interpreter {
 
 	/** Allows to implement build in functions. */
 	interface VmFuncBuildIn extends VmFunc {
-		String exec(Interpreter vm, AstExpression[] args, VmExecContext execContext);
+		String exec(Interpreter vm, AstExpr[] args, VmExecContext execContext);
 	}
 
 	/** Allows to implement build in functions. */
@@ -85,11 +85,11 @@ public interface Interpreter {
 
 	/**
 	 * Evaluates the given expression and returns the value.
-	 * @param expression the {@link AstExpression} to evaluate
+	 * @param expression the {@link AstExpr} to evaluate
 	 *
 	 * @return the String value of the evaluated expression.
 	 */
-	String eval(AstExpression expression, VmExecContext execContext);
+	String eval(AstExpr expression, VmExecContext execContext);
 
 
 	/**

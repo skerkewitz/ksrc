@@ -3,6 +3,11 @@ fn myPrint(somevalue, othervalue) {
     print(somevalue * 2)
 }
 
+fn myPrint2(somevalue, othervalue) {
+    print(somevalue * othervalue)
+    print(somevalue * 2)
+}
+
 myPrint(1, 5)
 myPrint(2, 6)
 myPrint(3, 7)

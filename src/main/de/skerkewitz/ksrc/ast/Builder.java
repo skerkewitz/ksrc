@@ -2,6 +2,7 @@ package de.skerkewitz.ksrc.ast;
 
 import de.skerkewitz.ksrc.antlr.KSrcBaseVisitor;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
+import de.skerkewitz.ksrc.antlr.SourceLocation;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -21,7 +22,7 @@ public class Builder extends KSrcBaseVisitor<AstStatement> {
       args[i] = visit(ctx.children.get(i));
     }
 
-    return new AstStatements(args);
+    return new AstStatements(SourceLocation.fromContext(ctx), args);
   }
 
   @Override
@@ -34,34 +35,35 @@ public class Builder extends KSrcBaseVisitor<AstStatement> {
       args[i] = visit(ctx.children.get(i));
     }
 
-    return new AstStatements(args);
+    return new AstStatements(SourceLocation.fromContext(ctx), args);
   }
 
   @Override
   public AstStatement visitDeclFunc(KSrcParser.DeclFuncContext ctx) {
     var hasParameter = ctx.getChildCount() == 6;
 
-    var ident = (AstExpressionIdent) visit(ctx.children.get(1));
-    AstExpressionIdent[] params;
+    var ident = (AstExprIdent) visit(ctx.children.get(1));
+    AstExprIdent[] params;
     if (hasParameter) {
       ParseTree tree = ctx.children.get(3);
       /* Get the parameters. */
       final int childCount = tree.getChildCount();
 
-      List<AstExpressionIdent> result = new ArrayList<>(childCount);
+      List<AstExprIdent> result = new ArrayList<>(childCount);
       for (int i = 0; i < childCount; ++i) {
         ParseTree child = tree.getChild(i);
         if (!(child instanceof TerminalNode)) {
-          result.add((AstExpressionIdent) visit(child));
+          result.add((AstExprIdent) visit(child));
         }
       }
-      params = result.toArray(new AstExpressionIdent[result.size()]);
+      params = result.toArray(new AstExprIdent[result.size()]);
     } else {
       params = null;
     }
 
     var expr = (AstStatements) visit(ctx.children.get(hasParameter ? 5 : 2));
-    return new AstStatementDeclFunc(ident, params, expr);
+    var srcLoc = new SourceLocation(ctx.start, ctx.stop);
+    return new AstStatementDeclFunc(srcLoc, ident, params, expr);
   }
 
   @Override
@@ -75,33 +77,33 @@ public class Builder extends KSrcBaseVisitor<AstStatement> {
       args[i - 1] = visit(ctx.children.get(i));
     }
 
-    return new AstStatements(args);
+    return new AstStatements(SourceLocation.fromContext(ctx), args);
   }
 
   @Override
   public AstStatement visitDeclLet(KSrcParser.DeclLetContext ctx) {
-    var ident = (AstExpressionIdent) visit(ctx.children.get(1));
-    var expr = (AstExpression) visit(ctx.children.get(3));
-    return new AstStatementDeclLet(ident, expr);
+    var ident = (AstExprIdent) visit(ctx.children.get(1));
+    var expr = (AstExpr) visit(ctx.children.get(3));
+    return new AstStatementDeclLet(SourceLocation.fromContext(ctx), ident, expr);
   }
 
   @Override
   public AstStatement visitExprMul(KSrcParser.ExprMulContext ctx) {
-    var lhs = (AstExpression) visit(ctx.children.get(0));
-    var rhs = (AstExpression) visit(ctx.children.get(2));
-    return new AstExpressionMul(lhs, rhs);
+    var lhs = (AstExpr) visit(ctx.children.get(0));
+    var rhs = (AstExpr) visit(ctx.children.get(2));
+    return new AstExprMul(SourceLocation.fromContext(ctx), lhs, rhs);
   }
 
   @Override
   public AstStatement visitExprSub(KSrcParser.ExprSubContext ctx) {
-    var lhs = (AstExpression) visit(ctx.children.get(0));
-    var rhs = (AstExpression) visit(ctx.children.get(2));
-    return new AstExpressionSub(lhs, rhs);
+    var lhs = (AstExpr) visit(ctx.children.get(0));
+    var rhs = (AstExpr) visit(ctx.children.get(2));
+    return new AstExprSub(SourceLocation.fromContext(ctx), lhs, rhs);
   }
 
   @Override
   public AstStatement visitIdent(KSrcParser.IdentContext ctx) {
-    return new AstExpressionIdent(ctx.NAME().getText());
+    return new AstExprIdent(SourceLocation.fromContext(ctx), ctx.NAME().getText());
   }
 
   @Override
@@ -110,21 +112,21 @@ public class Builder extends KSrcBaseVisitor<AstStatement> {
     /* Get the parameters. */
     final ParseTree arguments = ctx.children.get(2);
     final int childCount = arguments.getChildCount();
-    final AstExpression[] args;
+    final AstExpr[] args;
 
-    List<AstExpression> result = new ArrayList<>(childCount);
+    List<AstExpr> result = new ArrayList<>(childCount);
     for (int i = 0; i < childCount; ++i) {
       ParseTree child = arguments.getChild(i);
       if (!(child instanceof TerminalNode)) {
-        result.add((AstExpression) visit(child));
+        result.add((AstExpr) visit(child));
       }
     }
-    args = result.toArray(new AstExpression[result.size()]);
-    return new AstExpressionFuncCall(ctx.NAME().getText(), args);
+    args = result.toArray(new AstExpr[result.size()]);
+    return new AstExprFuncCall(SourceLocation.fromContext(ctx), ctx.NAME().getText(), args);
   }
 
   @Override
   public AstStatement visitExprValue(KSrcParser.ExprValueContext ctx) {
-    return new AstExpressionValue(ctx.getText());
+    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText());
   }
 }
