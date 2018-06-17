@@ -13,15 +13,20 @@ RETURN: 'return';
 
 ASSIGN: '=';
 
+LINE_COMMENT : '#' ~[\r\n]* -> skip;
 
 /// Statments
-stmt_list: stmt (';' stmt)*;
+stmt_list
+    : stmt (';' stmt)*
+    | LINE_COMMENT
+    ;
 
 stmt
     : LET ident ASSIGN expr #DeclLet
     | RETURN expr #StmtReturn
     | if_decl #StmtIf
     | expr #Expression
+
     ;
 
 expr

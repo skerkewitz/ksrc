@@ -1,3 +1,4 @@
+# Fibonacci example
 fn fib(n) {
 
     if n == 0 {
@@ -8,19 +9,21 @@ fn fib(n) {
         return 1
     }
 
-    return fib(n-1) + fib(n-2)
+    return fib(n-1) + fib(n-2) # Compute fib
 }
 
-print("--- Fib ---")
-print(fib(0))
-print(fib(1))
-print(fib(2))
-print(fib(3))
-print(fib(4))
-print(fib(5))
-print(fib(6))
-print(fib(7))
-print(fib(8))
-print(fib(9))
-print(fib(10))
+print("--- Fibonacci ---")
+print(fib(0)); print(fib(1)); print(fib(2)); print(fib(3)); print(fib(4)); print(fib(5))
+print(fib(6)); print(fib(7)); print(fib(8)); print(fib(9)); print(fib(10))
 
+# Factorial example
+fn fact(n) {
+    if n == 0 {
+        return 1
+    }
+
+    return n * fact(n-1)
+}
+
+print("--- Factorial ---")
+print(fact(6)); print(fact(7)); print(fact(8)); print(fact(9)); print(fact(10))
