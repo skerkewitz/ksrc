@@ -50,6 +50,38 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitIfStatement(KSrcParser.IfStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KSrcParser#loop_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterLoop_statement(KSrcParser.Loop_statementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#loop_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitLoop_statement(KSrcParser.Loop_statementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code StatementWhile}
+	 * labeled alternative in {@link KSrcParser#while_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatementWhile(KSrcParser.StatementWhileContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StatementWhile}
+	 * labeled alternative in {@link KSrcParser#while_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatementWhile(KSrcParser.StatementWhileContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterCondition(KSrcParser.ConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitCondition(KSrcParser.ConditionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ReturnStatement}
 	 * labeled alternative in {@link KSrcParser#return_statement}.
 	 * @param ctx the parse tree
@@ -74,6 +106,18 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitDeclLet(KSrcParser.DeclLetContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code DeclarationVariable}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeclarationVariable}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code FunctionDeclaration}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
@@ -85,6 +129,26 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#type_annotation}.
+	 * @param ctx the parse tree
+	 */
+	void enterType_annotation(KSrcParser.Type_annotationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#type_annotation}.
+	 * @param ctx the parse tree
+	 */
+	void exitType_annotation(KSrcParser.Type_annotationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#initializer}.
+	 * @param ctx the parse tree
+	 */
+	void enterInitializer(KSrcParser.InitializerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#initializer}.
+	 * @param ctx the parse tree
+	 */
+	void exitInitializer(KSrcParser.InitializerContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ExprCall}
 	 * labeled alternative in {@link KSrcParser#expression}.

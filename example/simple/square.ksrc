@@ -1,0 +1,7 @@
+fn square(x: number): number: {
+    return x * x
+}
+
+var toSquare = 10
+var result = square(toSquare)
+print("The result of " + str(toSquare) + " squared is " + str(result))

@@ -1,7 +1,10 @@
-package de.skerkewitz.ksrc.ast;
+package de.skerkewitz.ksrc.ast.node.statement.declaration;
 
+import de.skerkewitz.ksrc.ast.Builder;
+import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -59,7 +62,7 @@ public class FunctionDeclaration {
 
     assertEquals("myPrint", sut.name.ident);
     assertEquals(0, sut.parameter.size());
-    assertEquals(Type.NUMBER, sut.returnType.type());
+    Assertions.assertEquals(Type.NUMBER, sut.returnType.type());
     assertEquals(1, sut.body.statements.length);
   }
 

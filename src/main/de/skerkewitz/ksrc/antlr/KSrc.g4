@@ -7,9 +7,11 @@ file_input: (statements)* EOF;
 
 // Keywords
 LET:    'let';
+VAR:    'var';
 FUNC:   'fn';
 IF:     'if';
 RETURN: 'return';
+WHILE: 'while';
 
 ASSIGN: '=';
 
@@ -27,23 +29,42 @@ statement
 
     // Branch statements
     | if_statement
+    | loop_statement
     | expression
     ;
 
 if_statement
-    : IF expression code_block              #IfStatement;
+    : IF condition code_block              #IfStatement;
+
+loop_statement
+    : while_statement
+    ;
+
+// A while statement allows a block of code to be executed repeatedly, as long as a condition remains true.
+while_statement
+    : WHILE condition code_block           #StatementWhile
+    ;
+
+// The initialValue of the condition must be of type Bool
+condition
+    : expression
+    ;
 
 return_statement
     : RETURN expression                     #ReturnStatement;
 
 declaration
-    : LET ident ASSIGN expression     #DeclLet
-    | func_decl                 #FunctionDeclaration
+    : LET ident ASSIGN expression               #DeclLet
+    | VAR ident type_annotation? initializer?   #DeclarationVariable
+    | func_decl                                 #FunctionDeclaration
     ;
+
+type_annotation: (':' typename);
+initializer: (ASSIGN expression);
 
 expression
     : ident                                 #ExprIdent
-    | value                                 #ExprValue
+    | initialValue                                 #ExprValue
 
     // Binary operator expressions
     | expression '*' expression                         #ExprMul
@@ -59,7 +80,7 @@ arguments: (expression (',' expression)*)?              #FunctionCallArgumentLis
 
 typename: NAME ;
 ident: NAME ;
-value: NUMBER | STRING;
+initialValue: NUMBER | STRING;
 
 // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
 func_decl: FUNC ident ('(' func_params ')')? (':' typename)? ':' code_block #DeclFunc;

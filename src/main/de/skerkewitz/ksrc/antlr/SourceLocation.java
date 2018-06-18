@@ -22,7 +22,7 @@ public class SourceLocation {
     var srcPos = start.getCharPositionInLine();
     var src = start.getText();
 
-    return "[" + srcName + ":" + srcLine + "," + srcPos + "] at token '" + src + "'";
+    return "[" + srcName + ":" + srcLine + ":" + srcPos + "] at token '" + src + "'";
   }
 
   public static SourceLocation fromContext(ParserRuleContext context) {

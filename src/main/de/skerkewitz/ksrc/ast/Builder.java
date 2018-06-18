@@ -12,11 +12,10 @@ import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprAdd;
 import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprEqual;
 import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprMul;
 import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprSub;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementIf;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementReturn;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
+import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.BuilderDeclaration;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -24,6 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Builder extends KSrcBaseVisitor<AstNode> {
+
+  /* Util method. */
+  public <T> T visit(RuleContext ctx, Class<T> type) {
+    if (ctx == null) {
+      return null;
+    }
+
+    return type.cast(visit(ctx));
+  }
+
 
   @Override
   public AstStatement visitStatements(KSrcParser.StatementsContext ctx) {
@@ -54,12 +63,17 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstStatement visitDeclFunc(KSrcParser.DeclFuncContext ctx) {
-    return BuilderFunctionDeclaration.functionDeclaration(this, ctx);
+    return BuilderDeclaration.functionDeclaration(this, ctx);
   }
 
   @Override
   public AstNode visitFunctionParameter(KSrcParser.FunctionParameterContext ctx) {
-    return BuilderFunctionDeclaration.functionDeclarationParameter(this, ctx);
+    return BuilderDeclaration.functionDeclarationParameter(this, ctx);
+  }
+
+  @Override
+  public AstNode visitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx) {
+    return BuilderDeclaration.declarationVariable(this, ctx);
   }
 
   @Override
@@ -86,6 +100,14 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     var statement = (AstStatement) visit(ctx.children.get(2));
 
     return new AstStatementIf(SourceLocation.fromContext(ctx), condition, statement);
+  }
+
+  @Override
+  public AstStatementWhile visitStatementWhile(KSrcParser.StatementWhileContext ctx) {
+    var condition = (AstExpr) visit(ctx.children.get(1));
+    var statements = (AstStatements) visit(ctx.children.get(2));
+
+    return new AstStatementWhile(SourceLocation.fromContext(ctx), condition, statements);
   }
 
   @Override

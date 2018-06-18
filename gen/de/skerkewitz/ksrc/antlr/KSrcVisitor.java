@@ -36,6 +36,25 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStatement(KSrcParser.IfStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link KSrcParser#loop_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLoop_statement(KSrcParser.Loop_statementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code StatementWhile}
+	 * labeled alternative in {@link KSrcParser#while_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatementWhile(KSrcParser.StatementWhileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCondition(KSrcParser.ConditionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ReturnStatement}
 	 * labeled alternative in {@link KSrcParser#return_statement}.
 	 * @param ctx the parse tree
@@ -50,12 +69,31 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclLet(KSrcParser.DeclLetContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code DeclarationVariable}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code FunctionDeclaration}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#type_annotation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType_annotation(KSrcParser.Type_annotationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#initializer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInitializer(KSrcParser.InitializerContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExprCall}
 	 * labeled alternative in {@link KSrcParser#expression}.

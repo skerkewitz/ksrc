@@ -12,19 +12,19 @@ import de.skerkewitz.ksrc.vm.impl.VmExecContext;
  */
 public interface Vm {
 
-  /** A value in the virtual machine. */
+  /** A initialValue in the virtual machine. */
   interface Value {
 
-    /** The type of the value. */
+    /** The type of the initialValue. */
     Type type();
 
-    /** The string representation of the value. */
+    /** The string representation of the initialValue. */
     String str();
 
-    /** The number representation of the value. */
+    /** The number representation of the initialValue. */
     Double num();
 
-    /** Returns true if this value equals the other value. */
+    /** Returns true if this initialValue equals the other initialValue. */
     boolean eq(Value rhs);
   }
 
@@ -76,10 +76,10 @@ public interface Vm {
   }
 
   /**
-   * Evaluates the given expression and returns the value.
+   * Evaluates the given expression and returns the initialValue.
    *
    * @param expression the {@link AstExpr} to evaluate
-   * @return the String value of the evaluated expression.
+   * @return the String initialValue of the evaluated expression.
    */
   Value eval(AstExpr expression, VmExecContext execContext);
 
