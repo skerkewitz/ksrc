@@ -15,4 +15,9 @@ public enum Type {
       default: return VOID;
     }
   }
+
+  public static Type valueOfIgnoreCare(String name) {
+    return Type.valueOf(name.toUpperCase());
+  }
+
 }

@@ -1,5 +1,6 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.vm.Vm;
 
 import java.util.HashMap;
@@ -43,26 +44,28 @@ public final class VmDefaultExecContext implements VmExecContext {
     }
 
   @Override
-  public Vm.Function getFuncByName(String name) {
-    var symbol = this.funcTable.get(name);
+  public Vm.Function getFuncByName(String name, FunctionSignature signature) {
+    String fqn = name;
+    var symbol = this.funcTable.get(fqn);
     if (symbol != null) {
       return symbol;
     }
 
     if (parent != null) {
-      return parent.getFuncByName(name);
+      return parent.getFuncByName(name, signature);
     }
 
-    throw new VmUnknownSymbol(name);
+    throw new VmUnknownSymbol(fqn);
   }
 
   @Override
-  public void declareFunc(String name, Vm.Function func) {
-    if (this.funcTable.containsKey(name)) {
-      throw new VmSymbolAlreadyDeclared(name);
+  public void declareFunc(Vm.Function func) {
+    String fqn = func.name;
+    if (this.funcTable.containsKey(fqn)) {
+      throw new VmSymbolAlreadyDeclared(fqn);
     }
 
-    this.funcTable.put(name, func);
+    this.funcTable.put(fqn, func);
   }
 
   @Override

@@ -1,6 +1,7 @@
-package de.skerkewitz.ksrc.ast.nodes;
+package de.skerkewitz.ksrc.ast.nodes.expr.binop;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 
 public class AstExprEqual extends AstExprOp {
 

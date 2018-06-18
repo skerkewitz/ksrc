@@ -2,11 +2,10 @@ package de.skerkewitz.ksrc.ast.nodes;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
 
-public abstract class AstStmt {
-
+public class AstNode {
   public final SourceLocation srcLocation;
 
-  public AstStmt(SourceLocation srcLocation) {
+  public AstNode(SourceLocation srcLocation) {
     this.srcLocation = srcLocation;
   }
 }

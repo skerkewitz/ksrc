@@ -1,5 +1,5 @@
 # Fibonacci example
-fn fib(n) {
+fn fib(n:number) {
 
     if n == 0 {
         return 0
@@ -17,7 +17,7 @@ print(fib(0)); print(fib(1)); print(fib(2)); print(fib(3)); print(fib(4)); print
 print(fib(6)); print(fib(7)); print(fib(8)); print(fib(9)); print(fib(10))
 
 # Factorial example
-fn fact(n) {
+fn fact(n:number) {
     if n == 0 {
         return 1
     }

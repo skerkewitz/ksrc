@@ -1,5 +1,6 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.vm.Vm;
 
 public interface VmExecContext {
@@ -7,8 +8,8 @@ public interface VmExecContext {
   Vm.Value getSymbolByName(String name);
   void declareSymbol(String name, Vm.Value value);
 
-  Vm.Function getFuncByName(String name);
-  void declareFunc(String name, Vm.Function func);
+  Vm.Function getFuncByName(String name, FunctionSignature signature);
+  void declareFunc(Vm.Function func);
 
   boolean shouldLeaveFrame();
 
@@ -18,6 +19,7 @@ public interface VmExecContext {
     private final String name;
 
     public VmUnknownSymbol(String name) {
+      super("Unknown VM symbol '" + name + "'");
       this.name = name;
     }
   }

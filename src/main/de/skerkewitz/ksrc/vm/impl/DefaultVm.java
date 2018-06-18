@@ -1,8 +1,27 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import de.skerkewitz.ksrc.ast.FunctionSignature;
+import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.*;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
+import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprAdd;
+import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprEqual;
+import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprMul;
+import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprSub;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementIf;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementReturn;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Quick and dirty default implementation of the ksrc {@link Vm}
@@ -52,9 +71,15 @@ public class DefaultVm implements Vm {
       final AstExprIdent exprIdent = (AstExprIdent) expression;
       return vmExecContext.getSymbolByName(exprIdent.ident);
     }
-    else if (expression instanceof AstExprFuncCall) {
-      final AstExprFuncCall exprFuncCall = (AstExprFuncCall) expression;
-      var stmts = vmExecContext.getFuncByName(exprFuncCall.fnName);
+    else if (expression instanceof AstExprFunctionCall) {
+      final AstExprFunctionCall exprFuncCall = (AstExprFunctionCall) expression;
+
+      var types = Arrays.stream(exprFuncCall.args)
+              .map((AstExpr astExpr) -> Sema.getResultType(astExpr, vmExecContext))
+              .toArray(Type[]::new);
+
+      FunctionSignature functionSignature = new FunctionSignature(Type.VOID, types);
+      var stmts = vmExecContext.getFuncByName(exprFuncCall.fnName,functionSignature);
       if (stmts != null) {
         if (stmts instanceof FunctionRef) {
           var vmFuncRef = (FunctionRef) stmts;
@@ -62,16 +87,16 @@ public class DefaultVm implements Vm {
           /* Create a new VmExeContext for the function call. And resolve parameter. */
           var localVmExecContext = new VmDefaultExecContext(vmExecContext);
           int i = 0;
-          for (var pIdent : vmFuncRef.funcRef.paramIdents) {
-            localVmExecContext.declareSymbol(pIdent.ident, eval(exprFuncCall.args[i], vmExecContext));
+          for (var pIdent : vmFuncRef.funcRef.parameter) {
+            localVmExecContext.declareSymbol(pIdent.name.ident, eval(exprFuncCall.args[i], vmExecContext));
             i += 1;
           }
 
           return exec(vmFuncRef.funcRef.body, localVmExecContext);
         }
 
-        var vmFuncBuildIn = (FunctionBuildIn) stmts;
-        return vmFuncBuildIn.exec(this, exprFuncCall.args, vmExecContext);
+        var vmFuncBuildIn = (FunctionBuildInRef) stmts;
+        return vmFuncBuildIn.funcRef.exec(this, exprFuncCall.args, vmExecContext);
       }
 
       throw new UnknownFunctionReference(exprFuncCall);
@@ -81,7 +106,7 @@ public class DefaultVm implements Vm {
   }
 
   @Override
-  public Value exec(AstStmt statement, VmExecContext vmExecContext) {
+  public Value exec(AstStatement statement, VmExecContext vmExecContext) {
 
     if (statement == null) {
       throw new IllegalArgumentException("statement can not be null");
@@ -91,10 +116,10 @@ public class DefaultVm implements Vm {
       AstExpr expr = (AstExpr) statement;
       return eval(expr, vmExecContext);
     }
-    else if (statement instanceof AstStmtList) {
-      AstStmtList stmtList = (AstStmtList) statement;
+    else if (statement instanceof AstStatements) {
+      AstStatements stmtList = (AstStatements) statement;
       Vm.Value result = VmValueVoid.shared;
-      for (AstStmt stmt : stmtList.statements) {
+      for (AstStatement stmt : stmtList.statements) {
         if (stmt == null) {
           continue;
         }
@@ -106,30 +131,33 @@ public class DefaultVm implements Vm {
       }
       return result;
     }
-    else if (statement instanceof AstStmtReturn) {
-      AstStmtReturn stmtReturn = (AstStmtReturn) statement;
+    else if (statement instanceof AstStatementReturn) {
+      AstStatementReturn stmtReturn = (AstStatementReturn) statement;
       Value value = eval(stmtReturn.expr, vmExecContext);
       vmExecContext.markLeaveFrame();
       return value;
     }
-    else if (statement instanceof AstStmtDeclLet) {
-      final var astStmtDeclLet = (AstStmtDeclLet) statement;
+    else if (statement instanceof AstDeclarationLet) {
+      final var astStmtDeclLet = (AstDeclarationLet) statement;
       var value = eval(astStmtDeclLet.value, vmExecContext);
       vmExecContext.declareSymbol(astStmtDeclLet.name.ident, value);
       return value;
     }
-    else if (statement instanceof AstStmtDeclFunc) {
-      final var stmtDeclFunc = (AstStmtDeclFunc) statement;
+    else if (statement instanceof AstDeclarationFunction) {
+      final var stmtDeclFunc = (AstDeclarationFunction) statement;
       final var funcIdent = stmtDeclFunc.name.ident;
       try {
-        vmExecContext.declareFunc(funcIdent, new FunctionRef(stmtDeclFunc));
+        List<AstParameter> astStmtDeclFuncParameters = Arrays.asList(stmtDeclFunc.parameter);
+        var params = astStmtDeclFuncParameters.stream().map(o -> o.typename.type()).toArray(Type[]::new);
+        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
+        vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
       } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
         throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
       }
       return VmValueVoid.shared;
     }
-    else if (statement instanceof AstStmtDeclIf) {
-      final var stmtDeclIf = (AstStmtDeclIf) statement;
+    else if (statement instanceof AstStatementIf) {
+      final var stmtDeclIf = (AstStatementIf) statement;
       var value = eval(stmtDeclIf.condition, vmExecContext);
       if (value.num() != 0) {
         return exec(stmtDeclIf.statement, vmExecContext);
@@ -157,9 +185,9 @@ public class DefaultVm implements Vm {
   }
 
   private class UnknownStatement extends RuntimeException {
-    private final AstStmt statement;
+    private final AstStatement statement;
 
-    public UnknownStatement(AstStmt statement) {
+    public UnknownStatement(AstStatement statement) {
       this.statement = statement;
     }
 
@@ -172,9 +200,9 @@ public class DefaultVm implements Vm {
   }
 
   private class UnknownFunctionReference extends RuntimeException {
-    private final AstExprFuncCall expressionFuncCall;
+    private final AstExprFunctionCall expressionFuncCall;
 
-    public UnknownFunctionReference(AstExprFuncCall expressionFuncCall) {
+    public UnknownFunctionReference(AstExprFunctionCall expressionFuncCall) {
       this.expressionFuncCall = expressionFuncCall;
     }
 

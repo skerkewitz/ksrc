@@ -1,8 +1,9 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.nodes.AstExpr;
-import de.skerkewitz.ksrc.ast.nodes.AstStmt;
-import de.skerkewitz.ksrc.ast.nodes.AstStmtDeclFunc;
+import de.skerkewitz.ksrc.ast.FunctionSignature;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 
@@ -27,23 +28,49 @@ public interface Vm {
     boolean eq(Value rhs);
   }
 
-  interface Function {
+  class Function {
+
+    /** Plain name of the funtion. */
+    public final String name;
+    public final FunctionSignature signature;
+
+    public Function(String name, FunctionSignature signature) {
+      this.name = name;
+      this.signature = signature;
+    }
+
+    public String getMangledName() {
+      return null; //
+    }
   }
 
   /**
    * Allows to implement build in functions.
    */
-  interface FunctionBuildIn extends Function {
+  interface FunctionBuildIn {
     Value exec(Vm vm, AstExpr[] args, VmExecContext execContext);
   }
 
   /**
    * Allows to implement build in functions.
    */
-  class FunctionRef implements Function {
-    public final AstStmtDeclFunc funcRef;
+  class FunctionBuildInRef extends Function {
+    public final FunctionBuildIn funcRef;
 
-    public FunctionRef(AstStmtDeclFunc funcRef) {
+    public FunctionBuildInRef(String name, FunctionBuildIn funcRef, FunctionSignature signature) {
+      super(name, signature);
+      this.funcRef = funcRef;
+    }
+  }
+
+  /**
+   * Allows to implement build in functions.
+   */
+  class FunctionRef extends Function {
+    public final AstDeclarationFunction funcRef;
+
+    public FunctionRef(String name, AstDeclarationFunction funcRef, FunctionSignature signature) {
+      super(name, signature);
       this.funcRef = funcRef;
     }
   }
@@ -60,9 +87,9 @@ public interface Vm {
   /**
    * Execute the given statement.
    *
-   * @param statement the {@link AstStmt} to execute.
+   * @param statement the {@link AstStatement} to execute.
    * @return
    */
-  Value exec(AstStmt statement, VmExecContext execContext);
+  Value exec(AstStatement statement, VmExecContext execContext);
 
 }

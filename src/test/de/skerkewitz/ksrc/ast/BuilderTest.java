@@ -2,9 +2,9 @@ package de.skerkewitz.ksrc.ast;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
-import de.skerkewitz.ksrc.ast.nodes.AstExprFuncCall;
-import de.skerkewitz.ksrc.ast.nodes.AstExprValue;
-import de.skerkewitz.ksrc.ast.nodes.AstStmtDeclFunc;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -29,18 +29,20 @@ class BuilderTest {
   @Test
   void visitDeclFunc() throws IOException {
 
-	var input = "fn myPrint(somevalue, othervalue) {\n"
+	var input = "fn myPrint(somevalue:number, othervalue:number) {\n"
 			+ " print(somevalue * othervalue)\n"
 			+ " print(somevalue * 2)\n"
 			+ "}\n";
 
     ParseTree tree = parserForString(input).func_decl();
-    var sut = (AstStmtDeclFunc) new Builder().visit(tree);
+    var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
-	assertEquals(2, sut.paramIdents.length);
-    assertEquals("somevalue", sut.paramIdents[0].ident);
-	assertEquals("othervalue", sut.paramIdents[1].ident);
+	assertEquals(2, sut.parameter.length);
+    assertEquals("somevalue", sut.parameter[0].name.ident);
+    assertEquals("number", sut.parameter[0].typename.name);
+	assertEquals("othervalue", sut.parameter[1].name.ident);
+	assertEquals("number", sut.parameter[1].typename.name);
 
   }
 
@@ -49,8 +51,8 @@ class BuilderTest {
 
     var input = "myPrint(2, 6)\n";
 
-    ParseTree tree = parserForString(input).expr();
-    var sut = (AstExprFuncCall) new Builder().visit(tree);
+    ParseTree tree = parserForString(input).expression();
+    var sut = (AstExprFunctionCall) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.fnName);
     assertEquals(2, sut.args.length);

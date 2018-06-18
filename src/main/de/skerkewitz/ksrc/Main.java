@@ -2,12 +2,11 @@ package de.skerkewitz.ksrc;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
-import de.skerkewitz.ksrc.ast.nodes.AstStmt;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
-import de.skerkewitz.ksrc.vm.impl.VmValueNumber;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -28,10 +27,10 @@ public class Main {
     ParseTree tree = parser.file_input();
 
     /* Build AST tree. */
-    AstStmt rootStatement = new Builder().visit(tree);
+    AstStatement rootStatement = (AstStatement) new Builder().visit(tree);
 
     var vmExecContext = VmExecContextFactory.initialContext();
-    vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueNumber(1.0));
+    //vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueNumber(1.0));
 
     Vm vm = new DefaultVm();
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);

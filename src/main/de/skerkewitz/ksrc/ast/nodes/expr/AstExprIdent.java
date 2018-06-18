@@ -1,4 +1,4 @@
-package de.skerkewitz.ksrc.ast.nodes;
+package de.skerkewitz.ksrc.ast.nodes.expr;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
 
@@ -7,7 +7,7 @@ public class AstExprIdent extends AstExpr {
   public final String ident;
 
   public AstExprIdent(SourceLocation sourceLocation, String ident) {
-    super(sourceLocation);
+    super(sourceLocation, null);
     this.ident = ident;
   }
 }

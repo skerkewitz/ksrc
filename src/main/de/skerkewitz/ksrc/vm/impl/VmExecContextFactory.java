@@ -1,5 +1,7 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import de.skerkewitz.ksrc.ast.FunctionSignature;
+import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
 
 public final class VmExecContextFactory {
@@ -13,11 +15,9 @@ public final class VmExecContextFactory {
     return VmValueVoid.shared;
   };
 
-
   public static VmExecContext initialContext() {
-
     var context = new VmDefaultExecContext(null);
-    context.declareFunc("print", print_f);
+    context.declareFunc(new Vm.FunctionBuildInRef("print", print_f, new FunctionSignature(Type.VOID, new Type[]{Type.STRING})));
     return context;
   }
 }

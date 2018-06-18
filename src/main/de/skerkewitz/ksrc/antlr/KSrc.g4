@@ -3,12 +3,12 @@ grammar KSrc;
 
 //fragment NEWLINE: '\n';
 
-file_input: (stmt_list | func_decl)* EOF;
+file_input: (statements)* EOF;
 
 // Keywords
-LET: 'let';
-FUNC: 'fn';
-IF: 'if';
+LET:    'let';
+FUNC:   'fn';
+IF:     'if';
 RETURN: 'return';
 
 ASSIGN: '=';
@@ -16,46 +16,59 @@ ASSIGN: '=';
 LINE_COMMENT : '#' ~[\r\n]* -> skip;
 
 /// Statments
-stmt_list
-    : stmt (';' stmt)*
+statements
+    : statement (';' statement)*
     | LINE_COMMENT
     ;
 
-stmt
-    : LET ident ASSIGN expr #DeclLet
-    | RETURN expr #StmtReturn
-    | if_decl #StmtIf
-    | expr #Expression
+statement
+    : declaration
+    | return_statement
 
+    // Branch statements
+    | if_statement
+    | expression
     ;
 
-expr
-    : ident #ExprIdent
-    | value #ExprValue
+if_statement
+    : IF expression code_block              #IfStatement;
+
+return_statement
+    : RETURN expression                     #ReturnStatement;
+
+declaration
+    : LET ident ASSIGN expression     #DeclLet
+    | func_decl                 #FunctionDeclaration
+    ;
+
+expression
+    : ident                                 #ExprIdent
+    | value                                 #ExprValue
 
     // Binary operator expressions
-    | expr '*' expr #ExprMul
-    | expr '/' expr #ExprDiv
-    | expr '+' expr #ExprAdd
-    | expr '-' expr #ExprSub
-    | expr '==' expr #ExprEqual
+    | expression '*' expression                         #ExprMul
+    | expression '/' expression                         #ExprDiv
+    | expression '+' expression                         #ExprAdd
+    | expression '-' expression                         #ExprSub
+    | expression '==' expression                        #ExprEqual
 
-    | NAME '(' arguments ')' #ExprCall
+    | NAME '(' arguments ')'                #ExprCall
     ;
 
-arguments: (expr (',' expr)*)? #FuncArguments;
+arguments: (expression (',' expression)*)?              #FunctionCallArgumentList;
 
+typename: NAME ;
 ident: NAME ;
 value: NUMBER | STRING;
 
+// Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
 func_decl: FUNC ident ('(' func_params ')')? code_block #DeclFunc;
+func_params: (func_param (',' func_param)*)? #FunctionParameters;
+func_param: ident ':' typename #FunctionParameter;
 
-func_params: (ident (',' ident)*)? #FunctionParameter;
 
 
-if_decl: IF expr code_block #DeclIf;
-
-code_block: '{' (stmt_list)* '}' #CodeBlock;
+code_block: '{' (statements)* '}' #CodeBlock;
 
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
