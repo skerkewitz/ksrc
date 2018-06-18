@@ -16,29 +16,37 @@ import java.util.List;
 class BuilderFunctionDeclaration {
 
   static AstStatement functionDeclaration(Builder builder, KSrcParser.DeclFuncContext ctx) {
-    var hasParameter = ctx.getChildCount() == 6;
+    var srcLoc = new SourceLocation(ctx.start, ctx.stop);
+
+    var hasParameter = ctx.getChild(2) instanceof TerminalNode
+            && ctx.getChild(2).getText().equals("(");
 
     var ident = (AstExprIdent) builder.visit(ctx.children.get(1));
-    AstParameter[] params;
+    List<AstParameter> params = new ArrayList<>();
     if (hasParameter) {
       ParseTree tree = ctx.children.get(3);
       final int childCount = tree.getChildCount();
 
-      List<AstParameter> result = new ArrayList<>(childCount);
       for (int i = 0; i < childCount; ++i) {
         ParseTree child = tree.getChild(i);
         if (!(child instanceof TerminalNode)) {
-          result.add((AstParameter) builder.visit(child));
+          params.add((AstParameter) builder.visit(child));
         }
       }
-      params = result.toArray(new AstParameter[result.size()]);
-    } else {
-      params = null;
     }
 
-    var expr = (AstStatements) builder.visit(ctx.children.get(hasParameter ? 5 : 2));
-    var srcLoc = new SourceLocation(ctx.start, ctx.stop);
-    return new AstDeclarationFunction(srcLoc, ident, params, expr);
+    /* Derterime if explicit type was given or implicit 'void' should be used. */
+    AstTypeIdentifier returnTypeIdentifier = new AstTypeIdentifier(srcLoc, Type.VOID.toString());
+    var childCount = ctx.children.size();
+    var hasExplicitType = ctx.getChild(childCount - 1) instanceof KSrcParser.CodeBlockContext
+                && ctx.getChild(childCount - 2) instanceof TerminalNode
+                && ctx.getChild(childCount - 3) instanceof KSrcParser.TypenameContext;
+    if (hasExplicitType) {
+      returnTypeIdentifier = ((AstTypeIdentifier) builder.visit(ctx.getChild(childCount - 3)));
+    }
+
+    var codeBlock = (AstStatements) builder.visit(ctx.getChild(childCount - 1));
+    return new AstDeclarationFunction(srcLoc, ident, params, returnTypeIdentifier, codeBlock);
   }
 
   static AstNode functionDeclarationParameter(Builder builder, KSrcParser.FunctionParameterContext ctx) {

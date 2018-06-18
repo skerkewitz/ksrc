@@ -14,37 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserForString;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BuilderTest {
-
-  public static final KSrcParser parserForString(String s) throws IOException {
-    InputStream in = new ByteArrayInputStream(s.getBytes());
-    KSrcLexer lexer = new KSrcLexer(CharStreams.fromStream(in));
-    CommonTokenStream tokens = new CommonTokenStream(lexer);
-    return new KSrcParser(tokens);
-  }
-
-
-  @Test
-  void visitDeclFunc() throws IOException {
-
-	var input = "fn myPrint(somevalue:number, othervalue:number) {\n"
-			+ " print(somevalue * othervalue)\n"
-			+ " print(somevalue * 2)\n"
-			+ "}\n";
-
-    ParseTree tree = parserForString(input).func_decl();
-    var sut = (AstDeclarationFunction) new Builder().visit(tree);
-
-    assertEquals("myPrint", sut.name.ident);
-	assertEquals(2, sut.parameter.length);
-    assertEquals("somevalue", sut.parameter[0].name.ident);
-    assertEquals("number", sut.parameter[0].typename.name);
-	assertEquals("othervalue", sut.parameter[1].name.ident);
-	assertEquals("number", sut.parameter[1].typename.name);
-
-  }
 
   @Test
   void visitExprCall() throws IOException {

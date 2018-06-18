@@ -2,6 +2,7 @@ package de.skerkewitz.ksrc;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
+import de.skerkewitz.ksrc.ast.Walker;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.vm.Vm;
@@ -36,6 +37,9 @@ public class Main {
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
     System.out.println("Done: " + ret.str());
+
+    new Walker().walk(rootStatement);
+
   }
 
 }

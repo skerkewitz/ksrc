@@ -147,8 +147,7 @@ public class DefaultVm implements Vm {
       final var stmtDeclFunc = (AstDeclarationFunction) statement;
       final var funcIdent = stmtDeclFunc.name.ident;
       try {
-        List<AstParameter> astStmtDeclFuncParameters = Arrays.asList(stmtDeclFunc.parameter);
-        var params = astStmtDeclFuncParameters.stream().map(o -> o.typename.type()).toArray(Type[]::new);
+        var params = stmtDeclFunc.parameter.stream().map(o -> o.typename.type()).toArray(Type[]::new);
         FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
         vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
       } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {

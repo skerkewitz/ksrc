@@ -62,7 +62,7 @@ ident: NAME ;
 value: NUMBER | STRING;
 
 // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
-func_decl: FUNC ident ('(' func_params ')')? code_block #DeclFunc;
+func_decl: FUNC ident ('(' func_params ')')? (':' typename)? ':' code_block #DeclFunc;
 func_params: (func_param (',' func_param)*)? #FunctionParameters;
 func_param: ident ':' typename #FunctionParameter;
 
