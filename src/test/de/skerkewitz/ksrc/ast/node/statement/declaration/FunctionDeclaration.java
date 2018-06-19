@@ -22,12 +22,12 @@ public class FunctionDeclaration {
             + " print(somevalue * 2)\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).func_decl();
+    ParseTree tree = parserForString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
-    assertEquals(0, sut.parameter.size());
-    assertEquals(2, sut.body.statements.length);
+    assertEquals(0, sut.signature.params.size());
+    assertEquals(2, sut.body.statements.size());
   }
 
   @Test
@@ -38,16 +38,16 @@ public class FunctionDeclaration {
             + " print(somevalue * 2)\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).func_decl();
+    ParseTree tree = parserForString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
-    assertEquals(2, sut.parameter.size());
-    assertEquals("somevalue", sut.parameter.get(0).name.ident);
-    assertEquals("number", sut.parameter.get(0).typename.name);
-    assertEquals("othervalue", sut.parameter.get(1).name.ident);
-    assertEquals("number", sut.parameter.get(1).typename.name);
-    assertEquals(2, sut.body.statements.length);
+    assertEquals(2, sut.signature.params.size());
+    assertEquals("somevalue", sut.signature.params.get(0).name.ident);
+    assertEquals("number", sut.signature.params.get(0).typename.name);
+    assertEquals("othervalue", sut.signature.params.get(1).name.ident);
+    assertEquals("number", sut.signature.params.get(1).typename.name);
+    assertEquals(2, sut.body.statements.size());
   }
 
   @Test
@@ -57,13 +57,13 @@ public class FunctionDeclaration {
             + " print(\"Hello world\")\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).func_decl();
+    ParseTree tree = parserForString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
-    assertEquals(0, sut.parameter.size());
-    Assertions.assertEquals(Type.NUMBER, sut.returnType.type());
-    assertEquals(1, sut.body.statements.length);
+    assertEquals(0, sut.signature.params.size());
+    Assertions.assertEquals(Type.NUMBER, sut.signature.returnType.type());
+    assertEquals(1, sut.body.statements.size());
   }
 
   @Test
@@ -74,16 +74,16 @@ public class FunctionDeclaration {
             + "}\n";
 
 
-    ParseTree tree = parserForString(input).func_decl();
+    ParseTree tree = parserForString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
-    assertEquals(2, sut.parameter.size());
-    assertEquals("somevalue", sut.parameter.get(0).name.ident);
-    assertEquals("number", sut.parameter.get(0).typename.name);
-    assertEquals("othervalue", sut.parameter.get(1).name.ident);
-    assertEquals("number", sut.parameter.get(1).typename.name);
-    assertEquals(Type.NUMBER, sut.returnType.type());
-    assertEquals(1, sut.body.statements.length);
+    assertEquals(2, sut.signature.params.size());
+    assertEquals("somevalue", sut.signature.params.get(0).name.ident);
+    assertEquals("number", sut.signature.params.get(0).typename.name);
+    assertEquals("othervalue", sut.signature.params.get(1).name.ident);
+    assertEquals("number", sut.signature.params.get(1).typename.name);
+    assertEquals(Type.NUMBER, sut.signature.returnType.type());
+    assertEquals(1, sut.body.statements.size());
   }
 }

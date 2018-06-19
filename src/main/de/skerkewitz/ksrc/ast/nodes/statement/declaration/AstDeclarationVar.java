@@ -6,13 +6,13 @@ import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 
-public class AstDeclarationVariable extends AstStatement {
+public class AstDeclarationVar extends AstStatement {
 
   public final AstExprIdent name;
   public final AstTypeIdentifier typeIdentifier;
   public final AstExpr initialValue;
 
-  public AstDeclarationVariable(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typeIdentifier, AstExpr initialValue) {
+  public AstDeclarationVar(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typeIdentifier, AstExpr initialValue) {
     super(srcLoc);
     this.name = name;
     this.typeIdentifier = typeIdentifier;

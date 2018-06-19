@@ -112,13 +112,13 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclLet(KSrcParser.DeclLetContext ctx) { }
+	@Override public void enterDeclarationConstant(KSrcParser.DeclarationConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclLet(KSrcParser.DeclLetContext ctx) { }
+	@Override public void exitDeclarationConstant(KSrcParser.DeclarationConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -304,25 +304,37 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValue(KSrcParser.ValueContext ctx) { }
+	@Override public void enterInitialValue(KSrcParser.InitialValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValue(KSrcParser.ValueContext ctx) { }
+	@Override public void exitInitialValue(KSrcParser.InitialValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclFunc(KSrcParser.DeclFuncContext ctx) { }
+	@Override public void enterFunctionSignature(KSrcParser.FunctionSignatureContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclFunc(KSrcParser.DeclFuncContext ctx) { }
+	@Override public void exitFunctionSignature(KSrcParser.FunctionSignatureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunction_result(KSrcParser.Function_resultContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunction_result(KSrcParser.Function_resultContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

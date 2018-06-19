@@ -24,7 +24,7 @@ public class WhileStatement {
     var sut = (AstStatementWhile) new Builder().visit(tree);
 
     //assertEquals("myPrint", sut.condition.type == Type.BOOL);
-    assertEquals(2, sut.body.statements.length);
+    assertEquals(2, sut.body.statements.size());
   }
 
 }

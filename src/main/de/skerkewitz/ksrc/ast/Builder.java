@@ -13,19 +13,19 @@ import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprEqual;
 import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprMul;
 import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprSub;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.BuilderDeclaration;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.*;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Builder extends KSrcBaseVisitor<AstNode> {
 
   /* Util method. */
-  public <T> T visit(RuleContext ctx, Class<T> type) {
+  private <T> T visit(RuleContext ctx, Class<T> type) {
     if (ctx == null) {
       return null;
     }
@@ -37,43 +37,67 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   @Override
   public AstStatement visitStatements(KSrcParser.StatementsContext ctx) {
 
-    /* Get the parameters. */
-    final int childCount = ctx.getChildCount();
+   var statements = ctx.statement()
+            .stream()
+            .map(c -> visit(c, AstStatement.class))
+            .collect(Collectors.toList());
 
-    final AstStatement[] args = new AstStatement[childCount];
-    for (var i = 0; i < childCount; ++i) {
-      args[i] = (AstStatement) visit(ctx.children.get(i));
-    }
-
-    return new AstStatements(SourceLocation.fromContext(ctx), args);
+    return new AstStatements(SourceLocation.fromContext(ctx), statements);
   }
 
   @Override
-  public AstStatement visitFile_input(KSrcParser.File_inputContext ctx) {
-    /* Get the parameters. */
-    final int childCount = ctx.getChildCount();
+  public AstStatements visitFile_input(KSrcParser.File_inputContext ctx) {
 
-    var args = new AstStatement[childCount - 1];
-    for (int i = 0; i < childCount - 1; ++i) {
-      args[i] = (AstStatement) visit(ctx.children.get(i));
-    }
+    var statements = ctx.statements()
+            .stream()
+            .map(c -> visit(c, AstStatements.class))
+            .flatMap(astStatements -> astStatements.statements.stream())
+            .collect(Collectors.toList());
 
-    return new AstStatements(SourceLocation.fromContext(ctx), args);
+    return new AstStatements(SourceLocation.fromContext(ctx), statements);
+  }
+
+
+  @Override
+  public AstNode visitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx) {
+    var srcLoc = new SourceLocation(ctx.start, ctx.stop);
+
+    var ident = visit(ctx.ident(), AstExprIdent.class);
+    var signature = visit(ctx.function_signature(), AstDeclarationFunction.Signature.class);
+    var codeBlock = visit(ctx.code_block(), AstStatements.class);
+    return new AstDeclarationFunction(srcLoc, ident, signature, codeBlock);
   }
 
   @Override
-  public AstStatement visitDeclFunc(KSrcParser.DeclFuncContext ctx) {
-    return BuilderDeclaration.functionDeclaration(this, ctx);
+  public AstNode visitFunctionSignature(KSrcParser.FunctionSignatureContext ctx) {
+    var parameters = visit(ctx.function_parameters(), AstFunctionParameters.class);
+    var returnType = visit(ctx.function_result(), AstTypeIdentifier.class);
+    return new AstDeclarationFunction.Signature(SourceLocation.fromContext(ctx), parameters, returnType);
+  }
+
+  @Override
+  public AstNode visitFunctionParameters(KSrcParser.FunctionParametersContext ctx) {
+    var params = ctx.function_parameter()
+            .stream()
+            .map(c -> visit(c, AstDeclarationFunction.Parameter.class))
+            .collect(Collectors.toList());
+
+    return new AstFunctionParameters(SourceLocation.fromContext(ctx), params);
   }
 
   @Override
   public AstNode visitFunctionParameter(KSrcParser.FunctionParameterContext ctx) {
-    return BuilderDeclaration.functionDeclarationParameter(this, ctx);
+    var expr = visit(ctx.ident(), AstExprIdent.class);
+    var stmt = visit(ctx.typename(), AstTypeIdentifier.class);
+    return new AstDeclarationFunction.Parameter(SourceLocation.fromContext(ctx), expr, stmt);
   }
 
   @Override
   public AstNode visitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx) {
-    return BuilderDeclaration.declarationVariable(this, ctx);
+    var ident = visit(ctx.ident(), AstExprIdent.class);
+    var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
+    var expr = ctx.initializer() == null ? null : visit(ctx.initializer().expression(), AstExpr.class);
+    return new AstDeclarationVar(SourceLocation.fromContext(ctx), ident, typeIdentifier, expr);
   }
 
   @Override
@@ -83,44 +107,42 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstStatement visitCodeBlock(KSrcParser.CodeBlockContext ctx) {
-    /* Get the parameters. */
-    final int childCount = ctx.getChildCount();
 
-    var args = new AstStatement[childCount - 2];
-    for (int i = 1; i < childCount - 1; ++i) {
-      args[i - 1] = (AstStatement) visit(ctx.children.get(i));
-    }
+    var statements = ctx.statements()
+            .stream()
+            .map(c -> visit(c, AstStatements.class))
+            .flatMap(astStatements -> astStatements.statements.stream())
+            .collect(Collectors.toList());
 
-    return new AstStatements(SourceLocation.fromContext(ctx), args);
+    return new AstStatements(SourceLocation.fromContext(ctx), statements);
   }
 
   @Override
   public AstStatementIf visitIfStatement(KSrcParser.IfStatementContext ctx) {
-    var condition = (AstExpr) visit(ctx.children.get(1));
-    var statement = (AstStatement) visit(ctx.children.get(2));
-
-    return new AstStatementIf(SourceLocation.fromContext(ctx), condition, statement);
+    var condition = visit(ctx.condition(), AstExpr.class);
+    var statements = visit(ctx.code_block(), AstStatements.class);
+    return new AstStatementIf(SourceLocation.fromContext(ctx), condition, statements);
   }
 
   @Override
   public AstStatementWhile visitStatementWhile(KSrcParser.StatementWhileContext ctx) {
-    var condition = (AstExpr) visit(ctx.children.get(1));
-    var statements = (AstStatements) visit(ctx.children.get(2));
-
+    var condition = visit(ctx.condition(), AstExpr.class);
+    var statements = visit(ctx.code_block(), AstStatements.class);
     return new AstStatementWhile(SourceLocation.fromContext(ctx), condition, statements);
   }
 
   @Override
   public AstStatement visitReturnStatement(KSrcParser.ReturnStatementContext ctx) {
-    var expr = (AstExpr) visit(ctx.children.get(1));
-    return new AstStatementReturn(SourceLocation.fromContext(ctx), expr);
+    var expression = visit(ctx.expression(), AstExpr.class);
+    return new AstStatementReturn(SourceLocation.fromContext(ctx), expression);
   }
 
   @Override
-  public AstStatement visitDeclLet(KSrcParser.DeclLetContext ctx) {
-    var ident = (AstExprIdent) visit(ctx.children.get(1));
-    var expr = (AstExpr) visit(ctx.children.get(3));
-    return new AstDeclarationLet(SourceLocation.fromContext(ctx), ident, expr);
+  public AstNode visitDeclarationConstant(KSrcParser.DeclarationConstantContext ctx) {
+    var ident = visit(ctx.ident(), AstExprIdent.class);
+    var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
+    var expr = visit(ctx.initializer().expression(), AstExpr.class);
+    return new AstDeclarationLet(SourceLocation.fromContext(ctx), ident, typeIdentifier, expr);
   }
 
   @Override

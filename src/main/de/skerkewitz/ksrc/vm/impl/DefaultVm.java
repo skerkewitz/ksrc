@@ -87,7 +87,7 @@ public class DefaultVm implements Vm {
           /* Create a new VmExeContext for the function call. And resolve parameter. */
           var localVmExecContext = new VmDefaultExecContext(vmExecContext);
           int i = 0;
-          for (var pIdent : vmFuncRef.funcRef.parameter) {
+          for (var pIdent : vmFuncRef.funcRef.signature.params) {
             localVmExecContext.declareSymbol(pIdent.name.ident, eval(exprFuncCall.args[i], vmExecContext));
             i += 1;
           }
@@ -147,7 +147,7 @@ public class DefaultVm implements Vm {
       final var stmtDeclFunc = (AstDeclarationFunction) statement;
       final var funcIdent = stmtDeclFunc.name.ident;
       try {
-        var params = stmtDeclFunc.parameter.stream().map(o -> o.typename.type()).toArray(Type[]::new);
+        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.type()).toArray(Type[]::new);
         FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
         vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
       } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {

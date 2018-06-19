@@ -94,17 +94,17 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitReturnStatement(KSrcParser.ReturnStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code DeclLet}
+	 * Enter a parse tree produced by the {@code DeclarationConstant}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclLet(KSrcParser.DeclLetContext ctx);
+	void enterDeclarationConstant(KSrcParser.DeclarationConstantContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code DeclLet}
+	 * Exit a parse tree produced by the {@code DeclarationConstant}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclLet(KSrcParser.DeclLetContext ctx);
+	void exitDeclarationConstant(KSrcParser.DeclarationConstantContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code DeclarationVariable}
 	 * labeled alternative in {@link KSrcParser#declaration}.
@@ -278,48 +278,58 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitIdent(KSrcParser.IdentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link KSrcParser#value}.
+	 * Enter a parse tree produced by {@link KSrcParser#initialValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterValue(KSrcParser.ValueContext ctx);
+	void enterInitialValue(KSrcParser.InitialValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KSrcParser#value}.
+	 * Exit a parse tree produced by {@link KSrcParser#initialValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitValue(KSrcParser.ValueContext ctx);
+	void exitInitialValue(KSrcParser.InitialValueContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code DeclFunc}
-	 * labeled alternative in {@link KSrcParser#func_decl}.
+	 * Enter a parse tree produced by the {@code FunctionSignature}
+	 * labeled alternative in {@link KSrcParser#function_signature}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclFunc(KSrcParser.DeclFuncContext ctx);
+	void enterFunctionSignature(KSrcParser.FunctionSignatureContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code DeclFunc}
-	 * labeled alternative in {@link KSrcParser#func_decl}.
+	 * Exit a parse tree produced by the {@code FunctionSignature}
+	 * labeled alternative in {@link KSrcParser#function_signature}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclFunc(KSrcParser.DeclFuncContext ctx);
+	void exitFunctionSignature(KSrcParser.FunctionSignatureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#function_result}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_result(KSrcParser.Function_resultContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#function_result}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_result(KSrcParser.Function_resultContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FunctionParameters}
-	 * labeled alternative in {@link KSrcParser#func_params}.
+	 * labeled alternative in {@link KSrcParser#function_parameters}.
 	 * @param ctx the parse tree
 	 */
 	void enterFunctionParameters(KSrcParser.FunctionParametersContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code FunctionParameters}
-	 * labeled alternative in {@link KSrcParser#func_params}.
+	 * labeled alternative in {@link KSrcParser#function_parameters}.
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionParameters(KSrcParser.FunctionParametersContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FunctionParameter}
-	 * labeled alternative in {@link KSrcParser#func_param}.
+	 * labeled alternative in {@link KSrcParser#function_parameter}.
 	 * @param ctx the parse tree
 	 */
 	void enterFunctionParameter(KSrcParser.FunctionParameterContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code FunctionParameter}
-	 * labeled alternative in {@link KSrcParser#func_param}.
+	 * labeled alternative in {@link KSrcParser#function_parameter}.
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionParameter(KSrcParser.FunctionParameterContext ctx);

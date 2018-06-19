@@ -73,7 +73,7 @@ public class KSrcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements K
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclLet(KSrcParser.DeclLetContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclarationConstant(KSrcParser.DeclarationConstantContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -185,14 +185,21 @@ public class KSrcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements K
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValue(KSrcParser.ValueContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInitialValue(KSrcParser.InitialValueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclFunc(KSrcParser.DeclFuncContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunctionSignature(KSrcParser.FunctionSignatureContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFunction_result(KSrcParser.Function_resultContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

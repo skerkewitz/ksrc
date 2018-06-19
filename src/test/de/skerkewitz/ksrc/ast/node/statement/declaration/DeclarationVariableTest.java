@@ -2,8 +2,7 @@ package de.skerkewitz.ksrc.ast.node.statement.declaration;
 
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementWhile;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVariable;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ public class DeclarationVariableTest {
     var input = "var a \n";
 
     ParseTree tree = parserForString(input).declaration();
-    var sut = (AstDeclarationVariable) new Builder().visit(tree);
+    var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     //assertEquals("myPrint", sut.condition.type == Type.BOOL);
     assertEquals("a", sut.name.ident);
@@ -36,7 +35,7 @@ public class DeclarationVariableTest {
     var input = "var a = 5\n";
 
     ParseTree tree = parserForString(input).declaration();
-    var sut = (AstDeclarationVariable) new Builder().visit(tree);
+    var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertNull(sut.typeIdentifier);
@@ -49,7 +48,7 @@ public class DeclarationVariableTest {
     var input = "var a: number = 5\n";
 
     ParseTree tree = parserForString(input).declaration();
-    var sut = (AstDeclarationVariable) new Builder().visit(tree);
+    var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertEquals(Type.NUMBER, sut.typeIdentifier.type());

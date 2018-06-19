@@ -1,7 +1,7 @@
 package de.skerkewitz.ksrc.ast.nodes.statement.declaration;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
-import de.skerkewitz.ksrc.ast.nodes.AstParameter;
+import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.AstTypeIdentifier;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
@@ -12,16 +12,43 @@ import java.util.List;
 
 public class AstDeclarationFunction extends AstStatement {
 
-  public final AstExprIdent name;
-  public final List<AstParameter> parameter;
-  public final AstStatements body;
-  public final AstTypeIdentifier returnType;
+  /** Defines a single parameter in a function declaration. */
+  public static class Signature extends AstNode {
 
-  public AstDeclarationFunction(SourceLocation srcLoc, AstExprIdent name, List<AstParameter> parameter, AstTypeIdentifier returnType, AstStatements body) {
+    public final List<Parameter> params;
+    public final AstTypeIdentifier returnType;
+
+    public Signature(SourceLocation srcLoc, AstFunctionParameters params, AstTypeIdentifier returnType) {
+      super(srcLoc);
+      this.params = params == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(params.params);
+      this.returnType = returnType;
+    }
+  }
+
+  /** Defines a single parameter in a function declaration. */
+  public static class Parameter extends AstNode {
+
+    public final AstExprIdent name;
+    public final AstTypeIdentifier typename;
+
+    public Parameter(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typename) {
+      super(srcLoc);
+      this.name = name;
+      this.typename = typename;
+    }
+  }
+
+  public final AstExprIdent name;
+  public final Signature signature;
+  public final AstStatements body;
+
+  public AstDeclarationFunction(SourceLocation srcLoc, AstExprIdent name, Signature signature, AstStatements body) {
     super(srcLoc);
     this.name = name;
-    this.parameter = Collections.unmodifiableList(parameter);
-    this.returnType = returnType;
+    this.signature = signature;
     this.body = body;
   }
+
+
+
 }

@@ -62,12 +62,12 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReturnStatement(KSrcParser.ReturnStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code DeclLet}
+	 * Visit a parse tree produced by the {@code DeclarationConstant}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDeclLet(KSrcParser.DeclLetContext ctx);
+	T visitDeclarationConstant(KSrcParser.DeclarationConstantContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code DeclarationVariable}
 	 * labeled alternative in {@link KSrcParser#declaration}.
@@ -170,28 +170,34 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdent(KSrcParser.IdentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link KSrcParser#value}.
+	 * Visit a parse tree produced by {@link KSrcParser#initialValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitValue(KSrcParser.ValueContext ctx);
+	T visitInitialValue(KSrcParser.InitialValueContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code DeclFunc}
-	 * labeled alternative in {@link KSrcParser#func_decl}.
+	 * Visit a parse tree produced by the {@code FunctionSignature}
+	 * labeled alternative in {@link KSrcParser#function_signature}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDeclFunc(KSrcParser.DeclFuncContext ctx);
+	T visitFunctionSignature(KSrcParser.FunctionSignatureContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#function_result}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_result(KSrcParser.Function_resultContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionParameters}
-	 * labeled alternative in {@link KSrcParser#func_params}.
+	 * labeled alternative in {@link KSrcParser#function_parameters}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunctionParameters(KSrcParser.FunctionParametersContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionParameter}
-	 * labeled alternative in {@link KSrcParser#func_param}.
+	 * labeled alternative in {@link KSrcParser#function_parameter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

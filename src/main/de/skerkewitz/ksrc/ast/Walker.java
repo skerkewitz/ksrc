@@ -17,7 +17,7 @@ public class Walker {
 
     if (node instanceof AstStatements) {
       AstStatements statements = (AstStatements) node;
-      ps.println("// Statements begin [" + statements.statements.length + "] " + node.srcLocation.toString());
+      ps.println("// Statements begin [" + statements.statements.size() + "] " + node.srcLocation.toString());
       for (var statement : statements.statements) {
         walk(statement);
       }

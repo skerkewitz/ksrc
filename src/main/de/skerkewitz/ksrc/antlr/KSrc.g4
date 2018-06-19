@@ -3,7 +3,7 @@ grammar KSrc;
 
 //fragment NEWLINE: '\n';
 
-file_input: (statements)* EOF;
+file_input: statements* EOF;
 
 // Keywords
 LET:    'let';
@@ -15,17 +15,22 @@ WHILE: 'while';
 
 ASSIGN: '=';
 
+LPARENS:    '(';
+RPARENS:    ')';
+SEMICOLON:  ';';
+
 LINE_COMMENT : '#' ~[\r\n]* -> skip;
 
 /// Statments
 statements
-    : statement (';' statement)*
-    | LINE_COMMENT
+    : statement (SEMICOLON statement)*
     ;
 
 statement
     : declaration
     | return_statement
+
+    | LINE_COMMENT
 
     // Branch statements
     | if_statement
@@ -54,9 +59,11 @@ return_statement
     : RETURN expression                     #ReturnStatement;
 
 declaration
-    : LET ident ASSIGN expression               #DeclLet
-    | VAR ident type_annotation? initializer?   #DeclarationVariable
-    | func_decl                                 #FunctionDeclaration
+    : LET ident type_annotation? initializer        #DeclarationConstant
+    | VAR ident type_annotation? initializer?       #DeclarationVariable
+
+    // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
+    | FUNC ident function_signature ':' code_block  #FunctionDeclaration
     ;
 
 type_annotation: (':' typename);
@@ -82,14 +89,28 @@ typename: NAME ;
 ident: NAME ;
 initialValue: NUMBER | STRING;
 
-// Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
-func_decl: FUNC ident ('(' func_params ')')? (':' typename)? ':' code_block #DeclFunc;
-func_params: (func_param (',' func_param)*)? #FunctionParameters;
-func_param: ident ':' typename #FunctionParameter;
+
+function_signature
+    : (LPARENS function_parameters RPARENS)? (':' function_result)?   #FunctionSignature
+    ;
+
+function_result:
+    typename
+    ;
+
+function_parameters
+    : (function_parameter (',' function_parameter)*)?   #FunctionParameters
+    ;
+
+function_parameter
+    : ident ':' typename                                #FunctionParameter
+    ;
 
 
 
-code_block: '{' (statements)* '}' #CodeBlock;
+code_block
+    : '{' (statements)* '}'                             #CodeBlock;
+
 
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

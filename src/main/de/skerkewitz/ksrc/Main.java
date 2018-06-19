@@ -38,7 +38,7 @@ public class Main {
 
     System.out.println("Done: " + ret.str());
 
-    new Walker().walk(rootStatement);
+//    new Walker().walk(rootStatement);
 
   }
 
