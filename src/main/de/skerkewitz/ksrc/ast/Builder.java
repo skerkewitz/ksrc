@@ -4,14 +4,7 @@ import de.skerkewitz.ksrc.antlr.KSrcBaseVisitor;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
 import de.skerkewitz.ksrc.antlr.SourceLocation;
 import de.skerkewitz.ksrc.ast.nodes.*;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprAdd;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprEqual;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprMul;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprSub;
+import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.*;
 import org.antlr.v4.runtime.RuleContext;
@@ -146,31 +139,58 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   }
 
   @Override
-  public AstStatement visitExprMul(KSrcParser.ExprMulContext ctx) {
-    var lhs = (AstExpr) visit(ctx.children.get(0));
-    var rhs = (AstExpr) visit(ctx.children.get(2));
-    return new AstExprMul(SourceLocation.fromContext(ctx), lhs, rhs);
+  public AstExprInfixOp visitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx) {
+    var lhs = (AstExpr) visit(ctx.expression(0));
+    var rhs = (AstExpr) visit(ctx.expression(1));
+    var op = AstExprInfixOp.Token.fromAstToken(ctx.op.getType());
+    return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
   }
 
   @Override
-  public AstStatement visitExprSub(KSrcParser.ExprSubContext ctx) {
-    var lhs = (AstExpr) visit(ctx.children.get(0));
-    var rhs = (AstExpr) visit(ctx.children.get(2));
-    return new AstExprSub(SourceLocation.fromContext(ctx), lhs, rhs);
+  public AstNode visitExprAdditive(KSrcParser.ExprAdditiveContext ctx) {
+    var lhs = (AstExpr) visit(ctx.expression(0));
+    var rhs = (AstExpr) visit(ctx.expression(1));
+    var op = AstExprInfixOp.Token.fromAstToken(ctx.op.getType());
+    return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
   }
 
   @Override
-  public AstStatement visitExprAdd(KSrcParser.ExprAddContext ctx) {
-    var lhs = (AstExpr) visit(ctx.children.get(0));
-    var rhs = (AstExpr) visit(ctx.children.get(2));
-    return new AstExprAdd(SourceLocation.fromContext(ctx), lhs, rhs);
+  public AstNode visitExprEquality(KSrcParser.ExprEqualityContext ctx) {
+    var lhs = (AstExpr) visit(ctx.expression(0));
+    var rhs = (AstExpr) visit(ctx.expression(1));
+    var op = AstExprInfixOp.Token.fromAstToken(ctx.op.getType());
+    return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
+  }
+
+//  @Override
+//  public AstNode visitExprNot(KSrcParser.ExprNotContext ctx) {
+//    var lhs = (AstExpr) visit(ctx.expression(0));
+//    var rhs = (AstExpr) visit(ctx.expression(1));
+//    var op = AstExprInfixOp.Token.fromAstToken(ctx.op.getType());
+//    return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
+//  }
+
+  @Override
+  public AstNode visitExprLogicalOr(KSrcParser.ExprLogicalOrContext ctx) {
+    var lhs = (AstExpr) visit(ctx.expression(0));
+    var rhs = (AstExpr) visit(ctx.expression(1));
+    var op = AstExprInfixOp.Token.OR;
+    return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
   }
 
   @Override
-  public AstStatement visitExprEqual(KSrcParser.ExprEqualContext ctx) {
-    var lhs = (AstExpr) visit(ctx.children.get(0));
-    var rhs = (AstExpr) visit(ctx.children.get(2));
-    return new AstExprEqual(SourceLocation.fromContext(ctx), lhs, rhs);
+  public AstNode visitExprRelational(KSrcParser.ExprRelationalContext ctx) {
+    var lhs = (AstExpr) visit(ctx.expression(0));
+    var rhs = (AstExpr) visit(ctx.expression(1));
+    var op = AstExprInfixOp.Token.fromAstToken(ctx.op.getType());
+    return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
+  }
+
+  @Override
+  public AstNode visitStatementAssign(KSrcParser.StatementAssignContext ctx) {
+    var ident = visit(ctx.ident(), AstExprIdent.class);
+    var expression = visit(ctx.expression(), AstExpr.class);
+    return new AstAssignStatement(SourceLocation.fromContext(ctx), ident, expression);
   }
 
   @Override

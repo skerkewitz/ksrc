@@ -1,6 +1,5 @@
 # Fibonacci example
 fn fib(n:number): {
-
     if n == 0 {
         return 0
     }
@@ -13,17 +12,20 @@ fn fib(n:number): {
 }
 
 print("--- Fibonacci ---")
-print(fib(0)); print(fib(1)); print(fib(2)); print(fib(3)); print(fib(4)); print(fib(5))
-print(fib(6)); print(fib(7)); print(fib(8)); print(fib(9)); print(fib(10))
-
-# Factorial example
-fn fact(n:number): {
-    if n == 0 {
-        return 1
-    }
-
-    return n * fact(n-1)
+var i = 0
+while i < 10 {
+    print(i); print(" : "); print(fib(i)); println("")
+    i = i + 1
 }
 
-print("--- Factorial ---")
-print(fact(6)); print(fact(7)); print(fact(8)); print(fact(9)); print(fact(10))
+# Factorial example
+#fn fact(n:number): {
+#    if n == 0 {
+#        return 1
+#    }
+
+#   return n * fact(n-1)
+#}
+
+#print("--- Factorial ---")
+#print(fact(6)); print(fact(7)); print(fact(8)); print(fact(9)); print(fact(10))

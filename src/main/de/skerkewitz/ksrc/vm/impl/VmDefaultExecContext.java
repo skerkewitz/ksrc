@@ -44,6 +44,21 @@ public final class VmDefaultExecContext implements VmExecContext {
     }
 
   @Override
+  public void setSymbolToValue(String ident, Vm.Value value) {
+    if (this.symbolTable.containsKey(ident)) {
+      this.symbolTable.put(ident, value);
+      return;
+    }
+
+    if (parent != null) {
+      parent.setSymbolToValue(ident, value);
+      return;
+    }
+
+    throw new VmUnknownSymbol(ident);
+  }
+
+  @Override
   public Vm.Function getFuncByName(String name, FunctionSignature signature) {
     String fqn = name;
     var symbol = this.funcTable.get(fqn);

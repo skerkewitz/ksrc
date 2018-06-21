@@ -62,6 +62,13 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReturnStatement(KSrcParser.ReturnStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code StatementAssign}
+	 * labeled alternative in {@link KSrcParser#assign_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatementAssign(KSrcParser.StatementAssignContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code DeclarationConstant}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
@@ -95,40 +102,33 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInitializer(KSrcParser.InitializerContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprCall}
+	 * Visit a parse tree produced by the {@code ExprMultiplication}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprCall(KSrcParser.ExprCallContext ctx);
+	T visitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprValue}
+	 * Visit a parse tree produced by the {@code ExprNot}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprValue(KSrcParser.ExprValueContext ctx);
+	T visitExprNot(KSrcParser.ExprNotContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprSub}
+	 * Visit a parse tree produced by the {@code ExprLogicalOr}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprSub(KSrcParser.ExprSubContext ctx);
+	T visitExprLogicalOr(KSrcParser.ExprLogicalOrContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprMul}
+	 * Visit a parse tree produced by the {@code ExprRelational}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprMul(KSrcParser.ExprMulContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprEqual}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprEqual(KSrcParser.ExprEqualContext ctx);
+	T visitExprRelational(KSrcParser.ExprRelationalContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExprIdent}
 	 * labeled alternative in {@link KSrcParser#expression}.
@@ -137,19 +137,61 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprIdent(KSrcParser.ExprIdentContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprDiv}
+	 * Visit a parse tree produced by the {@code ExprAdditive}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprDiv(KSrcParser.ExprDivContext ctx);
+	T visitExprAdditive(KSrcParser.ExprAdditiveContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprAdd}
+	 * Visit a parse tree produced by the {@code ExprIdEqual}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprAdd(KSrcParser.ExprAddContext ctx);
+	T visitExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprCall}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprCall(KSrcParser.ExprCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPow(KSrcParser.ExprPowContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprValue}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprValue(KSrcParser.ExprValueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprUnaryMinus}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprEquality}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprEquality(KSrcParser.ExprEqualityContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprLogicalAnd}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprLogicalAnd(KSrcParser.ExprLogicalAndContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionCallArgumentList}
 	 * labeled alternative in {@link KSrcParser#arguments}.
@@ -170,11 +212,11 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdent(KSrcParser.IdentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link KSrcParser#initialValue}.
+	 * Visit a parse tree produced by {@link KSrcParser#value}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInitialValue(KSrcParser.InitialValueContext ctx);
+	T visitValue(KSrcParser.ValueContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionSignature}
 	 * labeled alternative in {@link KSrcParser#function_signature}.

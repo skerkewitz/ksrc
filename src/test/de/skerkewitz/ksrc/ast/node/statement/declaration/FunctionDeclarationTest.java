@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserForString;
+import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FunctionDeclaration {
+public class FunctionDeclarationTest {
 
   @Test
   void implicitVoidReturnTypeNoParams() throws IOException {
@@ -22,7 +22,7 @@ public class FunctionDeclaration {
             + " print(somevalue * 2)\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).statement();
+    ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
@@ -38,7 +38,7 @@ public class FunctionDeclaration {
             + " print(somevalue * 2)\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).statement();
+    ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
@@ -57,7 +57,7 @@ public class FunctionDeclaration {
             + " print(\"Hello world\")\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).statement();
+    ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
@@ -74,7 +74,7 @@ public class FunctionDeclaration {
             + "}\n";
 
 
-    ParseTree tree = parserForString(input).statement();
+    ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);

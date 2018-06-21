@@ -12,8 +12,11 @@ public class KsrcParserUtil {
   private KsrcParserUtil() {
   }
 
-  public static final KSrcParser parserForString(String s) throws IOException {
-    InputStream in = new ByteArrayInputStream(s.getBytes());
+  public static final KSrcParser parserFromString(String s) throws IOException {
+    return parserFromInputStream(new ByteArrayInputStream(s.getBytes()));
+  }
+
+  public static final KSrcParser parserFromInputStream(InputStream in) throws IOException {
     KSrcLexer lexer = new KSrcLexer(CharStreams.fromStream(in));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     return new KSrcParser(tokens);

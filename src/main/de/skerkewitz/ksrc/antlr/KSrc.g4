@@ -20,6 +20,7 @@ RPARENS:    ')';
 SEMICOLON:  ';';
 
 LINE_COMMENT : '#' ~[\r\n]* -> skip;
+BLOCK_COMMENT: '<!--' .*? '-->' -> skip;
 
 /// Statments
 statements
@@ -36,6 +37,7 @@ statement
     | if_statement
     | loop_statement
     | expression
+    | assign_statement
     ;
 
 if_statement
@@ -50,17 +52,22 @@ while_statement
     : WHILE condition code_block           #StatementWhile
     ;
 
-// The initialValue of the condition must be of type Bool
+// The initializer of the condition must be of type Bool
 condition
     : expression
     ;
 
 return_statement
-    : RETURN expression                     #ReturnStatement;
+    : RETURN expression                     #ReturnStatement
+    ;
+
+assign_statement
+    : ident ASSIGN expression                              #StatementAssign
+    ;
 
 declaration
-    : LET ident type_annotation? initializer        #DeclarationConstant
-    | VAR ident type_annotation? initializer?       #DeclarationVariable
+    : LET ident type_annotation? initializer            #DeclarationConstant
+    | VAR ident type_annotation? initializer?           #DeclarationVariable
 
     // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
     | FUNC ident function_signature ':' code_block  #FunctionDeclaration
@@ -69,25 +76,51 @@ declaration
 type_annotation: (':' typename);
 initializer: (ASSIGN expression);
 
+POW:    '^';
+MINUS:  '-';
+NOT:    '!';
+MULT:   '*';
+DIV:    '/';
+MOD:    '%';
+PLUS:   '+';
+
+LTEQ:   '=<';
+GTEQ:   '>=';
+LT:     '<';
+GT:     '>';
+EQ:     '==';
+IDEQ:   '===';
+NEQ:    '!=';
+
+AND:    'and';
+OR:     'or';
+
 expression
-    : ident                                 #ExprIdent
-    | initialValue                                 #ExprValue
 
-    // Binary operator expressions
-    | expression '*' expression                         #ExprMul
-    | expression '/' expression                         #ExprDiv
-    | expression '+' expression                         #ExprAdd
-    | expression '-' expression                         #ExprSub
-    | expression '==' expression                        #ExprEqual
+    // Binary operator expressions - Arimethric
+    : expression POW expression                         #ExprPow
+    | MINUS expression                                  #ExprUnaryMinus
+    | NOT expression                                    #ExprNot
+    | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
+    | expression op=(PLUS | MINUS) expression           #ExprAdditive
+    | expression op=(LTEQ | GTEQ | LT | GT) expression  #ExprRelational
+    | expression op=(EQ | NEQ) expression               #ExprEquality
+    | expression AND expression                         #ExprLogicalAnd
+    | expression OR expression                          #ExprLogicalOr
+    | expression IDEQ expression                        #ExprIdEqual
 
-    | NAME '(' arguments ')'                #ExprCall
+    | NAME '(' arguments ')'                            #ExprCall
+
+    // Atoms
+    | ident                                             #ExprIdent
+    | value                                             #ExprValue
     ;
 
 arguments: (expression (',' expression)*)?              #FunctionCallArgumentList;
 
 typename: NAME ;
 ident: NAME ;
-initialValue: NUMBER | STRING;
+value: NUMBER | STRING;
 
 
 function_signature

@@ -10,12 +10,12 @@ public class AstDeclarationVar extends AstStatement {
 
   public final AstExprIdent name;
   public final AstTypeIdentifier typeIdentifier;
-  public final AstExpr initialValue;
+  public final AstExpr initializer;
 
-  public AstDeclarationVar(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typeIdentifier, AstExpr initialValue) {
+  public AstDeclarationVar(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typeIdentifier, AstExpr initializer) {
     super(srcLoc);
     this.name = name;
     this.typeIdentifier = typeIdentifier;
-    this.initialValue = initialValue;
+    this.initializer = initializer;
   }
 }

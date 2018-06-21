@@ -112,6 +112,18 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatementAssign(KSrcParser.StatementAssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatementAssign(KSrcParser.StatementAssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDeclarationConstant(KSrcParser.DeclarationConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -172,61 +184,49 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprCall(KSrcParser.ExprCallContext ctx) { }
+	@Override public void enterExprMultiplication(KSrcParser.ExprMultiplicationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprCall(KSrcParser.ExprCallContext ctx) { }
+	@Override public void exitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprValue(KSrcParser.ExprValueContext ctx) { }
+	@Override public void enterExprNot(KSrcParser.ExprNotContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprValue(KSrcParser.ExprValueContext ctx) { }
+	@Override public void exitExprNot(KSrcParser.ExprNotContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprSub(KSrcParser.ExprSubContext ctx) { }
+	@Override public void enterExprLogicalOr(KSrcParser.ExprLogicalOrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprSub(KSrcParser.ExprSubContext ctx) { }
+	@Override public void exitExprLogicalOr(KSrcParser.ExprLogicalOrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprMul(KSrcParser.ExprMulContext ctx) { }
+	@Override public void enterExprRelational(KSrcParser.ExprRelationalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprMul(KSrcParser.ExprMulContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterExprEqual(KSrcParser.ExprEqualContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitExprEqual(KSrcParser.ExprEqualContext ctx) { }
+	@Override public void exitExprRelational(KSrcParser.ExprRelationalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -244,25 +244,97 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprDiv(KSrcParser.ExprDivContext ctx) { }
+	@Override public void enterExprAdditive(KSrcParser.ExprAdditiveContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprDiv(KSrcParser.ExprDivContext ctx) { }
+	@Override public void exitExprAdditive(KSrcParser.ExprAdditiveContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprAdd(KSrcParser.ExprAddContext ctx) { }
+	@Override public void enterExprIdEqual(KSrcParser.ExprIdEqualContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprAdd(KSrcParser.ExprAddContext ctx) { }
+	@Override public void exitExprIdEqual(KSrcParser.ExprIdEqualContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprCall(KSrcParser.ExprCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprCall(KSrcParser.ExprCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprPow(KSrcParser.ExprPowContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprPow(KSrcParser.ExprPowContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprValue(KSrcParser.ExprValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprValue(KSrcParser.ExprValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprEquality(KSrcParser.ExprEqualityContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprEquality(KSrcParser.ExprEqualityContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprLogicalAnd(KSrcParser.ExprLogicalAndContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprLogicalAnd(KSrcParser.ExprLogicalAndContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -304,13 +376,13 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInitialValue(KSrcParser.InitialValueContext ctx) { }
+	@Override public void enterValue(KSrcParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInitialValue(KSrcParser.InitialValueContext ctx) { }
+	@Override public void exitValue(KSrcParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

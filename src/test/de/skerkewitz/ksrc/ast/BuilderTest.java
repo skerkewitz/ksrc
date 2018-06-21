@@ -1,20 +1,13 @@
 package de.skerkewitz.ksrc.ast;
 
-import de.skerkewitz.ksrc.antlr.KSrcLexer;
-import de.skerkewitz.ksrc.antlr.KSrcParser;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserForString;
+import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromString;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BuilderTest {
@@ -24,7 +17,7 @@ class BuilderTest {
 
     var input = "myPrint(2, 6)\n";
 
-    ParseTree tree = parserForString(input).expression();
+    ParseTree tree = parserFromString(input).expression();
     var sut = (AstExprFunctionCall) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.fnName);

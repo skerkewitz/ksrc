@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserForString;
+import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -20,13 +20,13 @@ public class DeclarationVariableTest {
 
     var input = "var a \n";
 
-    ParseTree tree = parserForString(input).declaration();
+    ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     //assertEquals("myPrint", sut.condition.type == Type.BOOL);
     assertEquals("a", sut.name.ident);
     assertNull(sut.typeIdentifier);
-    assertNull(sut.initialValue);
+    assertNull(sut.initializer);
   }
 
   @Test
@@ -34,12 +34,12 @@ public class DeclarationVariableTest {
 
     var input = "var a = 5\n";
 
-    ParseTree tree = parserForString(input).declaration();
+    ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertNull(sut.typeIdentifier);
-    assertNotNull(sut.initialValue);
+    assertNotNull(sut.initializer);
   }
 
   @Test
@@ -47,12 +47,12 @@ public class DeclarationVariableTest {
 
     var input = "var a: number = 5\n";
 
-    ParseTree tree = parserForString(input).declaration();
+    ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertEquals(Type.NUMBER, sut.typeIdentifier.type());
-    assertNotNull(sut.initialValue);
+    assertNotNull(sut.initializer);
   }
 
 }

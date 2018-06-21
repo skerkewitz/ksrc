@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserForString;
+import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WhileStatement {
+public class WhileStatementTest {
 
   @Test
   void whileStatement() throws IOException {
@@ -20,7 +20,7 @@ public class WhileStatement {
             + " print(somevalue * 2)\n"
             + "}\n";
 
-    ParseTree tree = parserForString(input).while_statement();
+    ParseTree tree = parserFromString(input).while_statement();
     var sut = (AstStatementWhile) new Builder().visit(tree);
 
     //assertEquals("myPrint", sut.condition.type == Type.BOOL);

@@ -7,6 +7,7 @@ public interface VmExecContext {
 
   Vm.Value getSymbolByName(String name);
   void declareSymbol(String name, Vm.Value value);
+  void setSymbolToValue(String ident, Vm.Value value);
 
   Vm.Function getFuncByName(String name, FunctionSignature signature);
   void declareFunc(Vm.Function func);
@@ -14,6 +15,8 @@ public interface VmExecContext {
   boolean shouldLeaveFrame();
 
   void markLeaveFrame();
+
+
 
   class VmUnknownSymbol extends RuntimeException {
     private final String name;

@@ -2,31 +2,22 @@ package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.*;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprAdd;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprEqual;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprMul;
-import de.skerkewitz.ksrc.ast.nodes.expr.binop.AstExprSub;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementIf;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementReturn;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
+import de.skerkewitz.ksrc.ast.nodes.expr.*;
+import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Quick and dirty default implementation of the ksrc {@link Vm}
  */
 public class DefaultVm implements Vm {
+
+  private static int stackdepth = 1;
 
   @Override
   public final Value eval(AstExpr expression, VmExecContext vmExecContext) {
@@ -43,29 +34,27 @@ public class DefaultVm implements Vm {
         default: return VmValueVoid.shared;
       }
     }
-    else if (expression instanceof AstExprMul) {
-      final AstExprMul exprMul = (AstExprMul) expression;
-      Double lhs = eval(exprMul.lhs, vmExecContext).num();
-      Double rhs = eval(exprMul.rhs, vmExecContext).num();
-      return new VmValueNumber(lhs * rhs);
-    }
-    else if (expression instanceof AstExprSub) {
-      final AstExprSub exprSub = (AstExprSub) expression;
-      Double lhs = eval(exprSub.lhs, vmExecContext).num();
-      Double rhs = eval(exprSub.rhs, vmExecContext).num();
-      return new VmValueNumber(lhs - rhs);
-    }
-    else if (expression instanceof AstExprAdd) {
-      final AstExprAdd exprSub = (AstExprAdd) expression;
-      Double lhs = eval(exprSub.lhs, vmExecContext).num();
-      Double rhs = eval(exprSub.rhs, vmExecContext).num();
-      return new VmValueNumber(lhs + rhs);
-    }
-    else if (expression instanceof AstExprEqual) {
-      final AstExprEqual exprSub = (AstExprEqual) expression;
-      Value lhs = eval(exprSub.lhs, vmExecContext);
-      Value rhs = eval(exprSub.rhs, vmExecContext);
-      return lhs.eq(rhs) ? new VmValueNumber(1.0) : new VmValueNumber(0.0);
+    else if (expression instanceof AstExprInfixOp) {
+      final AstExprInfixOp infixOp = (AstExprInfixOp) expression;
+      Value lhs = eval(infixOp.lhs, vmExecContext);
+      Value rhs = eval(infixOp.rhs, vmExecContext);
+      switch (infixOp.op) {
+        case POW: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
+        case MINUS: return new VmValueNumber(lhs.num() - rhs.num());
+        case MULT: return new VmValueNumber(lhs.num() * rhs.num());
+        case DIV: return new VmValueNumber(lhs.num() / rhs.num());
+        case MOD: return new VmValueNumber(lhs.num() % rhs.num());
+        case PLUS: return new VmValueNumber(lhs.num() + rhs.num());
+        case LTEQ: return new VmValueNumber(lhs.num() <= rhs.num() ? 1.0 : 0.0);
+        case GTEQ: return new VmValueNumber(lhs.num() >= rhs.num() ? 1.0 : 0.0);
+        case LT: return new VmValueNumber(lhs.num() < rhs.num() ? 1.0 : 0.0);
+        case GT: return new VmValueNumber(lhs.num() > rhs.num() ? 1.0 : 0.0);
+        case EQ: return new VmValueNumber(lhs.eq(rhs) ? 1.0 : 0.0);
+        case IDEQ: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
+        case NEQ: return new VmValueNumber(!lhs.eq(rhs) ? 1.0 : 0.0);
+        case AND: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
+        case OR: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
+      }
     }
     else if (expression instanceof AstExprIdent) {
       final AstExprIdent exprIdent = (AstExprIdent) expression;
@@ -85,6 +74,8 @@ public class DefaultVm implements Vm {
           var vmFuncRef = (FunctionRef) stmts;
 
           /* Create a new VmExeContext for the function call. And resolve parameter. */
+          DefaultVm.stackdepth += 1;
+//          System.out.print("" + DefaultVm.stackdepth + ", ");
           var localVmExecContext = new VmDefaultExecContext(vmExecContext);
           int i = 0;
           for (var pIdent : vmFuncRef.funcRef.signature.params) {
@@ -92,7 +83,9 @@ public class DefaultVm implements Vm {
             i += 1;
           }
 
-          return exec(vmFuncRef.funcRef.body, localVmExecContext);
+          Value exec = exec(vmFuncRef.funcRef.body, localVmExecContext);
+          DefaultVm.stackdepth -= 1;
+          return exec;
         }
 
         var vmFuncBuildIn = (FunctionBuildInRef) stmts;
@@ -139,8 +132,14 @@ public class DefaultVm implements Vm {
     }
     else if (statement instanceof AstDeclarationLet) {
       final var astStmtDeclLet = (AstDeclarationLet) statement;
-      var value = eval(astStmtDeclLet.value, vmExecContext);
+      var value = eval(astStmtDeclLet.initializer, vmExecContext);
       vmExecContext.declareSymbol(astStmtDeclLet.name.ident, value);
+      return value;
+    }
+    else if (statement instanceof AstDeclarationVar) {
+      final var astDeclarationVar = (AstDeclarationVar) statement;
+      var value = eval(astDeclarationVar.initializer, vmExecContext);
+      vmExecContext.declareSymbol(astDeclarationVar.name.ident, value);
       return value;
     }
     else if (statement instanceof AstDeclarationFunction) {
@@ -164,9 +163,27 @@ public class DefaultVm implements Vm {
 
       return VmValueVoid.shared;
     }
+    else if (statement instanceof AstStatementWhile) {
+      final var statementWhile = (AstStatementWhile) statement;
+      var value = eval(statementWhile.condition, vmExecContext);
+      while (value.num() != 0) {
+        exec(statementWhile.body, vmExecContext);
+        value = eval(statementWhile.condition, vmExecContext);
+      }
+
+      return VmValueVoid.shared;
+    }
+    else if (statement instanceof AstAssignStatement) {
+      final var assignStatement = (AstAssignStatement) statement;
+      var value = eval(assignStatement.expression, vmExecContext);
+      vmExecContext.setSymbolToValue(assignStatement.ident.ident, value);
+      return VmValueVoid.shared;
+    }
 
     throw new UnknownStatement(statement);
   }
+
+
 
   private class UnknownExpression extends RuntimeException {
     public final AstExpr expression;
