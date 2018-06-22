@@ -26,6 +26,9 @@ public interface Vm {
 
     /** Returns true if this initializer equals the other initializer. */
     boolean eq(Value rhs);
+
+    /** Create a new value "this + other" */
+    Value add (Value other);
   }
 
   class Function {

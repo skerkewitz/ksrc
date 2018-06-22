@@ -3,6 +3,27 @@ grammar KSrc;
 
 //fragment NEWLINE: '\n';
 
+//tokens { INDENT, DEDENT }
+//
+//@lexer::header {
+//  import denter.DenterHelper;
+//}
+//
+//@lexer::members {
+//  private final DenterHelper denter = DenterHelper.builder()
+//        .nl(NL)
+//        .indent(KSrcParser.INDENT)
+//        .dedent(KSrcParser.DEDENT)
+//        .pullToken(KSrcLexer.super::nextToken);
+//
+//  @Override
+//  public Token nextToken() {
+//    return denter.nextToken();
+//  }
+//}
+//
+//NL: ('\r'? '\n' ' '*);
+
 file_input: statements* EOF;
 
 // Keywords
@@ -70,7 +91,7 @@ declaration
     | VAR ident type_annotation? initializer?           #DeclarationVariable
 
     // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
-    | FUNC ident function_signature ':' code_block  #FunctionDeclaration
+    | FUNC ident function_signature code_block  #FunctionDeclaration
     ;
 
 type_annotation: (':' typename);
@@ -124,7 +145,7 @@ value: NUMBER | STRING;
 
 
 function_signature
-    : (LPARENS function_parameters RPARENS)? (':' function_result)?   #FunctionSignature
+    : (LPARENS function_parameters RPARENS)? ('->' function_result)?   #FunctionSignature
     ;
 
 function_result:
@@ -142,7 +163,9 @@ function_parameter
 
 
 code_block
-    : '{' (statements)* '}'                             #CodeBlock;
+//    : '{' (statements)* '}'                             #CodeBlock;
+//    : INDENT (statements)* DEDENT                             #CodeBlock;
+    : ':' (statements)* 'end'                             #CodeBlock;
 
 
 

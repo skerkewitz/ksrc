@@ -30,4 +30,9 @@ public class VmValueNumber implements Vm.Value {
   public boolean eq(Vm.Value rhs) {
     return Math.abs(value - rhs.num()) < 0.00001;
   }
+
+  @Override
+  public Vm.Value add(Vm.Value other) {
+    return new VmValueNumber(num() + other.num());
+  }
 }

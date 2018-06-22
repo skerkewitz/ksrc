@@ -26,4 +26,9 @@ public class VmValueVoid implements Vm.Value {
   public boolean eq(Vm.Value rhs) {
     return false;
   }
+
+  @Override
+  public Vm.Value add(Vm.Value other) {
+    return VmValueVoid.shared;
+  }
 }

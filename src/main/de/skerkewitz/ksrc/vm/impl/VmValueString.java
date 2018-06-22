@@ -30,4 +30,9 @@ public class VmValueString implements Vm.Value {
   public boolean eq(Vm.Value rhs) {
     return value.equals(rhs.str());
   }
+
+  @Override
+  public Vm.Value add(Vm.Value other) {
+    return new VmValueString(str() + other.str());
+  }
 }

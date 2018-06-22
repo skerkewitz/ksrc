@@ -44,7 +44,7 @@ public class DefaultVm implements Vm {
         case MULT: return new VmValueNumber(lhs.num() * rhs.num());
         case DIV: return new VmValueNumber(lhs.num() / rhs.num());
         case MOD: return new VmValueNumber(lhs.num() % rhs.num());
-        case PLUS: return new VmValueNumber(lhs.num() + rhs.num());
+        case PLUS: return lhs.add(rhs);
         case LTEQ: return new VmValueNumber(lhs.num() <= rhs.num() ? 1.0 : 0.0);
         case GTEQ: return new VmValueNumber(lhs.num() >= rhs.num() ? 1.0 : 0.0);
         case LT: return new VmValueNumber(lhs.num() < rhs.num() ? 1.0 : 0.0);
