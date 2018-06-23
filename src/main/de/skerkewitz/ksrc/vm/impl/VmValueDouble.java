@@ -3,17 +3,10 @@ package de.skerkewitz.ksrc.vm.impl;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
 
-public class VmValueDouble implements Vm.Value {
-
-  private final Double value;
+public class VmValueDouble extends AbstractVmValue<Double> {
 
   public VmValueDouble(Double value) {
-    this.value = value;
-  }
-
-  @Override
-  public Type type() {
-    return Type.DOUBLE;
+    super(value, Type.DOUBLE);
   }
 
   @Override
@@ -32,6 +25,11 @@ public class VmValueDouble implements Vm.Value {
   }
 
   @Override
+  public Boolean bool_value() {
+    return !eq(new VmValueDouble(0.0));
+  }
+
+  @Override
   public boolean eq(Vm.Value rhs) {
     return Math.abs(value - rhs.double_value()) < 0.00001;
   }
@@ -39,5 +37,6 @@ public class VmValueDouble implements Vm.Value {
   @Override
   public Vm.Value add(Vm.Value other) {
     return new VmValueDouble(double_value() + other.double_value());
+
   }
 }

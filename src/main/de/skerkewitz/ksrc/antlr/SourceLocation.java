@@ -3,7 +3,7 @@ package de.skerkewitz.ksrc.antlr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
-/** Used to reference the source location of a statement. */
+/** Used to reference the source location of a thenStatement. */
 public class SourceLocation {
 
   private final Token start;

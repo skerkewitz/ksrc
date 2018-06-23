@@ -55,4 +55,16 @@ public class DeclarationVariableTest {
     assertNotNull(sut.initializer);
   }
 
+  @Test
+  void withTypeNoInitializer() throws IOException {
+
+    var input = "var a: int\n";
+
+    ParseTree tree = parserFromString(input).declaration();
+    var sut = (AstDeclarationVar) new Builder().visit(tree);
+
+    assertEquals("a", sut.name.ident);
+    assertEquals(Type.INT, sut.typeIdentifier.type());
+    assertNull(sut.initializer);
+  }
 }

@@ -3,13 +3,12 @@ package de.skerkewitz.ksrc.vm.impl;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
 
-public class VmValueVoid implements Vm.Value {
+public class VmValueVoid extends AbstractVmValue<Void> {
 
-  public final static VmValueVoid shared = new VmValueVoid();
+  public final static VmValueVoid shared = new VmValueVoid(null);
 
-  @Override
-  public Type type() {
-    return Type.VOID;
+  public VmValueVoid(Void value) {
+    super(value, Type.VOID);
   }
 
   @Override
@@ -31,7 +30,7 @@ public class VmValueVoid implements Vm.Value {
   }
 
   @Override
-  public Vm.Value add(Vm.Value other) {
-    return VmValueVoid.shared;
+  public Boolean bool_value() {
+    return null;
   }
 }

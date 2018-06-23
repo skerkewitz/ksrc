@@ -9,11 +9,33 @@ import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.*;
 
 import java.io.IOException;
 
 public class Main {
+
+  public static class W implements ParseTreeVisitor {
+    @Override
+    public Object visit(ParseTree tree) {
+      return null;
+    }
+
+    @Override
+    public Object visitChildren(RuleNode node) {
+      return null;
+    }
+
+    @Override
+    public Object visitTerminal(TerminalNode node) {
+      return null;
+    }
+
+    @Override
+    public Object visitErrorNode(ErrorNode node) {
+      return null;
+    }
+  }
 
 
   public static void main(String[] args) throws IOException {
@@ -25,6 +47,11 @@ public class Main {
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     KSrcParser parser = new KSrcParser(tokens);
     ParseTree tree = parser.file_input();
+
+//
+//  ParseTreeWalker.DEFAULT.walk(null, tree);
+    String s = ((KSrcParser.File_inputContext) tree).toStringTree(parser);
+    System.out.println(s);
 
     /* Build AST tree. */
     AstStatement rootStatement = (AstStatement) new Builder().visit(tree);

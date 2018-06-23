@@ -436,6 +436,18 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatements_list(KSrcParser.Statements_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatements_list(KSrcParser.Statements_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCodeBlock(KSrcParser.CodeBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}

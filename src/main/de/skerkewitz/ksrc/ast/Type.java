@@ -1,11 +1,21 @@
 package de.skerkewitz.ksrc.ast;
 
 import de.skerkewitz.ksrc.antlr.KSrcParser;
+import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.impl.VmValueDouble;
+import de.skerkewitz.ksrc.vm.impl.VmValueInt;
+import de.skerkewitz.ksrc.vm.impl.VmValueString;
 import org.antlr.v4.runtime.Token;
 
 public enum Type {
 
-  VOID, INT, DOUBLE, STRING, ANY_REF, FUNCTION;
+  VOID(null), BOOL(new VmValueInt(0)), INT(new VmValueInt(0)), DOUBLE(new VmValueDouble(0.0)), STRING(new VmValueString("")), ANY_REF(null), FUNCTION(null);
+
+  public final Vm.Value default_init_value;
+
+  Type(Vm.Value default_init_value) {
+    this.default_init_value = default_init_value;
+  }
 
   public static Type fromToken(Token token) {
     /* Determine type. */

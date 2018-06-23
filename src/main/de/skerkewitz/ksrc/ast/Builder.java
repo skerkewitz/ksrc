@@ -41,13 +41,9 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   @Override
   public AstStatements visitFile_input(KSrcParser.File_inputContext ctx) {
 
-    var statements = ctx.statements()
-            .stream()
-            .map(c -> visit(c, AstStatements.class))
-            .flatMap(astStatements -> astStatements.statements.stream())
-            .collect(Collectors.toList());
-
-    return new AstStatements(SourceLocation.fromContext(ctx), statements);
+    var statements = visit(ctx.statements_list(), AstStatements.class);
+//    return new AstStatements(SourceLocation.fromContext(ctx), statements);
+    return statements;
   }
 
 
@@ -100,7 +96,11 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstStatement visitCodeBlock(KSrcParser.CodeBlockContext ctx) {
+    return visit(ctx.statements_list(), AstStatements.class);
+  }
 
+  @Override
+  public AstNode visitStatements_list(KSrcParser.Statements_listContext ctx) {
     var statements = ctx.statements()
             .stream()
             .map(c -> visit(c, AstStatements.class))
@@ -113,8 +113,9 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   @Override
   public AstStatementIf visitIfStatement(KSrcParser.IfStatementContext ctx) {
     var condition = visit(ctx.condition(), AstExpr.class);
-    var statements = visit(ctx.code_block(), AstStatements.class);
-    return new AstStatementIf(SourceLocation.fromContext(ctx), condition, statements);
+    var thenStatements = visit(ctx.thenBlock, AstStatements.class);
+    var elseStatements = visit(ctx.elseBlock, AstStatements.class);
+    return new AstStatementIf(SourceLocation.fromContext(ctx), condition, thenStatements, elseStatements);
   }
 
   @Override

@@ -245,6 +245,12 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionParameter(KSrcParser.FunctionParameterContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link KSrcParser#statements_list}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatements_list(KSrcParser.Statements_listContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code CodeBlock}
 	 * labeled alternative in {@link KSrcParser#code_block}.
 	 * @param ctx the parse tree

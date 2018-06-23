@@ -262,6 +262,13 @@ public class KSrcBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements K
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitStatements_list(KSrcParser.Statements_listContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitCodeBlock(KSrcParser.CodeBlockContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

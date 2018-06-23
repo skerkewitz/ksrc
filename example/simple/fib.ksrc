@@ -4,7 +4,7 @@ fn factorial(n:int) -> int:
         return 1
     end
 
-    return n * factorial(n-1)
+    return n * factorial(n - 1)
 end
 
 
@@ -18,7 +18,7 @@ fn fib(n:int) -> int:
         return 1
     end
 
-    return fib(n-1) + fib(n-2) # Compute fib
+    return fib(n - 1) + fib(n - 2) # Compute fib
 end
 
 println("--- Fibonacci ---")

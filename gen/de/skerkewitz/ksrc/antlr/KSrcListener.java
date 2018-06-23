@@ -406,6 +406,16 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitFunctionParameter(KSrcParser.FunctionParameterContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KSrcParser#statements_list}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatements_list(KSrcParser.Statements_listContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#statements_list}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatements_list(KSrcParser.Statements_listContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code CodeBlock}
 	 * labeled alternative in {@link KSrcParser#code_block}.
 	 * @param ctx the parse tree

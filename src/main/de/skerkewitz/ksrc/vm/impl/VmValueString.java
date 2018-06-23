@@ -3,17 +3,10 @@ package de.skerkewitz.ksrc.vm.impl;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
 
-public class VmValueString implements Vm.Value {
-
-  private final String value;
+public class VmValueString extends AbstractVmValue<String> {
 
   public VmValueString(String value) {
-    this.value = value;
-  }
-
-  @Override
-  public Type type() {
-    return Type.STRING;
+    super(value, Type.STRING);
   }
 
   @Override
@@ -29,6 +22,11 @@ public class VmValueString implements Vm.Value {
   @Override
   public Integer int_value() {
     return VmUtils.integerFromString(value);
+  }
+
+  @Override
+  public Boolean bool_value() {
+    return !value.isEmpty();
   }
 
   @Override

@@ -27,6 +27,9 @@ public interface Vm {
     /** The number representation of the initializer. */
     Integer int_value();
 
+    /** The number representation of the initializer. */
+    Boolean bool_value();
+
     /** Returns true if this initializer equals the other initializer. */
     boolean eq(Value rhs);
 
@@ -91,7 +94,7 @@ public interface Vm {
 
 
   /**
-   * Execute the given statement.
+   * Execute the given thenStatement.
    *
    * @param statement the {@link AstStatement} to execute.
    * @return

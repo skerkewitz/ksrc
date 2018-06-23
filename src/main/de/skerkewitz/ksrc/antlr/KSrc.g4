@@ -1,7 +1,7 @@
 // Define a grammar called Hello
 grammar KSrc;
 
-file_input: statements* EOF;
+file_input: statements_list EOF;
 
 // Keywords
 LET:    'let';
@@ -12,6 +12,9 @@ RETURN: 'return';
 WHILE: 'while';
 
 ASSIGN: '=';
+
+ELSE: 'else:';
+END: 'end';
 
 LPARENS:    '(';
 RPARENS:    ')';
@@ -39,13 +42,14 @@ statement
     ;
 
 if_statement
-    : IF condition code_block              #IfStatement;
+    //: IF condition code_block              #IfStatement;
+    : IF condition ':' thenBlock=statements_list (ELSE elseBlock=statements_list)? END #IfStatement;
 
 loop_statement
     : while_statement
     ;
 
-// A while statement allows a block of code to be executed repeatedly, as long as a condition remains true.
+// A while thenStatement allows a block of code to be executed repeatedly, as long as a condition remains true.
 while_statement
     : WHILE condition code_block           #StatementWhile
     ;
@@ -137,13 +141,12 @@ function_parameter
     : ident ':' typename                                #FunctionParameter
     ;
 
-
+statements_list
+    : statements*
+    ;
 
 code_block
-//    : '{' (statements)* '}'                             #CodeBlock;
-//    : INDENT (statements)* DEDENT                             #CodeBlock;
-    : ':' (statements)* 'end'                             #CodeBlock;
-
+    : ':' statements_list 'end'                             #CodeBlock;
 
 numeric_literal
     : DECIMAL_INTEGER #LiteralInteger
@@ -177,6 +180,7 @@ NAME: ID_START ID_CONTINUE*;
 /// id_start     ::=  <all characters in general categories Lu, Ll, Lt, Lm, Lo, Nl, the underscore, and characters with the Other_ID_Start property>
 fragment ID_START
     : '_'
+    | '-'
     | [A-Z]
     | [a-z]
     ;

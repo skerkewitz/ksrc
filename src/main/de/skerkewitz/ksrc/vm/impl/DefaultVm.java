@@ -50,15 +50,20 @@ public class DefaultVm implements Vm {
         }
         case MULT: return new VmValueDouble(lhs.double_value() * rhs.double_value());
         case DIV: return new VmValueDouble(lhs.double_value() / rhs.double_value());
-        case MOD: return new VmValueDouble(lhs.double_value() % rhs.double_value());
+        case MOD: {
+          switch (lhs.type()) {
+            case INT: return new VmValueInt(lhs.int_value() % rhs.int_value());
+            default: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented for type " + lhs.type());
+          }
+        }
         case PLUS: return lhs.add(rhs);
         case LTEQ: return new VmValueDouble(lhs.double_value() <= rhs.double_value() ? 1.0 : 0.0);
         case GTEQ: return new VmValueDouble(lhs.double_value() >= rhs.double_value() ? 1.0 : 0.0);
         case LT: return new VmValueDouble(lhs.double_value() < rhs.double_value() ? 1.0 : 0.0);
         case GT: return new VmValueDouble(lhs.double_value() > rhs.double_value() ? 1.0 : 0.0);
-        case EQ: return new VmValueDouble(lhs.eq(rhs) ? 1.0 : 0.0);
+        case EQ: return new VmValueBool(lhs.eq(rhs));
         case IDEQ: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
-        case NEQ: return new VmValueDouble(!lhs.eq(rhs) ? 1.0 : 0.0);
+        case NEQ: return new VmValueBool(!lhs.eq(rhs));
         case AND: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
         case OR: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
       }
@@ -109,7 +114,7 @@ public class DefaultVm implements Vm {
   public Value exec(AstStatement statement, VmExecContext vmExecContext) {
 
     if (statement == null) {
-      throw new IllegalArgumentException("statement can not be null");
+      throw new IllegalArgumentException("thenStatement can not be null");
     }
 
     if (statement instanceof AstExpr) {
@@ -145,7 +150,12 @@ public class DefaultVm implements Vm {
     }
     else if (statement instanceof AstDeclarationVar) {
       final var astDeclarationVar = (AstDeclarationVar) statement;
-      var value = eval(astDeclarationVar.initializer, vmExecContext);
+      Value value;
+      if (astDeclarationVar.initializer == null) {
+        value = astDeclarationVar.typeIdentifier.type().default_init_value;
+      } else {
+        value = eval(astDeclarationVar.initializer, vmExecContext);
+      }
       vmExecContext.declareSymbol(astDeclarationVar.name.ident, value);
       return value;
     }
@@ -164,8 +174,10 @@ public class DefaultVm implements Vm {
     else if (statement instanceof AstStatementIf) {
       final var stmtDeclIf = (AstStatementIf) statement;
       var value = eval(stmtDeclIf.condition, vmExecContext);
-      if (value.double_value() != 0) {
-        return exec(stmtDeclIf.statement, vmExecContext);
+      if (value.bool_value()) {
+        return exec(stmtDeclIf.thenStatement, vmExecContext);
+      } else if (stmtDeclIf.elseStatement != null) {
+        return exec(stmtDeclIf.elseStatement, vmExecContext);
       }
 
       return VmValueVoid.shared;
@@ -173,7 +185,7 @@ public class DefaultVm implements Vm {
     else if (statement instanceof AstStatementWhile) {
       final var statementWhile = (AstStatementWhile) statement;
       var value = eval(statementWhile.condition, vmExecContext);
-      while (value.double_value() != 0) {
+      while (value.bool_value()) {
         exec(statementWhile.body, vmExecContext);
         value = eval(statementWhile.condition, vmExecContext);
       }
@@ -217,7 +229,7 @@ public class DefaultVm implements Vm {
     @Override
     public String toString() {
       return "UnknownStatement{" +
-              "statement=" + statement +
+              "thenStatement=" + statement +
               '}';
     }
   }

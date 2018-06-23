@@ -1,0 +1,21 @@
+fn is-divisible(number:int, divisor: int) -> bool:
+    return number % divisor == 0
+end
+
+fn is-even(number: int) -> bool:
+    return is-divisible(number, 2)
+end
+
+println("--- Odd/Even ---")
+var i = 0
+var odd-or-even: string
+while i < 10:
+    if is-even(i):
+        odd-or-even = "even"
+    else:
+        odd-or-even = "odd"
+    end
+
+    println("The number " + i + " is " + odd-or-even)
+    i = i + 1
+end
