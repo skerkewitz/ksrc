@@ -1,0 +1,93 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+name: KSrc
+file_extensions: [ksrc]
+scope: source
+variables:
+  ident: '[A-Za-z_][A-Za-z_0-9-]*'
+contexts:
+  main:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character
+    - match: '"'
+      scope: punctuation.definition.string.begin.ksrc
+      push: double_quoted_string
+
+    # Comments begin with a '//' and finish at the end of the line
+    - match: '#'
+      scope: punctuation.definition.comment.ksrc
+      push: line_comment
+
+    # Multiline comments begin with a '<!--' and finish with a '-->'
+    - match: '<!--'
+      scope: punctuation.definition.multiline.comment.ksrc
+      push: multiline_comment
+
+    # Keywords
+    - match: '\b(for|while|end|return)\b'
+      scope: keyword.control
+
+    - match: '\b(if|else)\b'
+      scope: keyword.control.conditional
+
+    - match: '\b(and|or|not)\b'
+      scope: keyword.operator.word
+
+    - match: '=='
+      scope: keyword.operator
+
+    # Typenames
+    - match: '\b(int|string|bool)\b'
+      scope: storage.type
+
+    # Declaration var and let
+    - match: '\b(var)\b'
+      scope: keyword.control.ksrc    
+      push: ident_name
+
+    # Declaration let
+    - match: '\b(let)\b'
+      scope: keyword.control.ksrc    
+      set:
+        - match: \b{{ident}}\b
+          scope: entity.name.constant
+          pop: true
+
+    # Declaration fn
+    - match: '\b(fn)\b'
+      scope: keyword.control.ksrc    
+      push: function_name
+
+    # Numbers
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.ksrc
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.ksrc
+    - match: '\\.'
+      scope: constant.character.escape.ksrc
+    - match: '"'
+      scope: punctuation.definition.string.end.ksrc
+      pop: true
+
+  line_comment:
+    - meta_scope: comment.line.ksrc
+    - match: $
+      pop: true
+
+  multiline_comment:
+    - meta_scope: comment.line.ksrc
+    - match: '-->'
+      pop: true
+
+  ident_name:
+    - match: \b{{ident}}\b
+      scope: variable
+      pop: true
+
+  function_name:
+    - match: \b{{ident}}\b
+      scope: entity.name.function
+      pop: true
+
