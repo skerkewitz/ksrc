@@ -19,10 +19,13 @@ public interface Vm {
     Type type();
 
     /** The string representation of the initializer. */
-    String str();
+    String string_value();
 
     /** The number representation of the initializer. */
-    Double num();
+    Double double_value();
+
+    /** The number representation of the initializer. */
+    Integer int_value();
 
     /** Returns true if this initializer equals the other initializer. */
     boolean eq(Value rhs);

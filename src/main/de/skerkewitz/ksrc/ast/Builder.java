@@ -218,15 +218,19 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   }
 
   @Override
-  public AstStatement visitExprValue(KSrcParser.ExprValueContext ctx) {
-    var type = Type.fromToken(ctx.start);
-    String value;
+  public AstNode visitLiteralInteger(KSrcParser.LiteralIntegerContext ctx) {
+    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), Type.INT);
+  }
+
+  @Override
+  public AstNode visitLiteralFloat(KSrcParser.LiteralFloatContext ctx) {
+    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), Type.DOUBLE);
+  }
+
+  @Override
+  public AstNode visitString_literal(KSrcParser.String_literalContext ctx) {
     String text = ctx.getText();
-    if (type == Type.STRING) {
-      value = text.substring(1, text.length() - 1);
-    } else {
-      value = text;
-    }
-    return new AstExprValue(SourceLocation.fromContext(ctx), value, type);
+    String value = text.substring(1, text.length() - 1);
+    return new AstExprValue(SourceLocation.fromContext(ctx), value, Type.STRING);
   }
 }

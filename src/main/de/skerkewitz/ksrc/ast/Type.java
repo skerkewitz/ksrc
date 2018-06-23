@@ -5,13 +5,14 @@ import org.antlr.v4.runtime.Token;
 
 public enum Type {
 
-  VOID, NUMBER, STRING, FUNCTION;
+  VOID, INT, DOUBLE, STRING, ANY_REF, FUNCTION;
 
   public static Type fromToken(Token token) {
     /* Determine type. */
     switch (token.getType()) {
       case KSrcParser.STRING: return STRING;
-      case KSrcParser.NUMBER: return NUMBER;
+      case KSrcParser.DECIMAL_INTEGER: return INT;
+      case KSrcParser.FLOAT_LITERAL: return DOUBLE;
       default: return VOID;
     }
   }

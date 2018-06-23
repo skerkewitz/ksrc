@@ -1,29 +1,6 @@
 // Define a grammar called Hello
 grammar KSrc;
 
-//fragment NEWLINE: '\n';
-
-//tokens { INDENT, DEDENT }
-//
-//@lexer::header {
-//  import denter.DenterHelper;
-//}
-//
-//@lexer::members {
-//  private final DenterHelper denter = DenterHelper.builder()
-//        .nl(NL)
-//        .indent(KSrcParser.INDENT)
-//        .dedent(KSrcParser.DEDENT)
-//        .pullToken(KSrcLexer.super::nextToken);
-//
-//  @Override
-//  public Token nextToken() {
-//    return denter.nextToken();
-//  }
-//}
-//
-//NL: ('\r'? '\n' ' '*);
-
 file_input: statements* EOF;
 
 // Keywords
@@ -120,6 +97,7 @@ expression
 
     // Binary operator expressions - Arimethric
     : expression POW expression                         #ExprPow
+    | value                                             #ExprValue
     | MINUS expression                                  #ExprUnaryMinus
     | NOT expression                                    #ExprNot
     | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
@@ -131,17 +109,16 @@ expression
     | expression IDEQ expression                        #ExprIdEqual
 
     | NAME '(' arguments ')'                            #ExprCall
-
     // Atoms
     | ident                                             #ExprIdent
-    | value                                             #ExprValue
+
     ;
 
 arguments: (expression (',' expression)*)?              #FunctionCallArgumentList;
 
 typename: NAME ;
 ident: NAME ;
-value: NUMBER | STRING;
+value: numeric_literal | string_literal;
 
 
 function_signature
@@ -168,17 +145,17 @@ code_block
     : ':' (statements)* 'end'                             #CodeBlock;
 
 
+numeric_literal
+    : DECIMAL_INTEGER #LiteralInteger
+    | FLOAT_LITERAL #LiteralFloat
+    ;
+
+string_literal
+    : STRING
+    ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 
-NUMBER
- : INTEGER
- | FLOAT_NUMBER
- ;
-
-INTEGER
-  : DECIMAL_INTEGER
-  ;
 
 /// decimalinteger ::=  nonzerodigit digit* | "0"+
 DECIMAL_INTEGER
@@ -186,10 +163,11 @@ DECIMAL_INTEGER
     | '0'+
     ;
 
-/// floatnumber   ::=  pointfloat | exponentfloat
-FLOAT_NUMBER
-    : POINT_FLOAT
+FLOAT_LITERAL
+    : DECIMAL_INTEGER FRACTION
+//    | Hexadecimal_literal Hexadecimal_fraction? Hexadecimal_exponent
     ;
+
 
 STRING: '"' (~'"')* '"';
 
@@ -207,12 +185,5 @@ fragment ID_CONTINUE: ID_START | [0-9];
 
 fragment NON_ZERO_DIGIT: [1-9];
 fragment DIGIT: [0-9];
-
-fragment POINT_FLOAT
-    : INT_PART? FRACTION
-    | INT_PART '.'
-    ;
-
-fragment INT_PART: DIGIT+ ;
 
 fragment FRACTION: '.' DIGIT+;

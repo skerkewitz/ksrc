@@ -17,10 +17,10 @@ public class FunctionDeclarationTest {
   @Test
   void implicitVoidReturnTypeNoParams() throws IOException {
 
-    var input = "fn myPrint: {\n"
+    var input = "fn myPrint: \n"
             + " print(\"Hello world\")\n"
             + " print(somevalue * 2)\n"
-            + "}\n";
+            + "end\n";
 
     ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
@@ -33,10 +33,10 @@ public class FunctionDeclarationTest {
   @Test
   void implicitVoidReturnTypeWithParams() throws IOException {
 
-    var input = "fn myPrint(somevalue:number, othervalue:number): {\n"
+    var input = "fn myPrint(somevalue:number, othervalue:number):\n"
             + " print(somevalue * othervalue)\n"
             + " print(somevalue * 2)\n"
-            + "}\n";
+            + "end\n";
 
     ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
@@ -53,25 +53,25 @@ public class FunctionDeclarationTest {
   @Test
   void explicitReturnTypeNoParams() throws IOException {
 
-    var input = "fn myPrint: number: {\n"
+    var input = "fn myPrint -> int:\n"
             + " print(\"Hello world\")\n"
-            + "}\n";
+            + "end\n";
 
     ParseTree tree = parserFromString(input).statement();
     var sut = (AstDeclarationFunction) new Builder().visit(tree);
 
     assertEquals("myPrint", sut.name.ident);
     assertEquals(0, sut.signature.params.size());
-    Assertions.assertEquals(Type.NUMBER, sut.signature.returnType.type());
+    Assertions.assertEquals(Type.INT, sut.signature.returnType.type());
     assertEquals(1, sut.body.statements.size());
   }
 
   @Test
   void explicitReturnTypeWithParams() throws IOException {
 
-    var input = "fn myPrint(somevalue:number, othervalue:number): number: {\n"
+    var input = "fn myPrint(somevalue:int, othervalue:int) -> int: \n"
             + " return somevalue * othervalue\n"
-            + "}\n";
+            + "end\n";
 
 
     ParseTree tree = parserFromString(input).statement();
@@ -80,10 +80,10 @@ public class FunctionDeclarationTest {
     assertEquals("myPrint", sut.name.ident);
     assertEquals(2, sut.signature.params.size());
     assertEquals("somevalue", sut.signature.params.get(0).name.ident);
-    assertEquals("number", sut.signature.params.get(0).typename.name);
+    assertEquals("int", sut.signature.params.get(0).typename.name);
     assertEquals("othervalue", sut.signature.params.get(1).name.ident);
-    assertEquals("number", sut.signature.params.get(1).typename.name);
-    assertEquals(Type.NUMBER, sut.signature.returnType.type());
+    assertEquals("int", sut.signature.params.get(1).typename.name);
+    assertEquals(Type.INT, sut.signature.returnType.type());
     assertEquals(1, sut.body.statements.size());
   }
 }

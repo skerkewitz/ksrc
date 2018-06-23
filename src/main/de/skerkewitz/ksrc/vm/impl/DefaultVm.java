@@ -30,7 +30,8 @@ public class DefaultVm implements Vm {
       final AstExprValue exprValue = (AstExprValue) expression;
       switch (exprValue.type) {
         case STRING: return new VmValueString(exprValue.value);
-        case NUMBER: return new VmValueNumber(VmUtils.convertStringToNumber(exprValue.value));
+        case INT: return new VmValueInt(VmUtils.integerFromString(exprValue.value));
+        case DOUBLE: return new VmValueDouble(VmUtils.doubleFromString(exprValue.value));
         default: return VmValueVoid.shared;
       }
     }
@@ -39,19 +40,25 @@ public class DefaultVm implements Vm {
       Value lhs = eval(infixOp.lhs, vmExecContext);
       Value rhs = eval(infixOp.rhs, vmExecContext);
       switch (infixOp.op) {
-        case POW: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
-        case MINUS: return new VmValueNumber(lhs.num() - rhs.num());
-        case MULT: return new VmValueNumber(lhs.num() * rhs.num());
-        case DIV: return new VmValueNumber(lhs.num() / rhs.num());
-        case MOD: return new VmValueNumber(lhs.num() % rhs.num());
+        case POW: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented yet");
+        case MINUS: {
+          switch (lhs.type()) {
+            case INT: return new VmValueInt(lhs.int_value() - rhs.int_value());
+            case DOUBLE: return new VmValueDouble(lhs.double_value() - rhs.double_value());
+            default: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented for type " + lhs.type());
+          }
+        }
+        case MULT: return new VmValueDouble(lhs.double_value() * rhs.double_value());
+        case DIV: return new VmValueDouble(lhs.double_value() / rhs.double_value());
+        case MOD: return new VmValueDouble(lhs.double_value() % rhs.double_value());
         case PLUS: return lhs.add(rhs);
-        case LTEQ: return new VmValueNumber(lhs.num() <= rhs.num() ? 1.0 : 0.0);
-        case GTEQ: return new VmValueNumber(lhs.num() >= rhs.num() ? 1.0 : 0.0);
-        case LT: return new VmValueNumber(lhs.num() < rhs.num() ? 1.0 : 0.0);
-        case GT: return new VmValueNumber(lhs.num() > rhs.num() ? 1.0 : 0.0);
-        case EQ: return new VmValueNumber(lhs.eq(rhs) ? 1.0 : 0.0);
+        case LTEQ: return new VmValueDouble(lhs.double_value() <= rhs.double_value() ? 1.0 : 0.0);
+        case GTEQ: return new VmValueDouble(lhs.double_value() >= rhs.double_value() ? 1.0 : 0.0);
+        case LT: return new VmValueDouble(lhs.double_value() < rhs.double_value() ? 1.0 : 0.0);
+        case GT: return new VmValueDouble(lhs.double_value() > rhs.double_value() ? 1.0 : 0.0);
+        case EQ: return new VmValueDouble(lhs.eq(rhs) ? 1.0 : 0.0);
         case IDEQ: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
-        case NEQ: return new VmValueNumber(!lhs.eq(rhs) ? 1.0 : 0.0);
+        case NEQ: return new VmValueDouble(!lhs.eq(rhs) ? 1.0 : 0.0);
         case AND: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
         case OR: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
       }
@@ -157,7 +164,7 @@ public class DefaultVm implements Vm {
     else if (statement instanceof AstStatementIf) {
       final var stmtDeclIf = (AstStatementIf) statement;
       var value = eval(stmtDeclIf.condition, vmExecContext);
-      if (value.num() != 0) {
+      if (value.double_value() != 0) {
         return exec(stmtDeclIf.statement, vmExecContext);
       }
 
@@ -166,7 +173,7 @@ public class DefaultVm implements Vm {
     else if (statement instanceof AstStatementWhile) {
       final var statementWhile = (AstStatementWhile) statement;
       var value = eval(statementWhile.condition, vmExecContext);
-      while (value.num() != 0) {
+      while (value.double_value() != 0) {
         exec(statementWhile.body, vmExecContext);
         value = eval(statementWhile.condition, vmExecContext);
       }

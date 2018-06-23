@@ -1,5 +1,5 @@
 # Factorial example
-fn factorial(n:number) -> number:
+fn factorial(n:int) -> int:
     if n == 0:
         return 1
     end
@@ -9,7 +9,7 @@ end
 
 
 # Fibonacci example
-fn fib(n:number) -> number:
+fn fib(n:int) -> int:
     if n == 0:
         return 0
     end

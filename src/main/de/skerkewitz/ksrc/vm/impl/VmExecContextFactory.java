@@ -11,13 +11,13 @@ public final class VmExecContextFactory {
 
   private final static Vm.FunctionBuildIn print_f = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args[0], execContext);
-    System.out.print(eval.str());
+    System.out.print(eval.string_value());
     return VmValueVoid.shared;
   };
 
   private final static Vm.FunctionBuildIn println_f = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args[0], execContext);
-    System.out.println(eval.str());
+    System.out.println(eval.string_value());
     return VmValueVoid.shared;
   };
 

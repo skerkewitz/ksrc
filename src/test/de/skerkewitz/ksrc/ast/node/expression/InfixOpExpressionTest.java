@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class InfixOpExpressionTest {
 
 //  @Test
-//  void assignStatement() throws IOException {
+//  void integerLiteral() throws IOException {
 //
 //    var input = "i = i + 1\n";
 //

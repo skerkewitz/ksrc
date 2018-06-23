@@ -251,4 +251,24 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCodeBlock(KSrcParser.CodeBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code LiteralInteger}
+	 * labeled alternative in {@link KSrcParser#numeric_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteralInteger(KSrcParser.LiteralIntegerContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code LiteralFloat}
+	 * labeled alternative in {@link KSrcParser#numeric_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteralFloat(KSrcParser.LiteralFloatContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#string_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitString_literal(KSrcParser.String_literalContext ctx);
 }

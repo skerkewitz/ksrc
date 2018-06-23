@@ -2,7 +2,6 @@ package de.skerkewitz.ksrc;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
-import de.skerkewitz.ksrc.ast.Walker;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.vm.Vm;
@@ -31,12 +30,12 @@ public class Main {
     AstStatement rootStatement = (AstStatement) new Builder().visit(tree);
 
     var vmExecContext = VmExecContextFactory.initialContext();
-    //vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueNumber(1.0));
+    //vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueDouble(1.0));
 
     Vm vm = new DefaultVm();
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
-    System.out.println("Done: " + ret.str());
+    System.out.println("Done: " + ret.string_value());
 
 //    new Walker().walk(rootStatement);
 

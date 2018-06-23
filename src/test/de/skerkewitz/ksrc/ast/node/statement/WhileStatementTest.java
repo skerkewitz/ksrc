@@ -15,10 +15,10 @@ public class WhileStatementTest {
   @Test
   void whileStatement() throws IOException {
 
-    var input = "while 5 == 5 {\n"
+    var input = "while 5 == 5:\n"
             + " print(\"Hello world\")\n"
             + " print(somevalue * 2)\n"
-            + "}\n";
+            + "end\n";
 
     ParseTree tree = parserFromString(input).while_statement();
     var sut = (AstStatementWhile) new Builder().visit(tree);

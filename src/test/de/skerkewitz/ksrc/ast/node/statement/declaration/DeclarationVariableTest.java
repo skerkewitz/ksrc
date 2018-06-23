@@ -45,13 +45,13 @@ public class DeclarationVariableTest {
   @Test
   void withTypeWithInitializer() throws IOException {
 
-    var input = "var a: number = 5\n";
+    var input = "var a: int = 5\n";
 
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
-    assertEquals(Type.NUMBER, sut.typeIdentifier.type());
+    assertEquals(Type.INT, sut.typeIdentifier.type());
     assertNotNull(sut.initializer);
   }
 

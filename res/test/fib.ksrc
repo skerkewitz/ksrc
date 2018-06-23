@@ -3,15 +3,15 @@ Calculates the fibonacci for the given value n.
 
 Starting by n == 0 the sequence is [0, 1, 1, 2, 3, 5, 8, 13, ... ]
 -->
-fn fib(n:number): {
+fn fib(n:int) -> int:
 
-    if n == 0 {
+    if n == 0:
         return 0
-    }
+    end
 
-    if n == 1 {
+    if n == 1:
         return 1
-    }
+    end
 
     return fib(n-1) + fib(n-2) # Compute fib by recursion
-}
+end

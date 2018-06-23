@@ -16,9 +16,9 @@ class FunctionSignatureTest {
     }
 
     {
-      Type[] types = { Type.STRING, Type.NUMBER };
+      Type[] types = { Type.STRING, Type.INT };
       FunctionSignature sig = new FunctionSignature(Type.VOID, types);
-      assertEquals("(STRING,NUMBER):(VOID)", sig.toString());
+      assertEquals("(STRING,INT):(VOID)", sig.toString());
     }
 
 

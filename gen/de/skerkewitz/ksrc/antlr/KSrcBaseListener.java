@@ -443,6 +443,42 @@ public class KSrcBaseListener implements KSrcListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCodeBlock(KSrcParser.CodeBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLiteralInteger(KSrcParser.LiteralIntegerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLiteralInteger(KSrcParser.LiteralIntegerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLiteralFloat(KSrcParser.LiteralFloatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLiteralFloat(KSrcParser.LiteralFloatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterString_literal(KSrcParser.String_literalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitString_literal(KSrcParser.String_literalContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

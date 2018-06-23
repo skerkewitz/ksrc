@@ -13,14 +13,17 @@ public class VmValueVoid implements Vm.Value {
   }
 
   @Override
-  public String str() {
+  public String string_value() {
     return null;
   }
 
   @Override
-  public Double num() {
+  public Double double_value() {
       return null;
   }
+
+  @Override
+  public Integer int_value() { return null; }
 
   @Override
   public boolean eq(Vm.Value rhs) {

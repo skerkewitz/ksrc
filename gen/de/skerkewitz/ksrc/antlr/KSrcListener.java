@@ -417,4 +417,38 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCodeBlock(KSrcParser.CodeBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LiteralInteger}
+	 * labeled alternative in {@link KSrcParser#numeric_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteralInteger(KSrcParser.LiteralIntegerContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LiteralInteger}
+	 * labeled alternative in {@link KSrcParser#numeric_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteralInteger(KSrcParser.LiteralIntegerContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LiteralFloat}
+	 * labeled alternative in {@link KSrcParser#numeric_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteralFloat(KSrcParser.LiteralFloatContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LiteralFloat}
+	 * labeled alternative in {@link KSrcParser#numeric_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteralFloat(KSrcParser.LiteralFloatContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#string_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterString_literal(KSrcParser.String_literalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#string_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitString_literal(KSrcParser.String_literalContext ctx);
 }
