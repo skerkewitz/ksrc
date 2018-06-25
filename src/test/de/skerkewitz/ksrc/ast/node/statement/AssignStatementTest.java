@@ -1,7 +1,7 @@
 package de.skerkewitz.ksrc.ast.node.statement;
 
 import de.skerkewitz.ksrc.ast.Builder;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstAssignStatement;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementAssign;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class AssignStatementTest {
     var input = "i = i + 1\n";
 
     ParseTree tree = parserFromString(input).statement();
-    var sut = (AstAssignStatement) new Builder().visit(tree);
+    var sut = (AstStatementAssign) new Builder().visit(tree);
 
     //assertEquals("myPrint", sut.condition.type == Type.BOOL);
     assertEquals("i", sut.ident.ident);

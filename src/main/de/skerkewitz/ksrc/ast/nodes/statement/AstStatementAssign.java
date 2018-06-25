@@ -5,12 +5,12 @@ import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 
 /** Assign the expression to the ident. */
-public class AstAssignStatement extends AstStatement {
+public class AstStatementAssign extends AstStatement {
 
   public final AstExprIdent ident;
   public final AstExpr expression;
 
-  public AstAssignStatement(SourceLocation srcLocation, AstExprIdent ident, AstExpr expression) {
+  public AstStatementAssign(SourceLocation srcLocation, AstExprIdent ident, AstExpr expression) {
     super(srcLocation);
     this.ident = ident;
     this.expression = expression;

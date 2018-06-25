@@ -191,7 +191,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   public AstNode visitStatementAssign(KSrcParser.StatementAssignContext ctx) {
     var ident = visit(ctx.ident(), AstExprIdent.class);
     var expression = visit(ctx.expression(), AstExpr.class);
-    return new AstAssignStatement(SourceLocation.fromContext(ctx), ident, expression);
+    return new AstStatementAssign(SourceLocation.fromContext(ctx), ident, expression);
   }
 
   @Override

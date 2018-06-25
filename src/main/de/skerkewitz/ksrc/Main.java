@@ -2,6 +2,7 @@ package de.skerkewitz.ksrc;
 
 import de.skerkewitz.ksrc.antlr.KSrcLexer;
 import de.skerkewitz.ksrc.antlr.KSrcParser;
+import de.skerkewitz.ksrc.ast.util.Walker;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.vm.Vm;
@@ -12,6 +13,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.*;
 
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class Main {
 
@@ -49,9 +51,9 @@ public class Main {
     ParseTree tree = parser.file_input();
 
 //
-//  ParseTreeWalker.DEFAULT.walk(null, tree);
-    String s = ((KSrcParser.File_inputContext) tree).toStringTree(parser);
-    System.out.println(s);
+////  ParseTreeWalker.DEFAULT.walk(null, tree);
+//    String s = ((KSrcParser.File_inputContext) tree).toStringTree(parser);
+//    System.out.println(s);
 
     /* Build AST tree. */
     AstStatement rootStatement = (AstStatement) new Builder().visit(tree);
@@ -64,7 +66,10 @@ public class Main {
 
     System.out.println("Done: " + ret.string_value());
 
-//    new Walker().walk(rootStatement);
+
+    Walker.PrintContext printContext = new Walker.PrintContext(new PrintStream(System.out));
+
+    new Walker(printContext).walk(rootStatement);
 
   }
 

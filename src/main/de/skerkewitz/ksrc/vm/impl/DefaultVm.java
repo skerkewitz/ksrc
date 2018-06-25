@@ -192,8 +192,8 @@ public class DefaultVm implements Vm {
 
       return VmValueVoid.shared;
     }
-    else if (statement instanceof AstAssignStatement) {
-      final var assignStatement = (AstAssignStatement) statement;
+    else if (statement instanceof AstStatementAssign) {
+      final var assignStatement = (AstStatementAssign) statement;
       var value = eval(assignStatement.expression, vmExecContext);
       vmExecContext.setSymbolToValue(assignStatement.ident.ident, value);
       return VmValueVoid.shared;
