@@ -46,9 +46,20 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     return statements;
   }
 
+  @Override
+  public AstNode visitClass_declaration(KSrcParser.Class_declarationContext ctx) {
+    var ident = visit(ctx.ident(), AstExprIdent.class);
+
+    var functions = ctx.function_declaration()
+            .stream()
+            .map(c -> visit(c, AstDeclarationFunction.class))
+            .collect(Collectors.toList());
+
+    return new AstDeclarationClass(SourceLocation.fromContext(ctx), ident, functions);
+  }
 
   @Override
-  public AstNode visitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx) {
+  public AstNode visitFunction_declaration(KSrcParser.Function_declarationContext ctx) {
     var srcLoc = new SourceLocation(ctx.start, ctx.stop);
 
     var ident = visit(ctx.ident(), AstExprIdent.class);
@@ -56,6 +67,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     var codeBlock = visit(ctx.code_block(), AstStatements.class);
     return new AstDeclarationFunction(srcLoc, ident, signature, codeBlock);
   }
+
 
   @Override
   public AstNode visitFunctionSignature(KSrcParser.FunctionSignatureContext ctx) {

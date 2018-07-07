@@ -1,5 +1,8 @@
 class Circle:
 
+    fn init():
+    end
+
     fn get-radius -> int:
         return 10
     end

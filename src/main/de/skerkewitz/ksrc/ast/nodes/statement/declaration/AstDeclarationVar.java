@@ -6,7 +6,7 @@ import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 
-public class AstDeclarationVar extends AstStatement {
+public class AstDeclarationVar extends AstDeclarationStatement {
 
   public final AstExprIdent name;
   public final AstTypeIdentifier typeIdentifier;

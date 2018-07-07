@@ -16,6 +16,7 @@ public interface VmExecContext {
 
   void markLeaveFrame();
 
+  void declareClass(Vm.ClassRef classRef);
 
 
   class VmUnknownSymbol extends RuntimeException {

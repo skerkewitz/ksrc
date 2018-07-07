@@ -14,7 +14,7 @@ import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
  *
  * A constance need either a explicit type annotation or a explicit initializer.
  */
-public class AstDeclarationLet extends AstStatement {
+public class AstDeclarationLet extends AstDeclarationStatement {
 
   public final AstExprIdent name;
   public final AstTypeIdentifier typeIdentifier;

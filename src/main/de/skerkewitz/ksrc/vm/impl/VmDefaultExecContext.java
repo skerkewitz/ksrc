@@ -1,6 +1,7 @@
 package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.FunctionSignature;
+import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public final class VmDefaultExecContext implements VmExecContext {
 
     private final Map<String, Vm.Value> symbolTable = new HashMap<>();
     private final Map<String, Vm.Function> funcTable = new HashMap<>();
+    private final Map<String, Vm.ClassRef> classTable = new HashMap<>();
 
     private boolean _leaveFrame = false;
 
@@ -91,5 +93,20 @@ public final class VmDefaultExecContext implements VmExecContext {
   @Override
   public void markLeaveFrame() {
       _leaveFrame = true;
+  }
+
+  @Override
+  public void declareClass(Vm.ClassRef classRef) {
+    String fqn = classRef.className;
+    if (this.classTable.containsKey(fqn)) {
+      throw new VmSymbolAlreadyDeclared(fqn);
+    }
+
+    this.classTable.put(fqn, classRef);
+
+    var fref = ((Vm.FunctionRef) getFuncByName("init", new FunctionSignature(Type.VOID, null))).funcRef;
+
+    // Hack for default constructor
+    declareFunc(new Vm.FunctionRef(fqn, fref, new FunctionSignature(Type.ANY_REF, null)));
   }
 }

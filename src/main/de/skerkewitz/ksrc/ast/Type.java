@@ -9,7 +9,13 @@ import org.antlr.v4.runtime.Token;
 
 public enum Type {
 
-  VOID(null), BOOL(new VmValueInt(0)), INT(new VmValueInt(0)), DOUBLE(new VmValueDouble(0.0)), STRING(new VmValueString("")), ANY_REF(null), FUNCTION(null);
+  VOID(null),
+  BOOL(new VmValueInt(0)),
+  INT(new VmValueInt(0)),
+  DOUBLE(new VmValueDouble(0.0)),
+  STRING(new VmValueString("")),
+  ANY_REF(null),                      // Any class reference
+  FUNCTION(null);
 
   public final Vm.Value default_init_value;
 

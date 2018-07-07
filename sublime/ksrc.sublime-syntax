@@ -5,7 +5,7 @@ name: KSrc
 file_extensions: [ksrc]
 scope: source
 variables:
-  ident: '[A-Za-z_][A-Za-z_0-9-]*'
+  name: '[A-Za-z_][A-Za-z_0-9-]*'
 contexts:
   main:
     # Strings begin and end with quotes, and use backslashes as an escape
@@ -50,7 +50,7 @@ contexts:
     - match: '\b(let)\b'
       scope: keyword.control.ksrc    
       set:
-        - match: \b{{ident}}\b
+        - match: \b{{name}}\b
           scope: entity.name.constant
           pop: true
 
@@ -82,12 +82,12 @@ contexts:
       pop: true
 
   ident_name:
-    - match: \b{{ident}}\b
+    - match: \b{{name}}\b
       scope: variable
       pop: true
 
   function_name:
-    - match: \b{{ident}}\b
+    - match: \b{{name}}\b
       scope: entity.name.function
       pop: true
 

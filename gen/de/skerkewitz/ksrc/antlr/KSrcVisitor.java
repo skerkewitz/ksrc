@@ -83,12 +83,31 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FunctionDeclaration}
+	 * Visit a parse tree produced by the {@code DeclarationFunction}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	T visitDeclarationFunction(KSrcParser.DeclarationFunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DeclarationClass}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationClass(KSrcParser.DeclarationClassContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#class_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClass_declaration(KSrcParser.Class_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#function_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_declaration(KSrcParser.Function_declarationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link KSrcParser#type_annotation}.
 	 * @param ctx the parse tree

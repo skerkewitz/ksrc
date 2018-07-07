@@ -58,6 +58,12 @@ public class Main {
     /* Build AST tree. */
     AstStatement rootStatement = (AstStatement) new Builder().visit(tree);
 
+    /* Print source. */
+    Walker.PrintContext printContext = new Walker.PrintContext(new PrintStream(System.out));
+    new Walker(printContext).walk(rootStatement);
+
+
+    /* Execute. */
     var vmExecContext = VmExecContextFactory.initialContext();
     //vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueDouble(1.0));
 
@@ -65,11 +71,6 @@ public class Main {
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
     System.out.println("Done: " + ret.string_value());
-
-
-    Walker.PrintContext printContext = new Walker.PrintContext(new PrintStream(System.out));
-
-    new Walker(printContext).walk(rootStatement);
 
   }
 

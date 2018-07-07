@@ -1,11 +1,13 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationStatement;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
@@ -142,34 +144,8 @@ public class DefaultVm implements Vm {
       vmExecContext.markLeaveFrame();
       return value;
     }
-    else if (statement instanceof AstDeclarationLet) {
-      final var astStmtDeclLet = (AstDeclarationLet) statement;
-      var value = eval(astStmtDeclLet.initializer, vmExecContext);
-      vmExecContext.declareSymbol(astStmtDeclLet.name.ident, value);
-      return value;
-    }
-    else if (statement instanceof AstDeclarationVar) {
-      final var astDeclarationVar = (AstDeclarationVar) statement;
-      Value value;
-      if (astDeclarationVar.initializer == null) {
-        value = astDeclarationVar.typeIdentifier.type().default_init_value;
-      } else {
-        value = eval(astDeclarationVar.initializer, vmExecContext);
-      }
-      vmExecContext.declareSymbol(astDeclarationVar.name.ident, value);
-      return value;
-    }
-    else if (statement instanceof AstDeclarationFunction) {
-      final var stmtDeclFunc = (AstDeclarationFunction) statement;
-      final var funcIdent = stmtDeclFunc.name.ident;
-      try {
-        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.type()).toArray(Type[]::new);
-        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
-        vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
-      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
-        throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
-      }
-      return VmValueVoid.shared;
+    else if (statement instanceof AstDeclarationStatement) {
+        return execDeclarationStatement(statement, vmExecContext);
     }
     else if (statement instanceof AstStatementIf) {
       final var stmtDeclIf = (AstStatementIf) statement;
@@ -202,6 +178,57 @@ public class DefaultVm implements Vm {
     throw new UnknownStatement(statement);
   }
 
+  private Value execDeclarationStatement(AstStatement statement, VmExecContext vmExecContext) {
+
+    if (statement instanceof AstDeclarationLet) {
+      final var astStmtDeclLet = (AstDeclarationLet) statement;
+      var value = eval(astStmtDeclLet.initializer, vmExecContext);
+      vmExecContext.declareSymbol(astStmtDeclLet.name.ident, value);
+      return value;
+    }
+    else if (statement instanceof AstDeclarationVar) {
+      final var astDeclarationVar = (AstDeclarationVar) statement;
+      Value value;
+      if (astDeclarationVar.initializer == null) {
+        value = astDeclarationVar.typeIdentifier.type().default_init_value;
+      } else {
+        value = eval(astDeclarationVar.initializer, vmExecContext);
+      }
+      vmExecContext.declareSymbol(astDeclarationVar.name.ident, value);
+      return value;
+    }
+    else if (statement instanceof AstDeclarationFunction) {
+      final var stmtDeclFunc = (AstDeclarationFunction) statement;
+      final var funcIdent = stmtDeclFunc.name.ident;
+      try {
+        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.type()).toArray(Type[]::new);
+        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
+        vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
+      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
+        throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
+      }
+      return VmValueVoid.shared;
+    }
+    else if (statement instanceof AstDeclarationClass) {
+      final var stmtDeclClass = (AstDeclarationClass) statement;
+      final var className = stmtDeclClass.name.ident;
+
+      /* Declare all functions. */
+      for (var f: stmtDeclClass.functions) {
+        exec(f, vmExecContext);
+      }
+
+      try {
+        vmExecContext.declareClass(new ClassRef(className, stmtDeclClass));
+      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
+        throw new VmInvalidFuncRedeclaration(className, stmtDeclClass.srcLocation);
+      }
+      return VmValueVoid.shared;
+    }
+
+
+    throw new UnknownStatement(statement);
+  }
 
 
   private class UnknownExpression extends RuntimeException {

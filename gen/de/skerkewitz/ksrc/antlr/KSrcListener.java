@@ -130,17 +130,49 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code FunctionDeclaration}
+	 * Enter a parse tree produced by the {@code DeclarationFunction}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	void enterDeclarationFunction(KSrcParser.DeclarationFunctionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code FunctionDeclaration}
+	 * Exit a parse tree produced by the {@code DeclarationFunction}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	void exitDeclarationFunction(KSrcParser.DeclarationFunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DeclarationClass}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationClass(KSrcParser.DeclarationClassContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeclarationClass}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationClass(KSrcParser.DeclarationClassContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#class_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterClass_declaration(KSrcParser.Class_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#class_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitClass_declaration(KSrcParser.Class_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_declaration(KSrcParser.Function_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_declaration(KSrcParser.Function_declarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link KSrcParser#type_annotation}.
 	 * @param ctx the parse tree

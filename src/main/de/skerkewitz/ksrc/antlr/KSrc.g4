@@ -11,6 +11,8 @@ IF:     'if';
 RETURN: 'return';
 WHILE: 'while';
 
+CLASS:  'class';
+
 ASSIGN: '=';
 
 ELSE: 'else:';
@@ -64,15 +66,25 @@ return_statement
     ;
 
 assign_statement
-    : ident ASSIGN expression                              #StatementAssign
+    : name ASSIGN expression                              #StatementAssign
     ;
 
 declaration
-    : LET ident type_annotation? initializer            #DeclarationConstant
-    | VAR ident type_annotation? initializer?           #DeclarationVariable
+    : LET name type_annotation? initializer            #DeclarationConstant
+    | VAR name type_annotation? initializer?           #DeclarationVariable
 
     // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
-    | FUNC ident function_signature code_block  #FunctionDeclaration
+    | function_declaration                              #DeclarationFunction
+    | class_declaration                                 #DeclarationClass
+    ;
+
+
+class_declaration
+    : CLASS name ':' (function_declaration)* END
+    ;
+
+function_declaration
+    : FUNC name function_signature code_block
     ;
 
 type_annotation: (':' typename);
@@ -114,14 +126,14 @@ expression
 
     | NAME '(' arguments ')'                            #ExprCall
     // Atoms
-    | ident                                             #ExprIdent
+    | name                                             #ExprIdent
 
     ;
 
 arguments: (expression (',' expression)*)?              #FunctionCallArgumentList;
 
 typename: NAME ;
-ident: NAME ;
+name: NAME ;
 value: numeric_literal | string_literal;
 
 
@@ -138,7 +150,7 @@ function_parameters
     ;
 
 function_parameter
-    : ident ':' typename                                #FunctionParameter
+    : name ':' typename                                #FunctionParameter
     ;
 
 statements_list
@@ -185,7 +197,7 @@ fragment ID_START
     | [a-z]
     ;
 
-fragment ID_CONTINUE: ID_START | [0-9];
+fragment ID_CONTINUE: ID_START | [0-9] | '.';
 
 fragment NON_ZERO_DIGIT: [1-9];
 fragment DIGIT: [0-9];

@@ -14,7 +14,7 @@ public class InfixOpExpressionTest {
 //    var sut = (AstStatementAssign) new Builder().visit(tree);
 //
 //    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
-//    assertEquals("i", sut.ident.ident);
+//    assertEquals("i", sut.name.name);
 //    assertNotNull(sut.expression);
 //  }
 

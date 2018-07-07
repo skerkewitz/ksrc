@@ -1,5 +1,6 @@
 package de.skerkewitz.ksrc.vm;
 
+import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
@@ -37,7 +38,7 @@ public interface Vm {
     Value add (Value other);
   }
 
-  class Function {
+  abstract class Function {
 
     /** Plain name of the funtion. */
     public final String name;
@@ -81,6 +82,16 @@ public interface Vm {
     public FunctionRef(String name, AstDeclarationFunction funcRef, FunctionSignature signature) {
       super(name, signature);
       this.funcRef = funcRef;
+    }
+  }
+
+  class ClassRef {
+    public final String className;
+    public final AstDeclarationClass stmtDeclClass;
+
+    public ClassRef(String className, AstDeclarationClass stmtDeclClass) {
+      this.className = className;
+      this.stmtDeclClass = stmtDeclClass;
     }
   }
 

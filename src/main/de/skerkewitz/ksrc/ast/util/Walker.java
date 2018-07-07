@@ -1,14 +1,15 @@
 package de.skerkewitz.ksrc.ast.util;
 
+import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.ast.nodes.AstTypeIdentifier;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
 
-import java.beans.Expression;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -45,6 +46,11 @@ public class Walker {
     }
 
     final void println(String text) {
+      if (needIdent) {
+        for (int i = 0; i < depth; i++) {
+          ps.print("\t");
+        }
+      }
       ps.println(text);
       needIdent = true;
     }
@@ -90,7 +96,7 @@ public class Walker {
       ps.pushIdent();
       walk(declarationFunction.body);
       ps.popIdent();
-      ps.print(")");
+      ps.println(")");
       return;
     }
     else if (node instanceof AstStatementReturn) {
@@ -126,7 +132,13 @@ public class Walker {
     }
     else if (node instanceof AstDeclarationVar) {
       AstDeclarationVar declarationVar = (AstDeclarationVar) node;
-      ps.print("(var " + declarationVar.name.ident + ")");
+      String typeIdentifier = declarationVar.typeIdentifier == null ? "?inferred?" : declarationVar.typeIdentifier.name;
+      ps.print("(var " + declarationVar.name.ident + " " + typeIdentifier);
+      if (declarationVar.initializer != null) {
+        ps.print(" ");
+        walk(declarationVar.initializer);
+      }
+      ps.print(")");
       return;
     }
     else if (node instanceof AstDeclarationLet) {
@@ -168,6 +180,18 @@ public class Walker {
       AstStatementAssign assignStatement = (AstStatementAssign) node;
       ps.print("(= " + assignStatement.ident.ident + " ");
       walk(assignStatement.expression);
+      ps.print(")");
+      return;
+    }
+    else if (node instanceof AstDeclarationClass) {
+      AstDeclarationClass declarationClass = (AstDeclarationClass) node;
+      ps.print("(class " + declarationClass.name.ident + " (");
+      ps.pushIdent();
+      ps.println("");
+      for (var statement : declarationClass.functions) {
+        walk(statement);
+      }
+      ps.popIdent();
       ps.print(")");
       return;
     }
