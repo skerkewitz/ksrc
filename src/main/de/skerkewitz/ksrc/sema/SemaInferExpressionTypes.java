@@ -54,6 +54,7 @@ public class SemaInferExpressionTypes {
     }
     else if (node instanceof AstExprIdent) {
       AstExprIdent exprIdent = (AstExprIdent) node;
+      exprIdent.descriptor = sema.resolveType(exprIdent, localSymbols);
       return;
     }
     else if (node instanceof AstExprValue) {

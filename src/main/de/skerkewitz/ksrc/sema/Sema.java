@@ -25,7 +25,16 @@ public class Sema {
       return resolveTypeForCall((AstExprFunctionCall) expr, localSymbols);
     }
 
+    if (expr instanceof AstExprIdent) {
+      return resolveTypeForIdent((AstExprIdent) expr, localSymbols);
+    }
+
     return null;
+  }
+
+  private VmDescriptor resolveTypeForIdent(AstExprIdent expr, SymbolTable localSymbols) {
+    // check for local types.
+    return localSymbols.getSymbolByName(expr.ident);
   }
 
   private VmDescriptor resolveTypeForCall(AstExprFunctionCall exprFunctionCall, SymbolTable localSymbols) {
@@ -46,11 +55,10 @@ public class Sema {
     AstExprExplicitMemberAccess member = (AstExprExplicitMemberAccess) exprFunctionCall.fnName;
 
     // Lookup the type of the expresssion.
-    String baseIdent = ((AstExprIdent) member.lhs).ident;
     String functionName = ((AstExprIdent) member.rhs).ident;
-    VmDescriptor baseType = localSymbols.getSymbolByName(baseIdent);
+    VmDescriptor baseType = resolveType(member.lhs, localSymbols);
     if (baseType == null) {
-      throw new SemaException(exprFunctionCall, "Could not resolve symbol '" + baseIdent + "'");
+      throw new SemaException(member.lhs, "Could not resolve type for '" + member.lhs + "'");
     }
 
 

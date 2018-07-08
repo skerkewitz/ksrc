@@ -6,9 +6,16 @@ class Circle:
     fn get-radius -> Int:
         return 10
     end
+
+    fn foo -> Circle:
+        return Circle()
+    end
+
 end
 
 var cl = Circle()
 var n:Int = cl.get-radius()
+var x:Int = cl.foo().foo().get-radius()
+var b = n
 
 
