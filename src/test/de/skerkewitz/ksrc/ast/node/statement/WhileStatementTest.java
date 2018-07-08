@@ -23,7 +23,7 @@ public class WhileStatementTest {
     ParseTree tree = parserFromString(input).while_statement();
     var sut = (AstStatementWhile) new Builder().visit(tree);
 
-    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
+    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
     assertEquals(2, sut.body.statements.size());
   }
 

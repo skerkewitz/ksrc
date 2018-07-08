@@ -12,7 +12,7 @@ import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
  * A constant declaration defines an immutable binding between the constant name and the initializer of the initializer
  * expression; after the initializer of a constant is set, it cannot be changed.
  *
- * A constance need either a explicit type annotation or a explicit initializer.
+ * A constance need either a explicit descriptor annotation or a explicit initializer.
  */
 public class AstDeclarationLet extends AstDeclarationStatement {
 

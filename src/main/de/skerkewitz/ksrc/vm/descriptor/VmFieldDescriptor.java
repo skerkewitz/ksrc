@@ -4,7 +4,7 @@ import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 /**
- * A field descriptor represents the type of a class, instance, or local variable.
+ * A field descriptor represents the descriptor of a class, instance, or local variable.
  */
 public class VmFieldDescriptor extends VmDescriptor {
 

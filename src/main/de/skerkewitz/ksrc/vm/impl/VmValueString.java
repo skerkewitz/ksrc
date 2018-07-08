@@ -2,11 +2,12 @@ package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class VmValueString extends AbstractVmValue<String> {
 
   public VmValueString(String value) {
-    super(value, Type.STRING);
+    super(value, new VmDescriptor(Type.STRING));
   }
 
   @Override

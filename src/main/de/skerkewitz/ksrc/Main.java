@@ -5,7 +5,10 @@ import de.skerkewitz.ksrc.antlr.KSrcParser;
 import de.skerkewitz.ksrc.ast.util.Walker;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
+import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.sema.SemaClassScanner;
+import de.skerkewitz.ksrc.sema.SemaInferExpressionTypes;
+import de.skerkewitz.ksrc.sema.SymbolTable;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
@@ -51,6 +54,8 @@ public class Main {
     KSrcLexer lexer = new KSrcLexer(CharStreams.fromFileName(inputFilename));
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     KSrcParser parser = new KSrcParser(tokens);
+
+    // TODO: rename to translationunit
     ParseTree tree = parser.file_input();
 
 //
@@ -69,6 +74,14 @@ public class Main {
     for (var classInfo: classInfos) {
       System.out.println("Found class " + classInfo);
     }
+
+    Sema sema = new Sema();
+    sema.addClassDeclarations(classInfos);
+
+    SemaInferExpressionTypes.walk(rootStatement, sema, new SymbolTable());
+
+    new Walker(printContext).walk(rootStatement);
+
 
     /* Execute. */
     var vmExecContext = VmExecContextFactory.initialContext();

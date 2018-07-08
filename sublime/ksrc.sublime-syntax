@@ -39,7 +39,7 @@ contexts:
 
     # Typenames
     - match: '\b(int|string|bool)\b'
-      scope: storage.type
+      scope: storage.descriptor
 
     # Declaration var and let
     - match: '\b(var)\b'

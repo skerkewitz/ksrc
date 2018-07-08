@@ -4,10 +4,11 @@ import de.skerkewitz.ksrc.ast.Type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A method descriptor contains zero or more parameter descriptors, representing the types of parameters that the
- * method takes, and a return descriptor, representing the type of the value (if any) that the method returns.
+ * method takes, and a return descriptor, representing the descriptor of the value (if any) that the method returns.
  */
 public class VmMethodDescriptor {
 
@@ -81,5 +82,20 @@ public class VmMethodDescriptor {
 
     stringBuilder.append(returnDescriptor.toString());
     return stringBuilder.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof VmMethodDescriptor)) return false;
+    VmMethodDescriptor that = (VmMethodDescriptor) o;
+    return Objects.equals(returnDescriptor, that.returnDescriptor) &&
+            Objects.equals(parameterDescriptor, that.parameterDescriptor);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(returnDescriptor, parameterDescriptor);
   }
 }

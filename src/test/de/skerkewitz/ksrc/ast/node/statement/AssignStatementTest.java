@@ -21,7 +21,7 @@ public class AssignStatementTest {
     ParseTree tree = parserFromString(input).statement();
     var sut = (AstStatementAssign) new Builder().visit(tree);
 
-    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
+    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
     assertEquals("i", sut.ident.ident);
     assertNotNull(sut.expression);
   }

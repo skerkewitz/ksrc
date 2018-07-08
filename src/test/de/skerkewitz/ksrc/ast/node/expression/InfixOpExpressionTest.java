@@ -13,7 +13,7 @@ public class InfixOpExpressionTest {
 //    ParseTree tree = parserFromString(input).thenStatement();
 //    var sut = (AstStatementAssign) new Builder().visit(tree);
 //
-//    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
+//    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
 //    assertEquals("i", sut.name.name);
 //    assertNotNull(sut.expression);
 //  }

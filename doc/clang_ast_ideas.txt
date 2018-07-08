@@ -1,0 +1,6 @@
+
+
+
+
+Low:
+    Do not store identifier string in the ast. Instead use a indentifer table.

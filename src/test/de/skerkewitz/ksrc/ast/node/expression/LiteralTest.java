@@ -22,7 +22,7 @@ public class LiteralTest {
     var sut = (AstExprValue) new Builder().visit(tree);
 
     assertEquals("55", sut.value);
-    assertEquals(Type.INT, sut.type);
+    assertEquals(Type.INT, sut.descriptor.type);
   }
 
   @Test
@@ -34,7 +34,7 @@ public class LiteralTest {
     var sut = (AstExprValue) new Builder().visit(tree);
 
     assertEquals("40.0", sut.value);
-    assertEquals(Type.DOUBLE, sut.type);
+    assertEquals(Type.DOUBLE, sut.descriptor.type);
   }
 
 }

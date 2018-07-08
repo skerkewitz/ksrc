@@ -10,4 +10,13 @@ public class AstExprIdent extends AstExpr {
     super(sourceLocation, null);
     this.ident = ident;
   }
+
+  @Override
+  public String toString() {
+    return "AstExprIdent{" +
+            "ident='" + ident + '\'' +
+            ", descriptor=" + descriptor +
+            ", srcLocation=" + srcLocation +
+            '}';
+  }
 }

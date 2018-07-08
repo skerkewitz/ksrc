@@ -1,7 +1,10 @@
 package de.skerkewitz.ksrc.vm;
 
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** Defines a class. */
 public class VmClassInfo {
@@ -33,5 +36,13 @@ public class VmClassInfo {
             ", fields=" + fields +
             ", methods=" + methods +
             '}';
+  }
+
+  public List<VmMethodInfo> findMatchesByFunctionNameWithArgs(String functionName, List<VmDescriptor> argumentsDescriptor) {
+
+    return methods.stream()
+            .filter(vmMethodInfo -> vmMethodInfo.name.equals(functionName))
+            .filter(vmMethodInfo -> vmMethodInfo.descriptor.parameterDescriptor.equals(argumentsDescriptor))
+            .collect(Collectors.toList());
   }
 }

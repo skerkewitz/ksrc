@@ -23,7 +23,7 @@ public class DeclarationVariableTest {
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
-    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
+    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
     assertEquals("a", sut.name.ident);
     assertNull(sut.typeIdentifier);
     assertNull(sut.initializer);

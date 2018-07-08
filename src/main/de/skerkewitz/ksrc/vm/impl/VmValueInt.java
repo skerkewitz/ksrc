@@ -2,12 +2,12 @@ package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class VmValueInt extends AbstractVmValue<Integer> {
 
-
   public VmValueInt(Integer value) {
-    super(value, Type.INT);
+    super(value, new VmDescriptor(Type.INT, null));
   }
 
   @Override

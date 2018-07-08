@@ -2,11 +2,12 @@ package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class VmValueDouble extends AbstractVmValue<Double> {
 
   public VmValueDouble(Double value) {
-    super(value, Type.DOUBLE);
+    super(value, new VmDescriptor(Type.DOUBLE));
   }
 
   @Override

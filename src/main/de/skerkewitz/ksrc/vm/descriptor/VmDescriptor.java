@@ -7,14 +7,23 @@ import java.util.Objects;
 public class VmDescriptor {
   public final Type type;
   /**
-   * If the field is of type <code>Type.ANY_REF</code> then this field specifes the fully qualified class name, else
+   * If the field is of descriptor <code>Type.ANY_REF</code> then this field specifes the fully qualified class name, else
    * it is null
    */
   public final String fqClassName;
 
   public VmDescriptor(Type type, String fqClassName) {
+
+    if (type == Type.ANY_REF && fqClassName == null) {
+      throw new IllegalArgumentException("AnyRef must specify an reference type.");
+    }
+
     this.fqClassName = fqClassName;
     this.type = type;
+  }
+
+  public VmDescriptor(Type type) {
+    this(type, null);
   }
 
   public static VmDescriptor fromString(String s) {
@@ -41,7 +50,7 @@ public class VmDescriptor {
       return new VmDescriptor(Type.ANY_REF, s.substring(1, s.length() - 1));
     }
 
-    throw new IllegalArgumentException("Invalid type descriptor: " + s);
+    throw new IllegalArgumentException("Invalid descriptor descriptor: " + s);
   }
 
   @Override
@@ -74,8 +83,8 @@ public class VmDescriptor {
       case ANY_REF:
         return "L" + fqClassName + ";";
       case FUNCTION:
-        throw new RuntimeException("Invalid type " + type);
+        throw new RuntimeException("Invalid descriptor " + type);
     }
-    throw new RuntimeException("Invalid type " + type);
+    throw new RuntimeException("Invalid descriptor " + type);
   }
 }

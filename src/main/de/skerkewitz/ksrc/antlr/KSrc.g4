@@ -56,7 +56,7 @@ while_statement
     : WHILE condition code_block           #StatementWhile
     ;
 
-// The initializer of the condition must be of type Bool
+// The initializer of the condition must be of descriptor Bool
 condition
     : expression
     ;
@@ -66,12 +66,12 @@ return_statement
     ;
 
 assign_statement
-    : name ASSIGN expression                              #StatementAssign
+    : identifier ASSIGN expression                              #StatementAssign
     ;
 
 declaration
-    : LET name type_annotation? initializer            #DeclarationConstant
-    | VAR name type_annotation? initializer?           #DeclarationVariable
+    : LET identifier type_annotation? initializer            #DeclarationConstant
+    | VAR identifier type_annotation? initializer?           #DeclarationVariable
 
     // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
     | function_declaration                              #DeclarationFunction
@@ -80,11 +80,11 @@ declaration
 
 
 class_declaration
-    : CLASS name ':' (function_declaration)* END
+    : CLASS identifier ':' (function_declaration)* END
     ;
 
 function_declaration
-    : FUNC name function_signature code_block
+    : FUNC identifier function_signature code_block
     ;
 
 type_annotation: (':' typename);
@@ -113,7 +113,7 @@ expression
 
     // Binary operator expressions - Arimethric
     : expression POW expression                         #ExprPow
-    | value                                             #ExprValue
+    | postfix_expression                                #ExprPostFix
     | MINUS expression                                  #ExprUnaryMinus
     | NOT expression                                    #ExprNot
     | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
@@ -124,17 +124,46 @@ expression
     | expression OR expression                          #ExprLogicalOr
     | expression IDEQ expression                        #ExprIdEqual
 
-    | NAME '(' arguments ')'                            #ExprCall
-    // Atoms
-    | name                                             #ExprIdent
 
+
+
+//    | NAME '(' arguments ')'                            #ExprCall
+//    | function_call_expression
+    // Atoms
     ;
 
-arguments: (expression (',' expression)*)?              #FunctionCallArgumentList;
+postfix_expression
+    //:
+    // A function call expression consists of a function name followed by a comma-separated list of the function’s
+    // arguments in parentheses. The function name can be any expression whose value is of a function descriptor.
+    : primary_expression                                #ExprPrimary
+    | lhs=postfix_expression '.' rhs=postfix_expression         #ExprExplicitMemberAccess
+    | postfix_expression function_call_argument_clause  #ExprCall
+    ;
+
+
+// Primary expressions are the most basic kind of expression. They can be used as expressions on their own, and they
+// can be combined with other tokens to make prefix expressions, binary expressions, and postfix expressions.
+primary_expression
+    : literal_expression                                #ExprValue
+    | identifier                                        #ExprIdent
+    ;
+
+// A literal expression consists of an ordinary literal (such as a string or a number)
+literal_expression
+    : numeric_literal
+    | string_literal
+    | boolean_literal
+    | nil_literal
+    ;
+
+
+function_call_argument_clause: '(' function_call_argument_list ')'    #FunctionCallArgumentClause;
+function_call_argument_list: (expression (',' expression)*)?            #FunctionCallArgumentList;
 
 typename: NAME ;
-name: NAME ;
-value: numeric_literal | string_literal;
+identifier: NAME ;
+
 
 
 function_signature
@@ -150,7 +179,7 @@ function_parameters
     ;
 
 function_parameter
-    : name ':' typename                                #FunctionParameter
+    : identifier ':' typename                                #FunctionParameter
     ;
 
 statements_list
@@ -167,6 +196,14 @@ numeric_literal
 
 string_literal
     : STRING
+    ;
+
+boolean_literal
+    : 'true' | 'false'
+    ;
+
+nil_literal
+    : 'nil'
     ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
@@ -197,7 +234,7 @@ fragment ID_START
     | [a-z]
     ;
 
-fragment ID_CONTINUE: ID_START | [0-9] | '.';
+fragment ID_CONTINUE: ID_START | [0-9];
 
 fragment NON_ZERO_DIGIT: [1-9];
 fragment DIGIT: [0-9];

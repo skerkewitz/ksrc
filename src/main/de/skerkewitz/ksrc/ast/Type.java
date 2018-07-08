@@ -9,22 +9,16 @@ import org.antlr.v4.runtime.Token;
 
 public enum Type {
 
-  VOID(null),
-  BOOL(new VmValueInt(0)),
-  INT(new VmValueInt(0)),
-  DOUBLE(new VmValueDouble(0.0)),
-  STRING(new VmValueString("")),
-  ANY_REF(null),                      // Any class reference
-  FUNCTION(null);
-
-  public final Vm.Value default_init_value;
-
-  Type(Vm.Value default_init_value) {
-    this.default_init_value = default_init_value;
-  }
+  VOID,
+  BOOL,
+  INT,
+  DOUBLE,
+  STRING,
+  ANY_REF,
+  FUNCTION;
 
   public static Type fromToken(Token token) {
-    /* Determine type. */
+    /* Determine descriptor. */
     switch (token.getType()) {
       case KSrcParser.STRING: return STRING;
       case KSrcParser.DECIMAL_INTEGER: return INT;
@@ -37,4 +31,24 @@ public enum Type {
     return Type.valueOf(name.toUpperCase());
   }
 
+  public Vm.Value getDefault_init_value() {
+    switch (this) {
+      case VOID:
+        return null;
+      case BOOL:
+        return new VmValueInt(0);
+      case INT:
+        return new VmValueInt(0);
+      case DOUBLE:
+        return new VmValueDouble(0.0);
+      case STRING:
+        return new VmValueString("");
+      case ANY_REF:
+        return null;
+      case FUNCTION:
+        return null;
+    }
+
+    throw new RuntimeException("Unknown type " + this);
+  }
 }

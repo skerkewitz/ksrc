@@ -9,8 +9,10 @@ import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationStatement;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
+import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
 import java.util.Arrays;
 
@@ -30,7 +32,7 @@ public class DefaultVm implements Vm {
 
     if (expression instanceof AstExprValue) {
       final AstExprValue exprValue = (AstExprValue) expression;
-      switch (exprValue.type) {
+      switch (exprValue.descriptor.type) {
         case STRING: return new VmValueString(exprValue.value);
         case INT: return new VmValueInt(VmUtils.integerFromString(exprValue.value));
         case DOUBLE: return new VmValueDouble(VmUtils.doubleFromString(exprValue.value));
@@ -44,18 +46,18 @@ public class DefaultVm implements Vm {
       switch (infixOp.op) {
         case POW: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented yet");
         case MINUS: {
-          switch (lhs.type()) {
+          switch (lhs.descriptor().type) {
             case INT: return new VmValueInt(lhs.int_value() - rhs.int_value());
             case DOUBLE: return new VmValueDouble(lhs.double_value() - rhs.double_value());
-            default: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented for type " + lhs.type());
+            default: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented for descriptor " + lhs.descriptor());
           }
         }
         case MULT: return new VmValueDouble(lhs.double_value() * rhs.double_value());
         case DIV: return new VmValueDouble(lhs.double_value() / rhs.double_value());
         case MOD: {
-          switch (lhs.type()) {
+          switch (lhs.descriptor().type) {
             case INT: return new VmValueInt(lhs.int_value() % rhs.int_value());
-            default: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented for type " + lhs.type());
+            default: throw new RuntimeException("Infix operator " + infixOp.op + " no implemented for descriptor " + lhs.descriptor());
           }
         }
         case PLUS: return lhs.add(rhs);
@@ -82,7 +84,19 @@ public class DefaultVm implements Vm {
               .toArray(Type[]::new);
 
       FunctionSignature functionSignature = new FunctionSignature(Type.VOID, types);
-      var stmts = vmExecContext.getFuncByName(exprFuncCall.fnName,functionSignature);
+
+      final String fnName;
+      if (exprFuncCall.fnName instanceof AstExprIdent) {
+        fnName = ((AstExprIdent) exprFuncCall.fnName).ident;
+      }
+      else if (exprFuncCall.fnName instanceof AstExprExplicitMemberAccess) {
+        //fnName = ((AstExprExplicitMemberAccess) exprFuncCall).lhs;
+        fnName = ((AstExprExplicitMemberAccess) exprFuncCall.fnName).rhs.toString();
+      } else {
+        throw new VmRuntimeException("Can not resolve function call base", exprFuncCall.srcLocation);
+      }
+
+      var stmts = vmExecContext.getFuncByName(fnName,functionSignature);
       if (stmts != null) {
         if (stmts instanceof FunctionRef) {
           var vmFuncRef = (FunctionRef) stmts;
@@ -190,7 +204,7 @@ public class DefaultVm implements Vm {
       final var astDeclarationVar = (AstDeclarationVar) statement;
       Value value;
       if (astDeclarationVar.initializer == null) {
-        value = astDeclarationVar.typeIdentifier.type().default_init_value;
+        value = astDeclarationVar.typeIdentifier.type().getDefault_init_value();
       } else {
         value = eval(astDeclarationVar.initializer, vmExecContext);
       }

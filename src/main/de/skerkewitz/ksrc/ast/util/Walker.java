@@ -122,7 +122,7 @@ public class Walker {
     }
     else if (node instanceof AstExprValue) {
       AstExprValue exprValue = (AstExprValue) node;
-      if (exprValue.type == Type.STRING) {
+      if (exprValue.descriptor.type == Type.STRING) {
         ps.print("\"" + exprValue.value + "\"");
       } else {
         ps.print(exprValue.value);
@@ -130,9 +130,18 @@ public class Walker {
 
       return;
     }
+    else if (node instanceof AstExprExplicitMemberAccess) {
+      AstExprExplicitMemberAccess exprValue = (AstExprExplicitMemberAccess) node;
+      ps.print("(member-access ");
+      walk(exprValue.lhs);
+      ps.print(" ");
+      walk(exprValue.rhs);
+      ps.print(")");
+      return;
+    }
     else if (node instanceof AstDeclarationVar) {
       AstDeclarationVar declarationVar = (AstDeclarationVar) node;
-      String typeIdentifier = declarationVar.typeIdentifier == null ? "?inferred?" : declarationVar.typeIdentifier.name;
+      String typeIdentifier = declarationVar.descriptor == null ? "?inferred?" : declarationVar.descriptor.toString();
       ps.print("(var " + declarationVar.name.ident + " " + typeIdentifier);
       if (declarationVar.initializer != null) {
         ps.print(" ");
@@ -148,9 +157,11 @@ public class Walker {
     }
     else if (node instanceof AstExprFunctionCall) {
       AstExprFunctionCall exprFunctionCall = (AstExprFunctionCall) node;
-      ps.print("(" + exprFunctionCall.fnName + " (");
+      ps.print("(call ");
+      walk(exprFunctionCall.fnName);
+      ps.print(" (");
       ps.print(Arrays.stream(exprFunctionCall.args).map(astExpr -> exprToString(astExpr)).collect(Collectors.joining(", ")));
-      ps.print(")");
+      ps.print("))");
       return;
     }
     else if (node instanceof AstStatementWhile) {

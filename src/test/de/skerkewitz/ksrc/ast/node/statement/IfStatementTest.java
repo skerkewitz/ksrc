@@ -28,7 +28,7 @@ public class IfStatementTest {
     ParseTree tree = parserFromString(input).if_statement();
     var sut = (AstStatementIf) new Builder().visit(tree);
 
-    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
+    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
     assertNotNull(sut.thenStatement);
     assertNotNull(sut.elseStatement);
   }

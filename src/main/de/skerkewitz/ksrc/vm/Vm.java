@@ -6,6 +6,7 @@ import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.Type;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 
 /**
@@ -16,8 +17,8 @@ public interface Vm {
   /** A initializer in the virtual machine. */
   interface Value {
 
-    /** The type of the initializer. */
-    Type type();
+    /** The descriptor of the initializer. */
+    VmDescriptor descriptor();
 
     /** The string representation of the initializer. */
     String string_value();

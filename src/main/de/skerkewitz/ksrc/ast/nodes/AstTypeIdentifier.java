@@ -4,11 +4,11 @@ import de.skerkewitz.ksrc.antlr.SourceLocation;
 import de.skerkewitz.ksrc.ast.Type;
 
 /**
- * A type identifier refers to a named type.
+ * A descriptor identifier refers to a named descriptor.
  *
- * Most of the time, a type identifier directly refers to a named type with the same name as the identifier. For
- * example, <code>int</code> is a type identifier that directly refers to the named type Int, and the type
- * identifier <code>dictionary<string, int></code> directly refers to the named type Dictionary<String, Int>.
+ * Most of the time, a descriptor identifier directly refers to a named descriptor with the same name as the identifier. For
+ * example, <code>int</code> is a descriptor identifier that directly refers to the named descriptor Int, and the descriptor
+ * identifier <code>dictionary<string, int></code> directly refers to the named descriptor Dictionary<String, Int>.
  **/
 public class AstTypeIdentifier extends AstNode {
 
