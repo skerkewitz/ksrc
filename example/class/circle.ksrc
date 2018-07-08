@@ -3,12 +3,12 @@ class Circle:
     fn init():
     end
 
-    fn get-radius -> int:
+    fn get-radius -> Int:
         return 10
     end
 end
 
 var cl = Circle()
-var n = cl.get-radius()
+var n:Int = cl.get-radius()
 
 

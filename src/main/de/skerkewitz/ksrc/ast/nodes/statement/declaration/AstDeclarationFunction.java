@@ -22,7 +22,7 @@ public class AstDeclarationFunction extends AstDeclarationStatement {
     public Signature(SourceLocation srcLoc, AstFunctionParameters params, AstTypeIdentifier returnType) {
       super(srcLoc);
       this.params = params == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(params.params);
-      this.returnType = returnType == null ? new AstTypeIdentifier(srcLoc, "void") : returnType;
+      this.returnType = returnType == null ? new AstTypeIdentifier(srcLoc, "Void") : returnType;
     }
   }
 

@@ -36,7 +36,7 @@ public class SemaInferExpressionTypes {
     if (node instanceof AstStatementReturn) {
       AstStatementReturn statementReturn = (AstStatementReturn) node;
       walk(statementReturn.expr, sema, localSymbols);
-      statementReturn.expr.descriptor = sema.resolveType(statementReturn.expr, new SymbolTable());
+      statementReturn.expr.descriptor = sema.resolveType(statementReturn.expr, localSymbols);
       return;
     }
 
@@ -66,13 +66,21 @@ public class SemaInferExpressionTypes {
 
     if (node instanceof AstDeclarationVar) {
       AstDeclarationVar declarationVar = (AstDeclarationVar) node;
-      String typeIdentifier = declarationVar.typeIdentifier == null ? "?inferred?" : declarationVar.typeIdentifier.name;
+
+      if (declarationVar.typeIdentifier != null) {
+        declarationVar.descriptor = declarationVar.typeIdentifier.descriptor;
+        localSymbols.declareSymbol(declarationVar.name.ident, declarationVar.descriptor, declarationVar);
+      }
+
       if (declarationVar.initializer != null) {
         walk(declarationVar.initializer, sema, localSymbols);
         declarationVar.descriptor = sema.resolveType(declarationVar.initializer, localSymbols);
+        localSymbols.declareSymbol(declarationVar.name.ident, declarationVar.descriptor, declarationVar);
       }
 
-      localSymbols.declareSymbol(declarationVar.name.ident, declarationVar.descriptor);
+      if (declarationVar.descriptor == null) {
+        throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
+      }
 
       return;
     }

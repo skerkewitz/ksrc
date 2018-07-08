@@ -62,7 +62,7 @@ public class FunctionDeclarationTest {
 
     assertEquals("myPrint", sut.name.ident);
     assertEquals(0, sut.signature.params.size());
-    Assertions.assertEquals(Type.INT, sut.signature.returnType.type());
+    Assertions.assertEquals(Type.INT, sut.signature.returnType.descriptor.type);
     assertEquals(1, sut.body.statements.size());
   }
 
@@ -83,7 +83,7 @@ public class FunctionDeclarationTest {
     assertEquals("int", sut.signature.params.get(0).typename.name);
     assertEquals("othervalue", sut.signature.params.get(1).name.ident);
     assertEquals("int", sut.signature.params.get(1).typename.name);
-    assertEquals(Type.INT, sut.signature.returnType.type());
+    assertEquals(Type.INT, sut.signature.returnType.descriptor.type);
     assertEquals(1, sut.body.statements.size());
   }
 }

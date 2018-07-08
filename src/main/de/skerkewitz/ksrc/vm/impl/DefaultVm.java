@@ -204,7 +204,7 @@ public class DefaultVm implements Vm {
       final var astDeclarationVar = (AstDeclarationVar) statement;
       Value value;
       if (astDeclarationVar.initializer == null) {
-        value = astDeclarationVar.typeIdentifier.type().getDefault_init_value();
+        value = astDeclarationVar.typeIdentifier.descriptor.type.getDefault_init_value();
       } else {
         value = eval(astDeclarationVar.initializer, vmExecContext);
       }
@@ -215,7 +215,7 @@ public class DefaultVm implements Vm {
       final var stmtDeclFunc = (AstDeclarationFunction) statement;
       final var funcIdent = stmtDeclFunc.name.ident;
       try {
-        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.type()).toArray(Type[]::new);
+        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.descriptor.type).toArray(Type[]::new);
         FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
         vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
       } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {

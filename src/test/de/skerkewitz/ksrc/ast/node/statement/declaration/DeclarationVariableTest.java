@@ -51,7 +51,7 @@ public class DeclarationVariableTest {
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
-    assertEquals(Type.INT, sut.typeIdentifier.type());
+    assertEquals(Type.INT, sut.typeIdentifier.descriptor.type);
     assertNotNull(sut.initializer);
   }
 
@@ -64,7 +64,7 @@ public class DeclarationVariableTest {
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
-    assertEquals(Type.INT, sut.typeIdentifier.type());
+    assertEquals(Type.INT, sut.typeIdentifier.descriptor.type);
     assertNull(sut.initializer);
   }
 }

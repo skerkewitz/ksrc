@@ -31,8 +31,8 @@ public class SemaMethodScanner {
     final var stmtDeclClass = statement;
     final var className = stmtDeclClass.name.ident;
 
-    List<VmDescriptor> paramList = stmtDeclClass.signature.params.stream().map(parameter -> new VmDescriptor(parameter.typename.type(), null)).collect(Collectors.toList());
-    VmDescriptor returnDescriptor = new VmDescriptor(stmtDeclClass.signature.returnType.type(), null);
+    List<VmDescriptor> paramList = stmtDeclClass.signature.params.stream().map(parameter -> parameter.typename.descriptor).collect(Collectors.toList());
+    VmDescriptor returnDescriptor = stmtDeclClass.signature.returnType.descriptor;
 
     VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(returnDescriptor, paramList);
     return new VmMethodInfo(className, methodDescriptor);
