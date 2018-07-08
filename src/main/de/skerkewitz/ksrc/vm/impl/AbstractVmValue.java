@@ -19,7 +19,17 @@ public abstract class AbstractVmValue<T> implements Vm.Value {
   }
 
   @Override
+  public Double double_value() {
+    throw new RuntimeException("Operation add is not supported on descriptor " + descriptor.toString());
+  }
+
+  @Override
   public Vm.Value add(Vm.Value other) {
+    throw new RuntimeException("Operation add is not supported on descriptor " + descriptor.toString());
+  }
+
+  @Override
+  public Object ref_value() {
     throw new RuntimeException("Operation add is not supported on descriptor " + descriptor.toString());
   }
 }

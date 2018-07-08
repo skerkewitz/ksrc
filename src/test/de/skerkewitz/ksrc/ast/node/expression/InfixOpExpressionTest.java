@@ -15,7 +15,7 @@ public class InfixOpExpressionTest {
 //
 //    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
 //    assertEquals("i", sut.name.name);
-//    assertNotNull(sut.expression);
+//    assertNotNull(sut.astNode);
 //  }
 
 }

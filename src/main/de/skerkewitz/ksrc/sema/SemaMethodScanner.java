@@ -27,15 +27,14 @@ public class SemaMethodScanner {
 
   }
 
-  public static VmMethodInfo scanSingleMethod(AstDeclarationFunction statement) {
-    final var stmtDeclClass = statement;
-    final var className = stmtDeclClass.name.ident;
+  public static VmMethodInfo scanSingleMethod(AstDeclarationFunction functionDeclaration) {
+    final var className = functionDeclaration.name.ident;
 
-    List<VmDescriptor> paramList = stmtDeclClass.signature.params.stream().map(parameter -> parameter.typename.descriptor).collect(Collectors.toList());
-    VmDescriptor returnDescriptor = stmtDeclClass.signature.returnType.descriptor;
+    List<VmDescriptor> paramList = functionDeclaration.signature.params.stream().map(parameter -> parameter.typename.descriptor).collect(Collectors.toList());
+    VmDescriptor returnDescriptor = functionDeclaration.signature.returnType.descriptor;
 
     VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(returnDescriptor, paramList);
-    return new VmMethodInfo(className, methodDescriptor);
+    return new VmMethodInfo(className, methodDescriptor, functionDeclaration);
   }
 
   public static List<VmMethodInfo> scan(AstNode statement) {

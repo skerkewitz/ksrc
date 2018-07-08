@@ -2,10 +2,12 @@ package de.skerkewitz.ksrc.vm;
 
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.FunctionSignature;
+import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.Type;
+import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 
@@ -13,6 +15,8 @@ import de.skerkewitz.ksrc.vm.impl.VmExecContext;
  * A vm for the Ast nodes.
  */
 public interface Vm {
+
+  Sema getSema();
 
   /** A initializer in the virtual machine. */
   interface Value {
@@ -37,6 +41,8 @@ public interface Vm {
 
     /** Create a new value "this + other" */
     Value add (Value other);
+
+    Object ref_value();
   }
 
   abstract class Function {
@@ -97,10 +103,10 @@ public interface Vm {
   }
 
   /**
-   * Evaluates the given expression and returns the initializer.
+   * Evaluates the given astNode and returns the initializer.
    *
    * @param expression the {@link AstExpr} to evaluate
-   * @return the String initializer of the evaluated expression.
+   * @return the String initializer of the evaluated astNode.
    */
   Value eval(AstExpr expression, VmExecContext execContext);
 
@@ -113,4 +119,31 @@ public interface Vm {
    */
   Value exec(AstStatement statement, VmExecContext execContext);
 
+
+  class VmException extends RuntimeException {
+    public final AstNode astNode;
+
+    public VmException(AstNode astNode, String message) {
+      super(message);
+      this.astNode = astNode;
+    }
+  }
+
+  class UnknownExpression extends VmException {
+    public UnknownExpression(AstExpr expression) {
+      super(expression, "Unknown expression instruction" + expression);
+    }
+  }
+
+  class UnknownStatement extends VmException {
+    public UnknownStatement(AstStatement statement) {
+      super(statement, "Unknown statement instruction " + statement);
+    }
+  }
+
+  class UnknownFunctionReference extends VmException {
+    public UnknownFunctionReference(AstExprFunctionCall expressionFuncCall) {
+      super(expressionFuncCall, "Unknown function reference " + expressionFuncCall);
+    }
+  }
 }

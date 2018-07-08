@@ -3,6 +3,7 @@ package de.skerkewitz.ksrc.vm;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
@@ -34,7 +35,7 @@ public class VmTest {
 
     var vmExecContext = VmExecContextFactory.initialContext();
 
-    Vm vm = new DefaultVm();
+    Vm vm = new DefaultVm(new Sema());
     Vm.Value ret = vm.exec(rootStatementLib, vmExecContext);
 
     assertEquals(0, eval("fib(0)\n", vm, vmExecContext).int_value().intValue());

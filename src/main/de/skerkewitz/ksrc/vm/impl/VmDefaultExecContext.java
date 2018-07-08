@@ -38,6 +38,11 @@ public final class VmDefaultExecContext implements VmExecContext {
 
     @Override
     public void declareSymbol(String name, Vm.Value value) {
+        if (value == null) {
+          // use Vm.NullValue instead
+          throw new IllegalArgumentException("value can not be null");
+        }
+
         if (this.symbolTable.containsKey(name)) {
           throw new VmSymbolAlreadyDeclared(name);
         }
@@ -47,6 +52,11 @@ public final class VmDefaultExecContext implements VmExecContext {
 
   @Override
   public void setSymbolToValue(String ident, Vm.Value value) {
+    if (value == null) {
+      // use Vm.NullValue instead
+      throw new IllegalArgumentException("value can not be null");
+    }
+
     if (this.symbolTable.containsKey(ident)) {
       this.symbolTable.put(ident, value);
       return;

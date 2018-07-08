@@ -21,13 +21,22 @@ import java.util.Arrays;
  */
 public class DefaultVm implements Vm {
 
-  private static int stackdepth = 1;
+  public final Sema sema;
+
+  public DefaultVm(Sema sema) {
+    this.sema = sema;
+  }
+
+  @Override
+  public Sema getSema() {
+    return sema;
+  }
 
   @Override
   public final Value eval(AstExpr expression, VmExecContext vmExecContext) {
 
     if (expression == null) {
-      throw new IllegalArgumentException("expression can not be null");
+      throw new IllegalArgumentException("astNode can not be null");
     }
 
     if (expression instanceof AstExprValue) {
@@ -78,49 +87,7 @@ public class DefaultVm implements Vm {
     }
     else if (expression instanceof AstExprFunctionCall) {
       final AstExprFunctionCall exprFuncCall = (AstExprFunctionCall) expression;
-
-      var types = Arrays.stream(exprFuncCall.args)
-              .map((AstExpr astExpr) -> Sema.getResultType(astExpr, vmExecContext))
-              .toArray(Type[]::new);
-
-      FunctionSignature functionSignature = new FunctionSignature(Type.VOID, types);
-
-      final String fnName;
-      if (exprFuncCall.fnName instanceof AstExprIdent) {
-        fnName = ((AstExprIdent) exprFuncCall.fnName).ident;
-      }
-      else if (exprFuncCall.fnName instanceof AstExprExplicitMemberAccess) {
-        //fnName = ((AstExprExplicitMemberAccess) exprFuncCall).lhs;
-        fnName = ((AstExprExplicitMemberAccess) exprFuncCall.fnName).rhs.toString();
-      } else {
-        throw new VmRuntimeException("Can not resolve function call base", exprFuncCall.srcLocation);
-      }
-
-      var stmts = vmExecContext.getFuncByName(fnName,functionSignature);
-      if (stmts != null) {
-        if (stmts instanceof FunctionRef) {
-          var vmFuncRef = (FunctionRef) stmts;
-
-          /* Create a new VmExeContext for the function call. And resolve parameter. */
-          DefaultVm.stackdepth += 1;
-//          System.out.print("" + DefaultVm.stackdepth + ", ");
-          var localVmExecContext = new VmDefaultExecContext(vmExecContext);
-          int i = 0;
-          for (var pIdent : vmFuncRef.funcRef.signature.params) {
-            localVmExecContext.declareSymbol(pIdent.name.ident, eval(exprFuncCall.args[i], vmExecContext));
-            i += 1;
-          }
-
-          Value exec = exec(vmFuncRef.funcRef.body, localVmExecContext);
-          DefaultVm.stackdepth -= 1;
-          return exec;
-        }
-
-        var vmFuncBuildIn = (FunctionBuildInRef) stmts;
-        return vmFuncBuildIn.funcRef.exec(this, exprFuncCall.args, vmExecContext);
-      }
-
-      throw new UnknownFunctionReference(exprFuncCall);
+      return VmFunctionCallHelper.exec(exprFuncCall, this, vmExecContext);
     }
 
     throw new UnknownExpression(expression);
@@ -212,31 +179,31 @@ public class DefaultVm implements Vm {
       return value;
     }
     else if (statement instanceof AstDeclarationFunction) {
-      final var stmtDeclFunc = (AstDeclarationFunction) statement;
-      final var funcIdent = stmtDeclFunc.name.ident;
-      try {
-        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.descriptor.type).toArray(Type[]::new);
-        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
-        vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
-      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
-        throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
-      }
+//      final var stmtDeclFunc = (AstDeclarationFunction) statement;
+//      final var funcIdent = stmtDeclFunc.name.ident;
+//      try {
+//        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.descriptor.type).toArray(Type[]::new);
+//        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
+//        vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
+//      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
+//        throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);
+//      }
       return VmValueVoid.shared;
     }
     else if (statement instanceof AstDeclarationClass) {
-      final var stmtDeclClass = (AstDeclarationClass) statement;
-      final var className = stmtDeclClass.name.ident;
-
-      /* Declare all functions. */
-      for (var f: stmtDeclClass.functions) {
-        exec(f, vmExecContext);
-      }
-
-      try {
-        vmExecContext.declareClass(new ClassRef(className, stmtDeclClass));
-      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
-        throw new VmInvalidFuncRedeclaration(className, stmtDeclClass.srcLocation);
-      }
+//      final var stmtDeclClass = (AstDeclarationClass) statement;
+//      final var className = stmtDeclClass.name.ident;
+//
+//      /* Declare all functions. */
+//      for (var f: stmtDeclClass.functions) {
+//        exec(f, vmExecContext);
+//      }
+//
+//      try {
+//        vmExecContext.declareClass(new ClassRef(className, stmtDeclClass));
+//      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
+//        throw new VmInvalidFuncRedeclaration(className, stmtDeclClass.srcLocation);
+//      }
       return VmValueVoid.shared;
     }
 
@@ -245,49 +212,5 @@ public class DefaultVm implements Vm {
   }
 
 
-  private class UnknownExpression extends RuntimeException {
-    public final AstExpr expression;
-
-    public UnknownExpression(AstExpr expression) {
-      this.expression = expression;
-    }
-
-    @Override
-    public String toString() {
-      return "UnknownExpression{" +
-              "expression=" + expression +
-              '}';
-    }
-  }
-
-  private class UnknownStatement extends RuntimeException {
-    private final AstStatement statement;
-
-    public UnknownStatement(AstStatement statement) {
-      this.statement = statement;
-    }
-
-    @Override
-    public String toString() {
-      return "UnknownStatement{" +
-              "thenStatement=" + statement +
-              '}';
-    }
-  }
-
-  private class UnknownFunctionReference extends RuntimeException {
-    private final AstExprFunctionCall expressionFuncCall;
-
-    public UnknownFunctionReference(AstExprFunctionCall expressionFuncCall) {
-      this.expressionFuncCall = expressionFuncCall;
-    }
-
-    @Override
-    public String toString() {
-      return "Unknown function reference '" + expressionFuncCall.fnName + "' {" +
-              "expressionFuncCall=" + expressionFuncCall +
-              '}';
-    }
-  }
 
 }

@@ -11,11 +11,18 @@ class Circle:
         return Circle()
     end
 
+    fn blob() -> Int:
+        return 11
+    end
+
 end
 
 var cl = Circle()
 var n:Int = cl.get-radius()
 var x:Int = cl.foo().foo().get-radius()
 var b = n
+
+cl.foo().blob()
+
 
 

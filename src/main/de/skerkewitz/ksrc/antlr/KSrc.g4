@@ -39,7 +39,7 @@ statement
     // Branch statements
     | if_statement
     | loop_statement
-    | expression
+    | astNode
     | assign_statement
     ;
 
@@ -58,15 +58,15 @@ while_statement
 
 // The initializer of the condition must be of descriptor Bool
 condition
-    : expression
+    : astNode
     ;
 
 return_statement
-    : RETURN expression                     #ReturnStatement
+    : RETURN astNode                     #ReturnStatement
     ;
 
 assign_statement
-    : identifier ASSIGN expression                              #StatementAssign
+    : identifier ASSIGN astNode                              #StatementAssign
     ;
 
 declaration
@@ -88,7 +88,7 @@ function_declaration
     ;
 
 type_annotation: (':' typename);
-initializer: (ASSIGN expression);
+initializer: (ASSIGN astNode);
 
 POW:    '^';
 MINUS:  '-';
@@ -109,20 +109,20 @@ NEQ:    '!=';
 AND:    'and';
 OR:     'or';
 
-expression
+astNode
 
     // Binary operator expressions - Arimethric
-    : expression POW expression                         #ExprPow
+    : astNode POW astNode                         #ExprPow
     | postfix_expression                                #ExprPostFix
-    | MINUS expression                                  #ExprUnaryMinus
-    | NOT expression                                    #ExprNot
-    | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
-    | expression op=(PLUS | MINUS) expression           #ExprAdditive
-    | expression op=(LTEQ | GTEQ | LT | GT) expression  #ExprRelational
-    | expression op=(EQ | NEQ) expression               #ExprEquality
-    | expression AND expression                         #ExprLogicalAnd
-    | expression OR expression                          #ExprLogicalOr
-    | expression IDEQ expression                        #ExprIdEqual
+    | MINUS astNode                                  #ExprUnaryMinus
+    | NOT astNode                                    #ExprNot
+    | astNode op=(MULT | DIV | MOD) astNode       #ExprMultiplication
+    | astNode op=(PLUS | MINUS) astNode           #ExprAdditive
+    | astNode op=(LTEQ | GTEQ | LT | GT) astNode  #ExprRelational
+    | astNode op=(EQ | NEQ) astNode               #ExprEquality
+    | astNode AND astNode                         #ExprLogicalAnd
+    | astNode OR astNode                          #ExprLogicalOr
+    | astNode IDEQ astNode                        #ExprIdEqual
 
 
 
@@ -134,22 +134,22 @@ expression
 
 postfix_expression
     //:
-    // A function call expression consists of a function name followed by a comma-separated list of the function’s
-    // arguments in parentheses. The function name can be any expression whose value is of a function descriptor.
+    // A function call astNode consists of a function name followed by a comma-separated list of the function’s
+    // arguments in parentheses. The function name can be any astNode whose value is of a function descriptor.
     : primary_expression                                #ExprPrimary
     | lhs=postfix_expression '.' rhs=postfix_expression         #ExprExplicitMemberAccess
     | postfix_expression function_call_argument_clause  #ExprCall
     ;
 
 
-// Primary expressions are the most basic kind of expression. They can be used as expressions on their own, and they
+// Primary expressions are the most basic kind of astNode. They can be used as expressions on their own, and they
 // can be combined with other tokens to make prefix expressions, binary expressions, and postfix expressions.
 primary_expression
     : literal_expression                                #ExprValue
     | identifier                                        #ExprIdent
     ;
 
-// A literal expression consists of an ordinary literal (such as a string or a number)
+// A literal astNode consists of an ordinary literal (such as a string or a number)
 literal_expression
     : numeric_literal
     | string_literal
@@ -159,7 +159,7 @@ literal_expression
 
 
 function_call_argument_clause: '(' function_call_argument_list ')'    #FunctionCallArgumentClause;
-function_call_argument_list: (expression (',' expression)*)?            #FunctionCallArgumentList;
+function_call_argument_list: (astNode (',' astNode)*)?            #FunctionCallArgumentList;
 
 typename: NAME ;
 identifier: NAME ;

@@ -1,5 +1,6 @@
 package de.skerkewitz.ksrc.vm;
 
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 
 import java.util.Objects;
@@ -18,9 +19,16 @@ public class VmMethodInfo {
   /** The descriptor of this field. */
   public final VmMethodDescriptor descriptor;
 
-  public VmMethodInfo(String name, VmMethodDescriptor descriptor) {
+  public final AstDeclarationFunction functionDeclaration;
+
+  public VmMethodInfo(String name, VmMethodDescriptor descriptor, AstDeclarationFunction functionDeclaration) {
+    if (name == null || descriptor == null || functionDeclaration == null) {
+      throw new IllegalArgumentException("Arguments can not be null");
+    }
+
     this.name = name;
     this.descriptor = descriptor;
+    this.functionDeclaration = functionDeclaration;
   }
 
   @Override

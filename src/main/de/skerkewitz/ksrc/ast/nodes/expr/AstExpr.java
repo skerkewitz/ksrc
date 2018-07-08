@@ -7,7 +7,7 @@ import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public abstract class AstExpr extends AstStatement {
 
-  /** The descriptor descriptor of the result of this expression. */
+  /** The descriptor descriptor of the result of this astNode. */
   public VmDescriptor descriptor;
 
   public AstExpr(SourceLocation srcLocation, VmDescriptor descriptor) {

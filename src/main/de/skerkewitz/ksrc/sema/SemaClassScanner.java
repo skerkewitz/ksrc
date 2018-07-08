@@ -21,7 +21,10 @@ public class SemaClassScanner {
 
       VmClassInfo classInfo = new VmClassInfo(className);
 
-      List<VmMethodInfo> methodInfos = stmtDeclClass.functions.stream().map(astDeclarationFunction -> SemaMethodScanner.scanSingleMethod(astDeclarationFunction)).collect(Collectors.toList());
+      List<VmMethodInfo> methodInfos = stmtDeclClass.functions
+              .stream()
+              .map(astDeclarationFunction -> SemaMethodScanner.scanSingleMethod(astDeclarationFunction))
+              .collect(Collectors.toList());
 
       classInfo.methods = methodInfos;
 

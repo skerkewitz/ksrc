@@ -4,7 +4,7 @@ import de.skerkewitz.ksrc.antlr.SourceLocation;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 
-/** Assign the expression to the name. */
+/** Assign the astNode to the name. */
 public class AstStatementAssign extends AstStatement {
 
   public final AstExprIdent ident;

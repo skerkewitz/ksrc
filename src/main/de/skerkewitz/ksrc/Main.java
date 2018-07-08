@@ -59,7 +59,7 @@ public class Main {
     ParseTree tree = parser.file_input();
 
 //
-////  ParseTreeWalker.DEFAULT.walk(null, tree);
+//  ParseTreeWalker.DEFAULT.walk(new TestListener(), tree);
 //    String s = ((KSrcParser.File_inputContext) tree).toStringTree(parser);
 //    System.out.println(s);
 
@@ -87,7 +87,7 @@ public class Main {
     var vmExecContext = VmExecContextFactory.initialContext();
     //vmExecContext.declareFunc("factorial", (Vm.FunctionBuildIn) (vm, args1, execContext) -> new VmValueDouble(1.0));
 
-    Vm vm = new DefaultVm();
+    Vm vm = new DefaultVm(sema);
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
     System.out.println("Done: " + ret.string_value());

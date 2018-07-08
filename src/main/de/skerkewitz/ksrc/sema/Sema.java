@@ -13,6 +13,7 @@ import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sema {
@@ -93,7 +94,8 @@ public class Sema {
       VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(new VmDescriptor(Type.VOID),
               Arrays.stream(exprFunctionCall.args).map(expr -> expr.descriptor).collect(Collectors.toList()));
 
-      if (classInfo.methods.contains(new VmMethodInfo("init", methodDescriptor))) {
+      Optional<VmMethodInfo> matches = classInfo.findMatchesByFunctionNameAndMethodDescriptor("init", methodDescriptor);
+      if (matches.isPresent()) {
         return new VmDescriptor(Type.ANY_REF, ident.ident);
       }
     }
@@ -101,7 +103,7 @@ public class Sema {
     return null;
   }
 
-  private VmClassInfo findClassInfoWithName(String ident) {
+  public VmClassInfo findClassInfoWithName(String ident) {
     for (var ci: classDeclarations) {
       if (ci.fqThisClassName.equals(ident)) {
         return ci;
