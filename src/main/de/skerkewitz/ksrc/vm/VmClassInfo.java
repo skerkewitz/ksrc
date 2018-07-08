@@ -25,4 +25,13 @@ public class VmClassInfo {
     this.fqThisClassName = fqThisClassName;
   }
 
+
+  @Override
+  public String toString() {
+    return "VmClassInfo{" +
+            "className='" + fqThisClassName + '\'' +
+            ", fields=" + fields +
+            ", methods=" + methods +
+            '}';
+  }
 }

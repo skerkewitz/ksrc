@@ -13,5 +13,9 @@ public class AstStatements extends AstStatement {
   public AstStatements(SourceLocation srcLocation, List<AstStatement> statements) {
     super(srcLocation);
     this.statements = Collections.unmodifiableList(statements);
+
+    for (var statement : statements) {
+      this.addChild(statement);
+    }
   }
 }

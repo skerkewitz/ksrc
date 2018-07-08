@@ -5,7 +5,9 @@ import de.skerkewitz.ksrc.antlr.KSrcParser;
 import de.skerkewitz.ksrc.ast.util.Walker;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.ast.Builder;
+import de.skerkewitz.ksrc.sema.SemaClassScanner;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
 import org.antlr.v4.runtime.CharStreams;
@@ -14,6 +16,7 @@ import org.antlr.v4.runtime.tree.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 public class Main {
 
@@ -62,6 +65,10 @@ public class Main {
     Walker.PrintContext printContext = new Walker.PrintContext(new PrintStream(System.out));
     new Walker(printContext).walk(rootStatement);
 
+    List<VmClassInfo> classInfos = SemaClassScanner.scan(rootStatement);
+    for (var classInfo: classInfos) {
+      System.out.println("Found class " + classInfo);
+    }
 
     /* Execute. */
     var vmExecContext = VmExecContextFactory.initialContext();
