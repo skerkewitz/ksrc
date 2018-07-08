@@ -18,11 +18,11 @@ class Circle:
 end
 
 var cl = Circle()
-var n:Int = cl.get-radius()
-var x:Int = cl.foo().foo().get-radius()
+var n = cl.get-radius()
+var x = cl.foo().foo().get-radius()
 var b = n
 
-cl.foo().blob()
+cl.foo()
 
 
 

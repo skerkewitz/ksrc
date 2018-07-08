@@ -91,6 +91,7 @@ public class Main {
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
     System.out.println("Done: " + ret.string_value());
+    System.out.println("Type: " + ret.descriptor());
 
   }
 
