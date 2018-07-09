@@ -26,7 +26,7 @@ public class AstTypeIdentifier extends AstNode {
                   "Double", new VmDescriptor(Type.DOUBLE),
                   "Int", new VmDescriptor(Type.INT),
                   "String", new VmDescriptor(Type.STRING)
-          ));
+          ), null);
 
   public AstTypeIdentifier(SourceLocation sourceLocation, String name) {
     super(sourceLocation);

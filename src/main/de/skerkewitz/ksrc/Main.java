@@ -78,7 +78,12 @@ public class Main {
     Sema sema = new Sema();
     sema.addClassDeclarations(classInfos);
 
-    SemaInferExpressionTypes.walk(rootStatement, sema, new SymbolTable());
+    final List<Vm.Function> buildInFunctionList = VmExecContextFactory.buildInFunctionList();
+    final SymbolTable rootSymbolTable = new SymbolTable(null);
+    for (var f : buildInFunctionList) {
+      rootSymbolTable.declareSymbol(f.methodInfo.name, f.methodInfo.descriptor.returnDescriptor, null);
+    }
+    SemaInferExpressionTypes.walk(rootStatement, sema, rootSymbolTable);
 
     new Walker(printContext).walk(rootStatement);
 

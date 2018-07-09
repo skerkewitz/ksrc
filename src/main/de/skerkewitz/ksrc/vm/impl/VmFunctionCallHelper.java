@@ -1,10 +1,10 @@
 package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprExplicitMemberAccess;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
@@ -13,7 +13,6 @@ import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,13 +34,13 @@ public class VmFunctionCallHelper {
 
   private static Vm.Value execFunctionCall(AstExprFunctionCall exprFunctionCall, Vm vm, VmExecContext vmExecContext) {
 
-    /* Check for Constructor call first. */
     final String functionName = ((AstExprIdent) exprFunctionCall.fnName).ident;
     final List<VmDescriptor> parameterDescriptors = exprFunctionCall.arguments.list.stream()
             .map(expr -> expr.descriptor)
             .collect(Collectors.toList());
 
-    VmClassInfo classInfo = vm.getSema().findClassInfoWithName(functionName);
+    /* Check for constructor call first. */
+    final VmClassInfo classInfo = vm.getSema().findClassInfoWithName(functionName);
     if (classInfo != null) {
 
       /* Do we have a suitable constructor in this class? */
@@ -49,7 +48,14 @@ public class VmFunctionCallHelper {
       Optional<VmMethodInfo> matches = classInfo.findMatchesByFunctionNameAndMethodDescriptor("init", methodDescriptor);
       if (matches.isPresent()) {
         /* This is a constructor call. */
-        return new VmValueRef(null, classInfo.fqThisClassName);
+        AstDeclarationFunction astDeclarationFunction = matches.get().functionDeclaration;
+
+        /* Create instance 'self' */
+        VmValueRef vmValueRef_Self = new VmValueRef(null, classInfo.fqThisClassName);
+        callResolvedFunction(exprFunctionCall, astDeclarationFunction, vm, vmExecContext);
+
+        /* Constructor always returns void, but this is basically a new call so return self. */
+        return vmValueRef_Self;
       }
     }
 
@@ -60,13 +66,13 @@ public class VmFunctionCallHelper {
      * possible matches. */
     final Vm.Function function;
     if (expectedReturnDescriptor == null) {
-      List<Vm.Function> matches = vmExecContext.findMatchesByFunctionNameAndParameterList(functionName, parameterDescriptors);
+      List<Vm.Function> matches = vmExecContext.findFunctionsByNameAndParameters(functionName, parameterDescriptors);
       if (matches.isEmpty()) {
-        throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parmaeter '" + parameterDescriptors + "'", null);
+        throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parameter '" + parameterDescriptors + "'", null);
       }
 
       if (matches.size() > 1) {
-        throw new VmRuntimeException("Ambigius function call of function '" + functionName + "' with parmaeter '" + parameterDescriptors + "'. Found possible matches: " + matches, null);
+        throw new VmRuntimeException("Ambiguous function call of function '" + functionName + "' with parameter '" + parameterDescriptors + "'. Found possible matches: " + matches, null);
       }
 
       function = matches.get(0);
@@ -76,9 +82,9 @@ public class VmFunctionCallHelper {
       function = vmExecContext.getFunctionByName(functionName, methodDescriptor);
     }
 
-
     if (function.buildIn == null) {
-      // Call user function.
+      AstDeclarationFunction astDeclarationFunction = function.methodInfo.functionDeclaration;
+      return callResolvedFunction(exprFunctionCall, astDeclarationFunction, vm, vmExecContext);
     }
 
     /* Call native function and make sure the return value is correct. */
@@ -89,6 +95,28 @@ public class VmFunctionCallHelper {
     }
 
     throw new VmRuntimeException("Require return type of native function '" + functionName + "' of type '" + expectedReturnDescriptor + "' but found '" + actualDescriptor + "'", null);
+  }
+
+  /**
+   * Calls a fully resolved function.
+   *
+   * @param exprFunctionCall the AST function call.
+   * @param astDeclarationFunction the AST of the declared function.
+   * @param vm the virtual machine to call this method in.
+   * @param vmExecContext the execution context.
+   * @return the returned value of the function.
+   */
+  private static Vm.Value callResolvedFunction(AstExprFunctionCall exprFunctionCall, AstDeclarationFunction astDeclarationFunction, Vm vm, VmExecContext vmExecContext) {
+    /* Create a new VmExeContext for the function call. And resolve parameter. */
+    int i = 0;
+    var localVmExecContext = new VmDefaultExecContext(vmExecContext);
+
+    for (var pIdent : astDeclarationFunction.signature.params) {
+      localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFunctionCall.arguments.list.get(i), vmExecContext));
+      i += 1;
+    }
+
+    return vm.exec(astDeclarationFunction.body, localVmExecContext);
   }
 
   private static Vm.Value execMethodCall(AstExprFunctionCall exprFunctionCall, Vm vm, VmExecContext vmExecContext) {

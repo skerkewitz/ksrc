@@ -186,6 +186,9 @@ statements_list
     : statements*
     ;
 
+/* A compound statement (also called a "block") typically appears as the body of another statement, such as the if
+   statement. Declarations and Types describes the form and meaning of the declarations that can appear at the head of
+   a compound statement. */
 code_block
     : ':' statements_list 'end'                             #CodeBlock;
 

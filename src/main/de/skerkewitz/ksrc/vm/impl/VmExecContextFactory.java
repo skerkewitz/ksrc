@@ -4,6 +4,10 @@ import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class VmExecContextFactory {
 
   private VmExecContextFactory() {
@@ -23,8 +27,18 @@ public final class VmExecContextFactory {
 
   public static VmExecContext initialContext() {
     var context = new VmDefaultExecContext(null);
-    context.declareFunc(new Vm.Function(new VmMethodInfo("print", VmMethodDescriptor.fromString("(S)Z"), null), print_f));
-    context.declareFunc(new Vm.Function(new VmMethodInfo("println", VmMethodDescriptor.fromString("(S)Z"), null), println_f));
+
+    for (var f : buildInFunctionList()) {
+      context.declareFunc(f);
+    }
+
     return context;
+  }
+
+  public static List<Vm.Function> buildInFunctionList() {
+    return List.of(
+            new Vm.Function(new VmMethodInfo("print", VmMethodDescriptor.fromString("(S)V"), null), print_f),
+            new Vm.Function(new VmMethodInfo("println", VmMethodDescriptor.fromString("(S)V"), null), println_f)
+    );
   }
 }

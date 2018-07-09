@@ -1,6 +1,7 @@
 class Circle:
 
     fn init():
+        println("Constructor called!")
     end
 
     fn get-radius -> Int:

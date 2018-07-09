@@ -25,11 +25,21 @@ public class SemaInferExpressionTypes {
     if (node instanceof AstDeclarationFunction) {
       AstDeclarationFunction declarationFunction = (AstDeclarationFunction) node;
       String name = declarationFunction.name.ident;
-      String parameters = declarationFunction.signature.params.stream()
-              .map(parameter -> parameter.name.ident + ": " + parameter.type.name)
-              .collect(Collectors.joining(", "));
-      String returnType = declarationFunction.signature.returnType.name;
-      walk(declarationFunction.body, sema, localSymbols);
+//      String parameters = declarationFunction.signature.params.stream()
+//              .map(parameter -> parameter.name.ident + ": " + parameter.type.name)
+//              .collect(Collectors.joining(", "));
+//      String returnType = declarationFunction.signature.returnType.name;
+
+      /* Declare the return descriptor for the funtion in the current scope. */
+      localSymbols.declareSymbol(name, declarationFunction.signature.returnType.descriptor, declarationFunction.signature.returnType);
+
+      /* Create a new local function table. */
+      final SymbolTable localFunctionSymbolTable = new SymbolTable(localSymbols);
+      for (var p : declarationFunction.signature.params) {
+        localFunctionSymbolTable.declareSymbol(p.name.ident, p.type.descriptor, p.name);
+      }
+
+      walk(declarationFunction.body, sema, localFunctionSymbolTable);
       return;
     }
 
@@ -75,7 +85,7 @@ public class SemaInferExpressionTypes {
 
       if (declarationVar.initializer != null) {
         walk(declarationVar.initializer, sema, localSymbols);
-        declarationVar.descriptor = sema.resolveType(declarationVar.initializer, localSymbols);
+        declarationVar.descriptor = declarationVar.initializer.descriptor;
         localSymbols.declareSymbol(declarationVar.name.ident, declarationVar.descriptor, declarationVar);
       }
 
@@ -94,6 +104,7 @@ public class SemaInferExpressionTypes {
     if (node instanceof AstExprFunctionCall) {
       AstExprFunctionCall exprFunctionCall = (AstExprFunctionCall) node;
       walk(exprFunctionCall.fnName, sema, localSymbols);
+      exprFunctionCall.descriptor = exprFunctionCall.fnName.descriptor;
       return;
     }
 

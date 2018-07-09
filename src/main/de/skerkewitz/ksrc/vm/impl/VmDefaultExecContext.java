@@ -92,7 +92,7 @@ public final class VmDefaultExecContext implements VmExecContext {
   }
 
   @Override
-  public List<Vm.Function> findMatchesByFunctionNameAndParameterList(String functionName, List<VmDescriptor> parameterDescriptors) {
+  public List<Vm.Function> findFunctionsByNameAndParameters(String functionName, List<VmDescriptor> parameterDescriptors) {
 
     Stream<Vm.Function> functionStream = this.funcTable.values().stream()
             .filter(function -> function.methodInfo.name.equals(functionName))
@@ -101,7 +101,7 @@ public final class VmDefaultExecContext implements VmExecContext {
 
     List<Vm.Function> parents = Collections.EMPTY_LIST;
     if (parent != null) {
-      parents = parent.findMatchesByFunctionNameAndParameterList(functionName, parameterDescriptors);
+      parents = parent.findFunctionsByNameAndParameters(functionName, parameterDescriptors);
     }
 
     return Stream.concat(functionStream, parents.stream()).distinct().collect(Collectors.toList());

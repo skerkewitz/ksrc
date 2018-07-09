@@ -9,19 +9,28 @@ import java.util.Map;
 public final class SymbolTable {
 
     private final Map<String, VmDescriptor> symbolTable;
+    private final SymbolTable parent;
 
-    public SymbolTable(Map<String, VmDescriptor> symbolTable) {
+    public SymbolTable(Map<String, VmDescriptor> symbolTable, SymbolTable parent) {
       this.symbolTable = symbolTable;
+      this.parent = parent;
     }
 
-    public SymbolTable() {
-      this(new HashMap<>());
+    public SymbolTable(SymbolTable parent) {
+      this(new HashMap<>(), parent);
     }
-  //    private final Map<String, VmMethodDescriptor> funcTable = new HashMap<>();
-//    private final Map<String, Vm.ClassRef> classTable = new HashMap<>();
 
     public VmDescriptor getSymbolByName(String name) {
-        return this.symbolTable.get(name);
+      VmDescriptor vmDescriptor = this.symbolTable.get(name);
+      if (vmDescriptor != null) {
+        return vmDescriptor;
+      }
+
+      VmDescriptor returnDescriptor = parent != null ? parent.getSymbolByName(name) : null;
+      if (returnDescriptor == null) {
+        System.out.println("Could no find descriptor for symbol '" + name + "'");
+      }
+      return returnDescriptor;
     }
 
     public void declareSymbol(String name, VmDescriptor descriptor, AstNode node) {

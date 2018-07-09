@@ -32,7 +32,7 @@ class SemaTest {
 
     Sema sema = new Sema();
     sema.addClassDeclaration(classInfo);
-    VmDescriptor vmDescriptor = sema.resolveType(astExpr, new SymbolTable());
+    VmDescriptor vmDescriptor = sema.resolveType(astExpr, new SymbolTable(null));
 
     assertNotNull(vmDescriptor);
     assertEquals("Circle", vmDescriptor.fqClassName);

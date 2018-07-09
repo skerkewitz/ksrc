@@ -13,7 +13,7 @@ public interface VmExecContext {
   void setSymbolToValue(String ident, Vm.Value value);
 
   Vm.Function getFunctionByName(String name, VmMethodDescriptor descriptor);
-  List<Vm.Function> findMatchesByFunctionNameAndParameterList(String functionName, List<VmDescriptor> parameterDescriptors);
+  List<Vm.Function> findFunctionsByNameAndParameters(String functionName, List<VmDescriptor> parameterDescriptors);
   void declareFunc(Vm.Function function);
 
   boolean shouldLeaveFrame();
