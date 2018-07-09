@@ -1,2 +1,2 @@
 # ksrc
-KSrc programming langauge
+KSrc programming language
