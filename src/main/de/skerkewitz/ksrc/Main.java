@@ -90,8 +90,9 @@ public class Main {
     Vm vm = new DefaultVm(sema);
     Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
-    System.out.println("Done: " + ret.string_value());
-    System.out.println("Type: " + ret.descriptor());
+    System.out.println("\n\n---");
+    System.out.println("EvalValue : " + ret.string_value());
+    System.out.println("EvalType  : " + ret.descriptor());
 
   }
 

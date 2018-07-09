@@ -26,7 +26,7 @@ public class SemaInferExpressionTypes {
       AstDeclarationFunction declarationFunction = (AstDeclarationFunction) node;
       String name = declarationFunction.name.ident;
       String parameters = declarationFunction.signature.params.stream()
-              .map(parameter -> parameter.name.ident + ": " + parameter.typename.name)
+              .map(parameter -> parameter.name.ident + ": " + parameter.type.name)
               .collect(Collectors.joining(", "));
       String returnType = declarationFunction.signature.returnType.name;
       walk(declarationFunction.body, sema, localSymbols);

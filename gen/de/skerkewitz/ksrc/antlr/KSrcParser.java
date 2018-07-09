@@ -41,7 +41,7 @@ public class KSrcParser extends Parser {
 		"declaration", "class_declaration", "function_declaration", "type_annotation", 
 		"initializer", "astNode", "postfix_expression", "primary_expression",
 		"literal_expression", "function_call_argument_clause", "function_call_argument_list", 
-		"typename", "identifier", "function_signature", "function_result", "function_parameters", 
+		"type", "identifier", "function_signature", "function_result", "function_parameters",
 		"function_parameter", "statements_list", "code_block", "numeric_literal", 
 		"string_literal", "boolean_literal", "nil_literal"
 	};

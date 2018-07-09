@@ -67,7 +67,9 @@ public class Sema {
     if (classInfo != null) {
 
       /* Do we have a suitable constructor in this class? */
-      List<VmDescriptor> argumentsDescriptor = Arrays.stream(exprFunctionCall.args).map(expr -> expr.descriptor).collect(Collectors.toList());
+      List<VmDescriptor> argumentsDescriptor = exprFunctionCall.arguments.list.stream()
+              .map(expr -> expr.descriptor)
+              .collect(Collectors.toList());
       List<VmMethodInfo> methodInfos = classInfo.findMatchesByFunctionNameWithArgs(functionName, argumentsDescriptor);
       if (methodInfos.isEmpty()) {
         throw new SemaException(exprFunctionCall, "Could not find suitable function");
@@ -91,8 +93,11 @@ public class Sema {
     if (classInfo != null) {
 
       /* Do we have a suitable constructor in this class? */
-      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(new VmDescriptor(Type.VOID),
-              Arrays.stream(exprFunctionCall.args).map(expr -> expr.descriptor).collect(Collectors.toList()));
+      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(
+              new VmDescriptor(Type.VOID),
+              exprFunctionCall.arguments.list.stream()
+                      .map(expr -> expr.descriptor)
+                      .collect(Collectors.toList()));
 
       Optional<VmMethodInfo> matches = classInfo.findMatchesByFunctionNameAndMethodDescriptor("init", methodDescriptor);
       if (matches.isPresent()) {
@@ -122,7 +127,7 @@ public class Sema {
     else if (astExpr instanceof AstExprFunctionCall) {
       AstExprFunctionCall exprFuncCall = (AstExprFunctionCall) astExpr;
       AstExpr fnName = exprFuncCall.fnName;
-      Vm.Function function = vmExecContext.getFuncByName(null, null);
+      Vm.Function function = vmExecContext.getFunctionByName(null, null);
       //return function.signature.returnType;
 
       return null;

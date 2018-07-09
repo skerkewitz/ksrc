@@ -5,12 +5,18 @@ import de.skerkewitz.ksrc.ast.Type;
 import java.util.Objects;
 
 public class VmDescriptor {
+
   public final Type type;
   /**
    * If the field is of descriptor <code>Type.ANY_REF</code> then this field specifes the fully qualified class name, else
    * it is null
    */
   public final String fqClassName;
+
+  public static final VmDescriptor Void = new VmDescriptor(Type.VOID);
+  public static final VmDescriptor String = new VmDescriptor(Type.STRING);
+  public static final VmDescriptor Int = new VmDescriptor(Type.INT);
+  public static final VmDescriptor Double = new VmDescriptor(Type.DOUBLE);
 
   public VmDescriptor(Type type, String fqClassName) {
 

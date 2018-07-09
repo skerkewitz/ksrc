@@ -1,7 +1,10 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
+import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
+
+import java.util.List;
 
 public interface VmExecContext {
 
@@ -9,14 +12,14 @@ public interface VmExecContext {
   void declareSymbol(String name, Vm.Value value);
   void setSymbolToValue(String ident, Vm.Value value);
 
-  Vm.Function getFuncByName(String name, FunctionSignature signature);
-  void declareFunc(Vm.Function func);
+  Vm.Function getFunctionByName(String name, VmMethodDescriptor descriptor);
+  List<Vm.Function> findMatchesByFunctionNameAndParameterList(String functionName, List<VmDescriptor> parameterDescriptors);
+  void declareFunc(Vm.Function function);
 
   boolean shouldLeaveFrame();
-
   void markLeaveFrame();
 
-  void declareClass(Vm.ClassRef classRef);
+
 
 
   class VmUnknownSymbol extends RuntimeException {

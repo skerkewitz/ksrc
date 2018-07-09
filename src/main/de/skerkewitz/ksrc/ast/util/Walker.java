@@ -3,7 +3,6 @@ package de.skerkewitz.ksrc.ast.util;
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.AstTypeIdentifier;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
@@ -12,7 +11,6 @@ import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Walker {
@@ -89,7 +87,7 @@ public class Walker {
       AstDeclarationFunction declarationFunction = (AstDeclarationFunction) node;
       String name = declarationFunction.name.ident;
       String parameters = declarationFunction.signature.params.stream()
-              .map(parameter -> parameter.name.ident + ": " + parameter.typename.name)
+              .map(parameter -> parameter.name.ident + ": " + parameter.type.name)
               .collect(Collectors.joining(", "));
       String returnType = declarationFunction.signature.returnType.name;
       ps.println("(func " + name + " " + returnType + " (" + parameters + ") (");
@@ -160,7 +158,7 @@ public class Walker {
       ps.print("(call ");
       walk(exprFunctionCall.fnName);
       ps.print(" (");
-      ps.print(Arrays.stream(exprFunctionCall.args).map(astExpr -> exprToString(astExpr)).collect(Collectors.joining(", ")));
+      ps.print(exprFunctionCall.arguments.list.stream().map(astExpr -> exprToString(astExpr)).collect(Collectors.joining(", ")));
       ps.print("))");
       return;
     }

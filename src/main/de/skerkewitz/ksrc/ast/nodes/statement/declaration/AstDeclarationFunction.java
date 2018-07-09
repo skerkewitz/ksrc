@@ -1,12 +1,10 @@
 package de.skerkewitz.ksrc.ast.nodes.statement.declaration;
 
 import de.skerkewitz.ksrc.antlr.SourceLocation;
-import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.AstTypeIdentifier;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,12 +28,12 @@ public class AstDeclarationFunction extends AstDeclarationStatement {
   public static class Parameter extends AstNode {
 
     public final AstExprIdent name;
-    public final AstTypeIdentifier typename;
+    public final AstTypeIdentifier type;
 
-    public Parameter(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typename) {
+    public Parameter(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier type) {
       super(srcLoc);
       this.name = name;
-      this.typename = typename;
+      this.type = type;
     }
   }
 

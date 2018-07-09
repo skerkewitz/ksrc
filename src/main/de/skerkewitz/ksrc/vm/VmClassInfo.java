@@ -54,4 +54,11 @@ public class VmClassInfo {
             .filter(vmMethodInfo -> vmMethodInfo.descriptor.equals(methodDescriptor))
             .findFirst();
   }
+
+  public Optional<VmMethodInfo> findMatchesByFunctionNameAndParameterList(String functionName, List<VmDescriptor> parameterDescriptors) {
+    return methods.stream()
+            .filter(vmMethodInfo -> vmMethodInfo.name.equals(functionName))
+            .filter(vmMethodInfo -> vmMethodInfo.descriptor.parameterDescriptor.equals(parameterDescriptors))
+            .findFirst();
+  }
 }

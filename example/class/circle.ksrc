@@ -22,6 +22,8 @@ var n = cl.get-radius()
 var x = cl.foo().foo().get-radius()
 var b = n
 
+print("Hallo")
+
 cl.foo()
 
 

@@ -1,11 +1,13 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.FunctionSignature;
-import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
+import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
+import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class VmDefaultExecContext implements VmExecContext {
 
@@ -14,7 +16,6 @@ public final class VmDefaultExecContext implements VmExecContext {
 
     private final Map<String, Vm.Value> symbolTable = new HashMap<>();
     private final Map<String, Vm.Function> funcTable = new HashMap<>();
-    private final Map<String, Vm.ClassRef> classTable = new HashMap<>();
 
     private boolean _leaveFrame = false;
 
@@ -71,28 +72,49 @@ public final class VmDefaultExecContext implements VmExecContext {
   }
 
   @Override
-  public Vm.Function getFuncByName(String name, FunctionSignature signature) {
+  public Vm.Function getFunctionByName(String name, VmMethodDescriptor descriptor) {
     String fqn = name;
     var symbol = this.funcTable.get(fqn);
     if (symbol != null) {
-      return symbol;
+      /* Make sure the descriptor matches. */
+      if (symbol.methodInfo.descriptor.equals(descriptor)) {
+        return symbol;
+      }
+
+      throw new VmRuntimeException("Require function of type '" + descriptor + "' but found '" + symbol.methodInfo.descriptor + "'", null);
     }
 
     if (parent != null) {
-      return parent.getFuncByName(name, signature);
+      return parent.getFunctionByName(name, descriptor);
     }
 
     throw new VmUnknownSymbol(fqn);
   }
 
   @Override
-  public void declareFunc(Vm.Function func) {
-    String fqn = func.name;
+  public List<Vm.Function> findMatchesByFunctionNameAndParameterList(String functionName, List<VmDescriptor> parameterDescriptors) {
+
+    Stream<Vm.Function> functionStream = this.funcTable.values().stream()
+            .filter(function -> function.methodInfo.name.equals(functionName))
+            .filter(function -> function.methodInfo.descriptor.parameterDescriptor.equals(parameterDescriptors));
+
+
+    List<Vm.Function> parents = Collections.EMPTY_LIST;
+    if (parent != null) {
+      parents = parent.findMatchesByFunctionNameAndParameterList(functionName, parameterDescriptors);
+    }
+
+    return Stream.concat(functionStream, parents.stream()).distinct().collect(Collectors.toList());
+  }
+
+  @Override
+  public void declareFunc(Vm.Function function) {
+    String fqn = function.methodInfo.name;
     if (this.funcTable.containsKey(fqn)) {
       throw new VmSymbolAlreadyDeclared(fqn);
     }
 
-    this.funcTable.put(fqn, func);
+    this.funcTable.put(fqn, function);
   }
 
   @Override
@@ -105,18 +127,4 @@ public final class VmDefaultExecContext implements VmExecContext {
       _leaveFrame = true;
   }
 
-  @Override
-  public void declareClass(Vm.ClassRef classRef) {
-    String fqn = classRef.className;
-    if (this.classTable.containsKey(fqn)) {
-      throw new VmSymbolAlreadyDeclared(fqn);
-    }
-
-    this.classTable.put(fqn, classRef);
-
-    var fref = ((Vm.FunctionRef) getFuncByName("init", new FunctionSignature(Type.VOID, null))).funcRef;
-
-    // Hack for default constructor
-    declareFunc(new Vm.FunctionRef(fqn, fref, new FunctionSignature(Type.ANY_REF, null)));
-  }
 }

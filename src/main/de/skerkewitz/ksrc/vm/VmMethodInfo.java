@@ -22,7 +22,8 @@ public class VmMethodInfo {
   public final AstDeclarationFunction functionDeclaration;
 
   public VmMethodInfo(String name, VmMethodDescriptor descriptor, AstDeclarationFunction functionDeclaration) {
-    if (name == null || descriptor == null || functionDeclaration == null) {
+    // TODO: use factory method for each kind (native, abstract, instance, class, global)
+    if (name == null || descriptor == null) {
       throw new IllegalArgumentException("Arguments can not be null");
     }
 

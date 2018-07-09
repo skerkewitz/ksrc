@@ -87,7 +87,7 @@ function_declaration
     : FUNC identifier function_signature code_block
     ;
 
-type_annotation: (':' typename);
+type_annotation: (':' type);
 initializer: (ASSIGN astNode);
 
 POW:    '^';
@@ -161,7 +161,7 @@ literal_expression
 function_call_argument_clause: '(' function_call_argument_list ')'    #FunctionCallArgumentClause;
 function_call_argument_list: (astNode (',' astNode)*)?            #FunctionCallArgumentList;
 
-typename: NAME ;
+type: NAME ;
 identifier: NAME ;
 
 
@@ -171,7 +171,7 @@ function_signature
     ;
 
 function_result:
-    typename
+    type
     ;
 
 function_parameters
@@ -179,7 +179,7 @@ function_parameters
     ;
 
 function_parameter
-    : identifier ':' typename                                #FunctionParameter
+    : identifier ':' type                                #FunctionParameter
     ;
 
 statements_list

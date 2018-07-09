@@ -1,6 +1,5 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.FunctionSignature;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprExplicitMemberAccess;
@@ -37,26 +36,59 @@ public class VmFunctionCallHelper {
   private static Vm.Value execFunctionCall(AstExprFunctionCall exprFunctionCall, Vm vm, VmExecContext vmExecContext) {
 
     /* Check for Constructor call first. */
-    AstExprIdent ident = (AstExprIdent) exprFunctionCall.fnName;
-    VmClassInfo classInfo = vm.getSema().findClassInfoWithName(ident.ident);
+    final String functionName = ((AstExprIdent) exprFunctionCall.fnName).ident;
+    final List<VmDescriptor> parameterDescriptors = exprFunctionCall.arguments.list.stream()
+            .map(expr -> expr.descriptor)
+            .collect(Collectors.toList());
+
+    VmClassInfo classInfo = vm.getSema().findClassInfoWithName(functionName);
     if (classInfo != null) {
 
       /* Do we have a suitable constructor in this class? */
-      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(new VmDescriptor(Type.VOID),
-              Arrays.stream(exprFunctionCall.args).map(expr -> expr.descriptor).collect(Collectors.toList()));
-
+      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(VmDescriptor.Void, parameterDescriptors);
       Optional<VmMethodInfo> matches = classInfo.findMatchesByFunctionNameAndMethodDescriptor("init", methodDescriptor);
       if (matches.isPresent()) {
-        /* This is a constructore call. */
+        /* This is a constructor call. */
         return new VmValueRef(null, classInfo.fqThisClassName);
       }
     }
 
-    // TODO Fix simple methods
-    // TODO Fix build in methods
+    /* Build descriptor for function */
+    VmDescriptor expectedReturnDescriptor = exprFunctionCall.descriptor;
 
-    /* I don't know how to call this function. */
-    throw new UnknownFunctionCallType(exprFunctionCall);
+    /* If we have a valid return descriptor then we can lookup the function directly, else we need to check for
+     * possible matches. */
+    final Vm.Function function;
+    if (expectedReturnDescriptor == null) {
+      List<Vm.Function> matches = vmExecContext.findMatchesByFunctionNameAndParameterList(functionName, parameterDescriptors);
+      if (matches.isEmpty()) {
+        throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parmaeter '" + parameterDescriptors + "'", null);
+      }
+
+      if (matches.size() > 1) {
+        throw new VmRuntimeException("Ambigius function call of function '" + functionName + "' with parmaeter '" + parameterDescriptors + "'. Found possible matches: " + matches, null);
+      }
+
+      function = matches.get(0);
+    }
+    else {
+      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(expectedReturnDescriptor, parameterDescriptors);
+      function = vmExecContext.getFunctionByName(functionName, methodDescriptor);
+    }
+
+
+    if (function.buildIn == null) {
+      // Call user function.
+    }
+
+    /* Call native function and make sure the return value is correct. */
+    Vm.Value value = function.buildIn.exec(vm, exprFunctionCall.arguments.list, vmExecContext);
+    VmDescriptor actualDescriptor = value.descriptor();
+    if (expectedReturnDescriptor == null || actualDescriptor.equals(expectedReturnDescriptor)) {
+      return value;
+    }
+
+    throw new VmRuntimeException("Require return type of native function '" + functionName + "' of type '" + expectedReturnDescriptor + "' but found '" + actualDescriptor + "'", null);
   }
 
   private static Vm.Value execMethodCall(AstExprFunctionCall exprFunctionCall, Vm vm, VmExecContext vmExecContext) {
@@ -82,7 +114,9 @@ public class VmFunctionCallHelper {
     }
 
     /* Do we have a suitable constructor in this class? */
-    List<VmDescriptor> argumentsDescriptor = Arrays.stream(exprFunctionCall.args).map(expr -> expr.descriptor).collect(Collectors.toList());
+    List<VmDescriptor> argumentsDescriptor = exprFunctionCall.arguments.list.stream()
+            .map(expr -> expr.descriptor)
+            .collect(Collectors.toList());
     List<VmMethodInfo> methodInfos = classInfo.findMatchesByFunctionNameWithArgs(functionName, argumentsDescriptor);
     if (methodInfos.isEmpty()) {
       throw new Sema.SemaException(exprFunctionCall, "Could not find suitable function");
@@ -99,7 +133,7 @@ public class VmFunctionCallHelper {
     var localVmExecContext = new VmDefaultExecContext(vmExecContext);
     int i = 0;
     for (var pIdent : vmMethodInfo.functionDeclaration.signature.params) {
-      localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFunctionCall.args[i], vmExecContext));
+      localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFunctionCall.arguments.list.get(i), vmExecContext));
       i += 1;
     }
 
@@ -108,7 +142,7 @@ public class VmFunctionCallHelper {
   }
 
     //
-//      var types = Arrays.stream(exprFuncCall.args)
+//      var types = Arrays.stream(exprFuncCall.arguments)
 //              .map((AstExpr astExpr) -> Sema.getResultType(astExpr, vmExecContext))
 //              .toArray(Type[]::new);
 //
@@ -124,7 +158,7 @@ public class VmFunctionCallHelper {
 //        throw new VmRuntimeException("Can not resolve function call base", exprFuncCall.srcLocation);
 //      }
 //
-//      var stmts = vmExecContext.getFuncByName(fnName, functionSignature);
+//      var stmts = vmExecContext.getFunctionByName(fnName, functionSignature);
 //      if (stmts != null) {
 //        if (stmts instanceof Vm.FunctionRef) {
 //          var vmFuncRef = (Vm.FunctionRef) stmts;
@@ -132,8 +166,8 @@ public class VmFunctionCallHelper {
 //          /* Create a new VmExeContext for the function call. And resolve parameter. */
 //          var localVmExecContext = new VmDefaultExecContext(vmExecContext);
 //          int i = 0;
-//          for (var pIdent : vmFuncRef.funcRef.signature.params) {
-//            localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFuncCall.args[i], vmExecContext));
+//          for (var pIdent : vmFuncRef.funcRef.signature.list) {
+//            localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFuncCall.arguments[i], vmExecContext));
 //            i += 1;
 //          }
 //
@@ -142,7 +176,7 @@ public class VmFunctionCallHelper {
 //        }
 //
 //        var vmFuncBuildIn = (Vm.FunctionBuildInRef) stmts;
-//        return vmFuncBuildIn.funcRef.exec(vm, exprFuncCall.args, vmExecContext);
+//        return vmFuncBuildIn.funcRef.exec(vm, exprFuncCall.arguments, vmExecContext);
 //      }
 //
 //
@@ -157,7 +191,7 @@ public class VmFunctionCallHelper {
 //
 //
 //
-//    var types = Arrays.stream(exprFuncCall.args)
+//    var types = Arrays.stream(exprFuncCall.arguments)
 //            .map((AstExpr astExpr) -> Sema.getResultType(astExpr, vmExecContext))
 //            .toArray(Type[]::new);
 //
@@ -174,7 +208,7 @@ public class VmFunctionCallHelper {
 //      throw new VmRuntimeException("Can not resolve function call base", exprFuncCall.srcLocation);
 //    }
 //
-//    var stmts = vmExecContext.getFuncByName(fnName,functionSignature);
+//    var stmts = vmExecContext.getFunctionByName(fnName,functionSignature);
 //    if (stmts != null) {
 //      if (stmts instanceof Vm.FunctionRef) {
 //        var vmFuncRef = (Vm.FunctionRef) stmts;
@@ -182,8 +216,8 @@ public class VmFunctionCallHelper {
 //        /* Create a new VmExeContext for the function call. And resolve parameter. */
 //        var localVmExecContext = new VmDefaultExecContext(vmExecContext);
 //        int i = 0;
-//        for (var pIdent : vmFuncRef.funcRef.signature.params) {
-//          localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFuncCall.args[i], vmExecContext));
+//        for (var pIdent : vmFuncRef.funcRef.signature.list) {
+//          localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFuncCall.arguments[i], vmExecContext));
 //          i += 1;
 //        }
 //
@@ -192,7 +226,7 @@ public class VmFunctionCallHelper {
 //      }
 //
 //      var vmFuncBuildIn = (Vm.FunctionBuildInRef) stmts;
-//      return vmFuncBuildIn.funcRef.exec(vm, exprFuncCall.args, vmExecContext);
+//      return vmFuncBuildIn.funcRef.exec(vm, exprFuncCall.arguments, vmExecContext);
 //    }
 //    return null;
 //  }

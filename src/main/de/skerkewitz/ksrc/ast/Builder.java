@@ -10,7 +10,6 @@ import de.skerkewitz.ksrc.ast.nodes.statement.declaration.*;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,48 +212,36 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstStatement visitExprCall(KSrcParser.ExprCallContext ctx) {
-
-    /* Get the parameters. */
-    final AstExpr[] args;
-
-    KSrcParser.Function_call_argument_listContext function_call_argument_listContext
-            = new KSrcParser.FunctionCallArgumentClauseContext(ctx.function_call_argument_clause())
-                .function_call_argument_list();
-
-    List<AstExpr> result = new ArrayList<>();
-    if (function_call_argument_listContext != null) {
-      KSrcParser.FunctionCallArgumentListContext functionCallArgumentListContext = new KSrcParser.FunctionCallArgumentListContext(function_call_argument_listContext);
-      final int childCount = functionCallArgumentListContext.expression().size();
-
-      for (int i = 0; i < childCount; ++i) {
-        ParseTree child = functionCallArgumentListContext.getChild(i);
-        result.add((AstExpr) visit(child));
-      }
-    }
-    args = result.toArray(new AstExpr[result.size()]);
     AstExpr fnName = visit(ctx.postfix_expression(), AstExpr.class);
-    return new AstExprFunctionCall(SourceLocation.fromContext(ctx), fnName, args);
+    AstExprFunctionCall.Arguments arguments = visit(ctx.function_call_argument_clause(), AstExprFunctionCall.Arguments.class);
+    return new AstExprFunctionCall(SourceLocation.fromContext(ctx), fnName, arguments);
   }
 
   @Override
-  public AstNode visitFunctionCallArgumentClause(KSrcParser.FunctionCallArgumentClauseContext ctx) {
-    return super.visitFunctionCallArgumentClause(ctx);
+  public AstExprFunctionCall.Arguments visitFunctionCallArgumentClause(KSrcParser.FunctionCallArgumentClauseContext ctx) {
+    return visit(ctx.function_call_argument_list(), AstExprFunctionCall.Arguments.class);
+  }
+
+  @Override
+  public AstExprFunctionCall.Arguments visitFunctionCallArgumentList(KSrcParser.FunctionCallArgumentListContext ctx) {
+    List<AstExpr> argumentList = ctx.expression().stream().map(c -> visit(c, AstExpr.class)).collect(Collectors.toList());
+    return new AstExprFunctionCall.Arguments(SourceLocation.fromContext(ctx), argumentList);
   }
 
   @Override
   public AstNode visitLiteralInteger(KSrcParser.LiteralIntegerContext ctx) {
-    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), new VmDescriptor(Type.INT, null));
+    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), VmDescriptor.Int);
   }
 
   @Override
   public AstNode visitLiteralFloat(KSrcParser.LiteralFloatContext ctx) {
-    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), new VmDescriptor(Type.INT, null));
+    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), VmDescriptor.Double);
   }
 
   @Override
   public AstNode visitString_literal(KSrcParser.String_literalContext ctx) {
     String text = ctx.getText();
     String value = text.substring(1, text.length() - 1);
-    return new AstExprValue(SourceLocation.fromContext(ctx), value, new VmDescriptor(Type.INT, null));
+    return new AstExprValue(SourceLocation.fromContext(ctx), value, VmDescriptor.String);
   }
 }

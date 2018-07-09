@@ -1,8 +1,6 @@
 package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
-import de.skerkewitz.ksrc.ast.FunctionSignature;
-import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
@@ -11,10 +9,6 @@ import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationStatemen
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
-import de.skerkewitz.ksrc.vm.exceptions.VmInvalidFuncRedeclaration;
-import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
-
-import java.util.Arrays;
 
 /**
  * Quick and dirty default implementation of the ksrc {@link Vm}
@@ -182,8 +176,8 @@ public class DefaultVm implements Vm {
 //      final var stmtDeclFunc = (AstDeclarationFunction) statement;
 //      final var funcIdent = stmtDeclFunc.name.ident;
 //      try {
-//        var params = stmtDeclFunc.signature.params.stream().map(o -> o.typename.descriptor.type).toArray(Type[]::new);
-//        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, params);
+//        var list = stmtDeclFunc.signature.list.stream().map(o -> o.type.descriptor.type).toArray(Type[]::new);
+//        FunctionSignature functionSignature = new FunctionSignature(Type.VOID, list);
 //        vmExecContext.declareFunc(new FunctionRef(funcIdent, stmtDeclFunc, functionSignature));
 //      } catch (VmDefaultExecContext.VmSymbolAlreadyDeclared e) {
 //        throw new VmInvalidFuncRedeclaration(funcIdent, stmtDeclFunc.srcLocation);

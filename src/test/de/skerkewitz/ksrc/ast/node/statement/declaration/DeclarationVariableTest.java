@@ -45,7 +45,7 @@ public class DeclarationVariableTest {
   @Test
   void withTypeWithInitializer() throws IOException {
 
-    var input = "var a: int = 5\n";
+    var input = "var a: Int = 5\n";
 
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
@@ -58,7 +58,7 @@ public class DeclarationVariableTest {
   @Test
   void withTypeNoInitializer() throws IOException {
 
-    var input = "var a: int\n";
+    var input = "var a: Int\n";
 
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);

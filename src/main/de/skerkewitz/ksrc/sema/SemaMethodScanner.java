@@ -30,7 +30,7 @@ public class SemaMethodScanner {
   public static VmMethodInfo scanSingleMethod(AstDeclarationFunction functionDeclaration) {
     final var className = functionDeclaration.name.ident;
 
-    List<VmDescriptor> paramList = functionDeclaration.signature.params.stream().map(parameter -> parameter.typename.descriptor).collect(Collectors.toList());
+    List<VmDescriptor> paramList = functionDeclaration.signature.params.stream().map(parameter -> parameter.type.descriptor).collect(Collectors.toList());
     VmDescriptor returnDescriptor = functionDeclaration.signature.returnType.descriptor;
 
     VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(returnDescriptor, paramList);
