@@ -1,22 +1,27 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.FunctionSignature;
+import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.Type;
+import de.skerkewitz.ksrc.sema.Sema;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
+
+import java.util.List;
 
 /**
  * A vm for the Ast nodes.
  */
 public interface Vm {
 
+  Sema getSema();
+
   /** A initializer in the virtual machine. */
   interface Value {
 
-    /** The type of the initializer. */
-    Type type();
+    /** The descriptor of the initializer. */
+    VmDescriptor descriptor();
 
     /** The string representation of the initializer. */
     String string_value();
@@ -35,63 +40,34 @@ public interface Vm {
 
     /** Create a new value "this + other" */
     Value add (Value other);
+
+    Object ref_value();
   }
 
   class Function {
 
+    /** Allows to implement build in functions. */
+    public interface BuildIn {
+      Value exec(Vm vm, List<AstExpr> args, VmExecContext execContext);
+    }
+
     /** Plain name of the funtion. */
-    public final String name;
-    public final FunctionSignature signature;
+    public final VmMethodInfo methodInfo;
+    public final BuildIn buildIn;
 
-    public Function(String name, FunctionSignature signature) {
-      this.name = name;
-      this.signature = signature;
-    }
-
-    public String getMangledName() {
-      return null; //
+    public Function(VmMethodInfo methodInfo, BuildIn buildIn) {
+      this.methodInfo = methodInfo;
+      this.buildIn = buildIn;
     }
   }
 
   /**
-   * Allows to implement build in functions.
-   */
-  interface FunctionBuildIn {
-    Value exec(Vm vm, AstExpr[] args, VmExecContext execContext);
-  }
-
-  /**
-   * Allows to implement build in functions.
-   */
-  class FunctionBuildInRef extends Function {
-    public final FunctionBuildIn funcRef;
-
-    public FunctionBuildInRef(String name, FunctionBuildIn funcRef, FunctionSignature signature) {
-      super(name, signature);
-      this.funcRef = funcRef;
-    }
-  }
-
-  /**
-   * Allows to implement build in functions.
-   */
-  class FunctionRef extends Function {
-    public final AstDeclarationFunction funcRef;
-
-    public FunctionRef(String name, AstDeclarationFunction funcRef, FunctionSignature signature) {
-      super(name, signature);
-      this.funcRef = funcRef;
-    }
-  }
-
-  /**
-   * Evaluates the given expression and returns the initializer.
+   * Evaluates the given astNode and returns the initializer.
    *
    * @param expression the {@link AstExpr} to evaluate
-   * @return the String initializer of the evaluated expression.
+   * @return the String initializer of the evaluated astNode.
    */
   Value eval(AstExpr expression, VmExecContext execContext);
-
 
   /**
    * Execute the given thenStatement.
@@ -101,4 +77,31 @@ public interface Vm {
    */
   Value exec(AstStatement statement, VmExecContext execContext);
 
+
+  class VmException extends RuntimeException {
+    public final AstNode astNode;
+
+    public VmException(AstNode astNode, String message) {
+      super(message);
+      this.astNode = astNode;
+    }
+  }
+
+  class UnknownExpression extends VmException {
+    public UnknownExpression(AstExpr expression) {
+      super(expression, "Unknown expression instruction" + expression);
+    }
+  }
+
+  class UnknownStatement extends VmException {
+    public UnknownStatement(AstStatement statement) {
+      super(statement, "Unknown statement instruction " + statement);
+    }
+  }
+
+  class UnknownFunctionReference extends VmException {
+    public UnknownFunctionReference(AstExprFunctionCall expressionFuncCall) {
+      super(expressionFuncCall, "Unknown function reference " + expressionFuncCall);
+    }
+  }
 }

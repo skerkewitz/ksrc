@@ -23,7 +23,7 @@ public class DeclarationVariableTest {
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
-    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
+    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
     assertEquals("a", sut.name.ident);
     assertNull(sut.typeIdentifier);
     assertNull(sut.initializer);
@@ -45,26 +45,26 @@ public class DeclarationVariableTest {
   @Test
   void withTypeWithInitializer() throws IOException {
 
-    var input = "var a: int = 5\n";
+    var input = "var a: Int = 5\n";
 
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
-    assertEquals(Type.INT, sut.typeIdentifier.type());
+    assertEquals(Type.INT, sut.typeIdentifier.descriptor.type);
     assertNotNull(sut.initializer);
   }
 
   @Test
   void withTypeNoInitializer() throws IOException {
 
-    var input = "var a: int\n";
+    var input = "var a: Int\n";
 
     ParseTree tree = parserFromString(input).declaration();
     var sut = (AstDeclarationVar) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
-    assertEquals(Type.INT, sut.typeIdentifier.type());
+    assertEquals(Type.INT, sut.typeIdentifier.descriptor.type);
     assertNull(sut.initializer);
   }
 }

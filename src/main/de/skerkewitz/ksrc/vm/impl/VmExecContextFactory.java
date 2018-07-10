@@ -1,30 +1,48 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.FunctionSignature;
-import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.VmMethodInfo;
+import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
+
+import java.util.List;
 
 public final class VmExecContextFactory {
 
   private VmExecContextFactory() {
   }
 
-  private final static Vm.FunctionBuildIn print_f = (vm, args, execContext) -> {
-    Vm.Value eval = vm.eval(args[0], execContext);
+  private final static Vm.Function.BuildIn print_f = (vm, args, execContext) -> {
+    Vm.Value eval = vm.eval(args.get(0), execContext);
     System.out.print(eval.string_value());
     return VmValueVoid.shared;
   };
 
-  private final static Vm.FunctionBuildIn println_f = (vm, args, execContext) -> {
-    Vm.Value eval = vm.eval(args[0], execContext);
+  private final static Vm.Function.BuildIn println_f = (vm, args, execContext) -> {
+    Vm.Value eval = vm.eval(args.get(0), execContext);
     System.out.println(eval.string_value());
     return VmValueVoid.shared;
   };
 
+  private final static Vm.Function.BuildIn str_f = (vm, args, execContext) -> {
+    Vm.Value eval = vm.eval(args.get(0), execContext);
+    return new VmValueString(eval.string_value());
+  };
+
   public static VmExecContext initialContext() {
     var context = new VmDefaultExecContext(null);
-    context.declareFunc(new Vm.FunctionBuildInRef("print", print_f, new FunctionSignature(Type.VOID, new Type[]{Type.STRING})));
-    context.declareFunc(new Vm.FunctionBuildInRef("println", println_f, new FunctionSignature(Type.VOID, new Type[]{Type.STRING})));
+
+    for (var f : buildInFunctionList()) {
+      context.declareFunc(f);
+    }
+
     return context;
+  }
+
+  public static List<Vm.Function> buildInFunctionList() {
+    return List.of(
+            new Vm.Function(new VmMethodInfo("print", VmMethodDescriptor.fromString("(S)V"), null), print_f),
+            new Vm.Function(new VmMethodInfo("println", VmMethodDescriptor.fromString("(S)V"), null), println_f),
+            new Vm.Function(new VmMethodInfo("str", VmMethodDescriptor.fromString("(I)S"), null), str_f)
+    );
   }
 }

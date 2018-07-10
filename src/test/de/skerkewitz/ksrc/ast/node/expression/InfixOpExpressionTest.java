@@ -11,11 +11,11 @@ public class InfixOpExpressionTest {
 //    var input = "i = i + 1\n";
 //
 //    ParseTree tree = parserFromString(input).thenStatement();
-//    var sut = (AstAssignStatement) new Builder().visit(tree);
+//    var sut = (AstStatementAssign) new Builder().visit(tree);
 //
-//    //assertEquals("myPrint", sut.condition.type == Type.BOOL);
-//    assertEquals("i", sut.ident.ident);
-//    assertNotNull(sut.expression);
+//    //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
+//    assertEquals("i", sut.name.name);
+//    assertNotNull(sut.astNode);
 //  }
 
 }

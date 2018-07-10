@@ -2,13 +2,14 @@ package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class VmValueVoid extends AbstractVmValue<Void> {
 
   public final static VmValueVoid shared = new VmValueVoid(null);
 
   public VmValueVoid(Void value) {
-    super(value, Type.VOID);
+    super(value, new VmDescriptor(Type.VOID, null));
   }
 
   @Override

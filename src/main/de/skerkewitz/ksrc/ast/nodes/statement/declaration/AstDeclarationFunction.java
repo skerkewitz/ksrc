@@ -5,12 +5,11 @@ import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.AstTypeIdentifier;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 
 import java.util.Collections;
 import java.util.List;
 
-public class AstDeclarationFunction extends AstStatement {
+public class AstDeclarationFunction extends AstDeclarationStatement {
 
   /** Defines a single parameter in a function declaration. */
   public static class Signature extends AstNode {
@@ -21,7 +20,7 @@ public class AstDeclarationFunction extends AstStatement {
     public Signature(SourceLocation srcLoc, AstFunctionParameters params, AstTypeIdentifier returnType) {
       super(srcLoc);
       this.params = params == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(params.params);
-      this.returnType = returnType;
+      this.returnType = returnType == null ? new AstTypeIdentifier(srcLoc, "Void") : returnType;
     }
   }
 
@@ -29,12 +28,12 @@ public class AstDeclarationFunction extends AstStatement {
   public static class Parameter extends AstNode {
 
     public final AstExprIdent name;
-    public final AstTypeIdentifier typename;
+    public final AstTypeIdentifier type;
 
-    public Parameter(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typename) {
+    public Parameter(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier type) {
       super(srcLoc);
       this.name = name;
-      this.typename = typename;
+      this.type = type;
     }
   }
 

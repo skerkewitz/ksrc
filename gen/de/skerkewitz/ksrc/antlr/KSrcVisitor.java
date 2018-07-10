@@ -6,8 +6,8 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * This interface defines a complete generic visitor for a parse tree produced
  * by {@link KSrcParser}.
  *
- * @param <T> The return type of the visit operation. Use {@link Void} for
- * operations with no return type.
+ * @param <T> The return descriptor of the visit operation. Use {@link Void} for
+ * operations with no return descriptor.
  */
 public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	/**
@@ -83,12 +83,31 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code FunctionDeclaration}
+	 * Visit a parse tree produced by the {@code DeclarationFunction}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	T visitDeclarationFunction(KSrcParser.DeclarationFunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DeclarationClass}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationClass(KSrcParser.DeclarationClassContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#class_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClass_declaration(KSrcParser.Class_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#function_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_declaration(KSrcParser.Function_declarationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link KSrcParser#type_annotation}.
 	 * @param ctx the parse tree
@@ -102,12 +121,33 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInitializer(KSrcParser.InitializerContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ExprIdEqual}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPow(KSrcParser.ExprPowContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ExprMultiplication}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprUnaryMinus}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExprNot}
 	 * labeled alternative in {@link KSrcParser#expression}.
@@ -130,12 +170,19 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprRelational(KSrcParser.ExprRelationalContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprIdent}
+	 * Visit a parse tree produced by the {@code ExprEquality}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExprIdent(KSrcParser.ExprIdentContext ctx);
+	T visitExprEquality(KSrcParser.ExprEqualityContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprPostFix}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPostFix(KSrcParser.ExprPostFixContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExprAdditive}
 	 * labeled alternative in {@link KSrcParser#expression}.
@@ -144,48 +191,6 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprAdditive(KSrcParser.ExprAdditiveContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ExprIdEqual}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprCall}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprCall(KSrcParser.ExprCallContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprPow}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprPow(KSrcParser.ExprPowContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprValue}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprValue(KSrcParser.ExprValueContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprUnaryMinus}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ExprEquality}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprEquality(KSrcParser.ExprEqualityContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code ExprLogicalAnd}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
@@ -193,8 +198,56 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExprLogicalAnd(KSrcParser.ExprLogicalAndContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code ExprPrimary}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprPrimary(KSrcParser.ExprPrimaryContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprCall}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprCall(KSrcParser.ExprCallContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprExplicitMemberAccess}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprExplicitMemberAccess(KSrcParser.ExprExplicitMemberAccessContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprValue}
+	 * labeled alternative in {@link KSrcParser#primary_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprValue(KSrcParser.ExprValueContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprIdent}
+	 * labeled alternative in {@link KSrcParser#primary_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprIdent(KSrcParser.ExprIdentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#literal_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteral_expression(KSrcParser.Literal_expressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FunctionCallArgumentClause}
+	 * labeled alternative in {@link KSrcParser#function_call_argument_clause}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionCallArgumentClause(KSrcParser.FunctionCallArgumentClauseContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code FunctionCallArgumentList}
-	 * labeled alternative in {@link KSrcParser#arguments}.
+	 * labeled alternative in {@link KSrcParser#function_call_argument_list}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -206,17 +259,11 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypename(KSrcParser.TypenameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link KSrcParser#ident}.
+	 * Visit a parse tree produced by {@link KSrcParser#identifier}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIdent(KSrcParser.IdentContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link KSrcParser#value}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitValue(KSrcParser.ValueContext ctx);
+	T visitIdentifier(KSrcParser.IdentifierContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code FunctionSignature}
 	 * labeled alternative in {@link KSrcParser#function_signature}.
@@ -277,4 +324,16 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitString_literal(KSrcParser.String_literalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#boolean_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolean_literal(KSrcParser.Boolean_literalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#nil_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNil_literal(KSrcParser.Nil_literalContext ctx);
 }

@@ -5,12 +5,14 @@ import de.skerkewitz.ksrc.ast.nodes.AstTypeIdentifier;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
-public class AstDeclarationVar extends AstStatement {
+public class AstDeclarationVar extends AstDeclarationStatement {
 
   public final AstExprIdent name;
   public final AstTypeIdentifier typeIdentifier;
   public final AstExpr initializer;
+  public VmDescriptor descriptor;
 
   public AstDeclarationVar(SourceLocation srcLoc, AstExprIdent name, AstTypeIdentifier typeIdentifier, AstExpr initializer) {
     super(srcLoc);
@@ -18,4 +20,6 @@ public class AstDeclarationVar extends AstStatement {
     this.typeIdentifier = typeIdentifier;
     this.initializer = initializer;
   }
+
+
 }

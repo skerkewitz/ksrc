@@ -130,17 +130,49 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code FunctionDeclaration}
+	 * Enter a parse tree produced by the {@code DeclarationFunction}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	void enterDeclarationFunction(KSrcParser.DeclarationFunctionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code FunctionDeclaration}
+	 * Exit a parse tree produced by the {@code DeclarationFunction}
 	 * labeled alternative in {@link KSrcParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionDeclaration(KSrcParser.FunctionDeclarationContext ctx);
+	void exitDeclarationFunction(KSrcParser.DeclarationFunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DeclarationClass}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationClass(KSrcParser.DeclarationClassContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeclarationClass}
+	 * labeled alternative in {@link KSrcParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationClass(KSrcParser.DeclarationClassContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#class_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterClass_declaration(KSrcParser.Class_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#class_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitClass_declaration(KSrcParser.Class_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_declaration(KSrcParser.Function_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_declaration(KSrcParser.Function_declarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link KSrcParser#type_annotation}.
 	 * @param ctx the parse tree
@@ -162,6 +194,30 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitInitializer(KSrcParser.InitializerContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code ExprIdEqual}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprIdEqual}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprPow(KSrcParser.ExprPowContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprPow}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprPow(KSrcParser.ExprPowContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ExprMultiplication}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
@@ -173,6 +229,18 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprUnaryMinus}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprUnaryMinus}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ExprNot}
 	 * labeled alternative in {@link KSrcParser#expression}.
@@ -210,17 +278,29 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitExprRelational(KSrcParser.ExprRelationalContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ExprIdent}
+	 * Enter a parse tree produced by the {@code ExprEquality}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExprIdent(KSrcParser.ExprIdentContext ctx);
+	void enterExprEquality(KSrcParser.ExprEqualityContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code ExprIdent}
+	 * Exit a parse tree produced by the {@code ExprEquality}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExprIdent(KSrcParser.ExprIdentContext ctx);
+	void exitExprEquality(KSrcParser.ExprEqualityContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprPostFix}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprPostFix(KSrcParser.ExprPostFixContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprPostFix}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprPostFix(KSrcParser.ExprPostFixContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ExprAdditive}
 	 * labeled alternative in {@link KSrcParser#expression}.
@@ -234,78 +314,6 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitExprAdditive(KSrcParser.ExprAdditiveContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code ExprIdEqual}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprIdEqual}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprIdEqual(KSrcParser.ExprIdEqualContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExprCall}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprCall(KSrcParser.ExprCallContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprCall}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprCall(KSrcParser.ExprCallContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExprPow}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprPow(KSrcParser.ExprPowContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprPow}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprPow(KSrcParser.ExprPowContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExprValue}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprValue(KSrcParser.ExprValueContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprValue}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprValue(KSrcParser.ExprValueContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExprUnaryMinus}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprUnaryMinus}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprUnaryMinus(KSrcParser.ExprUnaryMinusContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExprEquality}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprEquality(KSrcParser.ExprEqualityContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprEquality}
-	 * labeled alternative in {@link KSrcParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprEquality(KSrcParser.ExprEqualityContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ExprLogicalAnd}
 	 * labeled alternative in {@link KSrcParser#expression}.
 	 * @param ctx the parse tree
@@ -318,14 +326,96 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitExprLogicalAnd(KSrcParser.ExprLogicalAndContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code ExprPrimary}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprPrimary(KSrcParser.ExprPrimaryContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprPrimary}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprPrimary(KSrcParser.ExprPrimaryContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprCall}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprCall(KSrcParser.ExprCallContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprCall}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprCall(KSrcParser.ExprCallContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprExplicitMemberAccess}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprExplicitMemberAccess(KSrcParser.ExprExplicitMemberAccessContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprExplicitMemberAccess}
+	 * labeled alternative in {@link KSrcParser#postfix_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprExplicitMemberAccess(KSrcParser.ExprExplicitMemberAccessContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprValue}
+	 * labeled alternative in {@link KSrcParser#primary_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprValue(KSrcParser.ExprValueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprValue}
+	 * labeled alternative in {@link KSrcParser#primary_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprValue(KSrcParser.ExprValueContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprIdent}
+	 * labeled alternative in {@link KSrcParser#primary_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprIdent(KSrcParser.ExprIdentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprIdent}
+	 * labeled alternative in {@link KSrcParser#primary_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprIdent(KSrcParser.ExprIdentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#literal_expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteral_expression(KSrcParser.Literal_expressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#literal_expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteral_expression(KSrcParser.Literal_expressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunctionCallArgumentClause}
+	 * labeled alternative in {@link KSrcParser#function_call_argument_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionCallArgumentClause(KSrcParser.FunctionCallArgumentClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunctionCallArgumentClause}
+	 * labeled alternative in {@link KSrcParser#function_call_argument_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionCallArgumentClause(KSrcParser.FunctionCallArgumentClauseContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code FunctionCallArgumentList}
-	 * labeled alternative in {@link KSrcParser#arguments}.
+	 * labeled alternative in {@link KSrcParser#function_call_argument_list}.
 	 * @param ctx the parse tree
 	 */
 	void enterFunctionCallArgumentList(KSrcParser.FunctionCallArgumentListContext ctx);
 	/**
 	 * Exit a parse tree produced by the {@code FunctionCallArgumentList}
-	 * labeled alternative in {@link KSrcParser#arguments}.
+	 * labeled alternative in {@link KSrcParser#function_call_argument_list}.
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionCallArgumentList(KSrcParser.FunctionCallArgumentListContext ctx);
@@ -340,25 +430,15 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitTypename(KSrcParser.TypenameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link KSrcParser#ident}.
+	 * Enter a parse tree produced by {@link KSrcParser#identifier}.
 	 * @param ctx the parse tree
 	 */
-	void enterIdent(KSrcParser.IdentContext ctx);
+	void enterIdentifier(KSrcParser.IdentifierContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KSrcParser#ident}.
+	 * Exit a parse tree produced by {@link KSrcParser#identifier}.
 	 * @param ctx the parse tree
 	 */
-	void exitIdent(KSrcParser.IdentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link KSrcParser#value}.
-	 * @param ctx the parse tree
-	 */
-	void enterValue(KSrcParser.ValueContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link KSrcParser#value}.
-	 * @param ctx the parse tree
-	 */
-	void exitValue(KSrcParser.ValueContext ctx);
+	void exitIdentifier(KSrcParser.IdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code FunctionSignature}
 	 * labeled alternative in {@link KSrcParser#function_signature}.
@@ -461,4 +541,24 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitString_literal(KSrcParser.String_literalContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#boolean_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolean_literal(KSrcParser.Boolean_literalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#boolean_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolean_literal(KSrcParser.Boolean_literalContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#nil_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterNil_literal(KSrcParser.Nil_literalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#nil_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitNil_literal(KSrcParser.Nil_literalContext ctx);
 }

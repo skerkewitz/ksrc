@@ -1,0 +1,31 @@
+class Circle:
+
+    fn init():
+        println("Constructor called!")
+    end
+
+    fn get-radius -> Int:
+        return 10
+    end
+
+    fn foo -> Circle:
+        return Circle()
+    end
+
+    fn blob() -> Int:
+        return 11
+    end
+
+end
+
+var cl = Circle()
+var n = cl.get-radius()
+var x = cl.foo().foo().get-radius()
+var b = n
+
+print("Hallo")
+
+cl.foo()
+
+
+
