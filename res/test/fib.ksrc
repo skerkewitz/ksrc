@@ -3,7 +3,7 @@ Calculates the fibonacci for the given value n.
 
 Starting by n == 0 the sequence is [0, 1, 1, 2, 3, 5, 8, 13, ... ]
 -->
-fn fib(n:int) -> int:
+fn fib(n:Int) -> Int:
 
     if n == 0:
         return 0

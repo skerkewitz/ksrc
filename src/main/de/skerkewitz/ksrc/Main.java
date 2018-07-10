@@ -66,32 +66,19 @@ public class Main {
     AstStatement rootStatement = (AstStatement) new Builder().visit(tree);
 
 //    /* Print source. */
-//    Walker.PrintContext printContext = new Walker.PrintContext(new PrintStream(System.out));
+    Walker.PrintContext printContext = new Walker.PrintContext(new PrintStream(System.out));
 //    new Walker(printContext).walk(rootStatement);
 
-    List<VmClassInfo> classInfos = SemaClassScanner.scan(rootStatement);
-    for (var classInfo: classInfos) {
-      System.out.println("Found class " + classInfo);
-    }
+    final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
 
-    List<VmMethodInfo> methodInfos = SemaMethodScanner.scan(rootStatement);
-    for (var methodInfo: methodInfos) {
-      System.out.println("Found function " + methodInfo);
-    }
+//    final List<Vm.Function> buildInFunctionList = VmExecContextFactory.buildInFunctionList();
+//    final SymbolTable rootSymbolTable = new SymbolTable(null);
+//    for (var f : buildInFunctionList) {
+//      rootSymbolTable.declareSymbol(f.methodInfo.name, f.methodInfo.descriptor.returnDescriptor, null);
+//    }
+//    SemaInferExpressionTypes.walk(rootStatement, sema, rootSymbolTable);
 
-    Sema sema = new Sema();
-    sema.addClassDeclarations(classInfos);
-    sema.addFunctionDeclarations(VmExecContextFactory.buildInFunctionList());
-    sema.addFunctionDeclarations(methodInfos.stream().map(methodInfo -> new Vm.Function(methodInfo, null)).collect(Collectors.toList()));
-
-    final List<Vm.Function> buildInFunctionList = VmExecContextFactory.buildInFunctionList();
-    final SymbolTable rootSymbolTable = new SymbolTable(null);
-    for (var f : buildInFunctionList) {
-      rootSymbolTable.declareSymbol(f.methodInfo.name, f.methodInfo.descriptor.returnDescriptor, null);
-    }
-    SemaInferExpressionTypes.walk(rootStatement, sema, rootSymbolTable);
-
-//    new Walker(printContext).walk(rootStatement);
+    new Walker(printContext).walk(rootStatement);
 
 
     /* Execute. */

@@ -69,7 +69,7 @@ public class FunctionDeclarationTest {
   @Test
   void explicitReturnTypeWithParams() throws IOException {
 
-    var input = "fn myPrint(somevalue:int, othervalue:int) -> Int: \n"
+    var input = "fn myPrint(somevalue:Int, othervalue:Int) -> Int: \n"
             + " return somevalue * othervalue\n"
             + "end\n";
 
@@ -80,9 +80,9 @@ public class FunctionDeclarationTest {
     assertEquals("myPrint", sut.name.ident);
     assertEquals(2, sut.signature.params.size());
     assertEquals("somevalue", sut.signature.params.get(0).name.ident);
-    assertEquals("int", sut.signature.params.get(0).type.name);
+    assertEquals(Type.INT, sut.signature.params.get(0).type.descriptor.type);
     assertEquals("othervalue", sut.signature.params.get(1).name.ident);
-    assertEquals("int", sut.signature.params.get(1).type.name);
+    assertEquals(Type.INT, sut.signature.params.get(1).type.descriptor.type);
     assertEquals(Type.INT, sut.signature.returnType.descriptor.type);
     assertEquals(1, sut.body.statements.size());
   }

@@ -24,7 +24,7 @@ public class Sema {
   private final List<VmClassInfo> classDeclarations = new ArrayList<>();
   private final List<Vm.Function> functionDeclarations = new ArrayList<>();
 
-  public VmDescriptor resolveType(AstExpr expr, SymbolTable localSymbols) {
+  public VmDescriptor resolveType(AstExpr expr, SymbolTable<VmDescriptor> localSymbols) {
 
     if (expr instanceof AstExprFunctionCall) {
       return resolveTypeForCall((AstExprFunctionCall) expr, localSymbols);

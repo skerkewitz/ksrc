@@ -1,13 +1,11 @@
-#
-## Factorial example
-#fn factorial(n:Int) -> Int:
-#    if n == 0:
-#        return 1
-#    end
-#
-#    return n * factorial(n - 1)
-#end
+# Factorial example
+fn factorial(n:Int) -> Int:
+    if n == 0:
+        return 1
+    end
 
+    return n * factorial(n - 1)
+end
 
 # Fibonacci example
 fn fib(n:Int) -> Int:
@@ -28,12 +26,10 @@ while i < 10:
     println("The fib of " + str(i) + " is " + str(fib(i)))
     i = i + 1
 end
-#
-#<!--
-#println("--- Factorial ---")
-#i = 0
-#while i < 10:
-#    println("The factorial of " + i + " is " + factorial(i))
-#    i = i + 1
-#end
-#-->
+
+println("--- Factorial ---")
+i = 0
+while i < 10:
+    println("The factorial of " + str(i) + " is " + str(factorial(i)))
+    i = i + 1
+end

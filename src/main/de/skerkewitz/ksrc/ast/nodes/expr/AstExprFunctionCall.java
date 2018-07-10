@@ -26,4 +26,16 @@ public class AstExprFunctionCall extends AstExpr {
       this.list = Collections.unmodifiableList(list);
     }
   }
+
+  public boolean isDirectFunctionCall() {
+    return fnName instanceof AstExprIdent;
+  }
+
+  public boolean isMemberFunctionCall() {
+    return fnName instanceof AstExprExplicitMemberAccess;
+  }
+
+  public AstExprIdent getFunctionNameIdent() {
+    return (AstExprIdent) fnName;
+  }
 }

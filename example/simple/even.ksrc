@@ -1,14 +1,14 @@
-fn is-divisible(number:int, divisor: int) -> bool:
+fn is-divisible(number:Int, divisor: Int) -> Bool:
     return number % divisor == 0
 end
 
-fn is-even(number: int) -> bool:
+fn is-even(number: Int) -> Bool:
     return is-divisible(number, 2)
 end
 
 println("--- Odd/Even ---")
 var i = 0
-var odd-or-even: string
+var odd-or-even: String
 while i < 10:
     if is-even(i):
         odd-or-even = "even"
@@ -16,6 +16,6 @@ while i < 10:
         odd-or-even = "odd"
     end
 
-    println("The number " + i + " is " + odd-or-even)
+    println("The number " + str(i) + " is " + odd-or-even)
     i = i + 1
 end

@@ -1,12 +1,15 @@
 package de.skerkewitz.ksrc.sema;
 
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
+import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.vm.VmClassInfo;
+import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class SemaInferExpressionTypes {
@@ -108,8 +111,20 @@ public class SemaInferExpressionTypes {
         walk(p, sema, localSymbols);
       }
 
-      walk(exprFunctionCall.fnName, sema, localSymbols);
-      exprFunctionCall.descriptor = exprFunctionCall.fnName.descriptor;
+      /* Only walk if this is not an ident. */
+      if (exprFunctionCall.isMemberFunctionCall()) {
+        walk(exprFunctionCall.fnName, sema, localSymbols);
+      }
+
+      /* Check for special Constructor call case. */
+      VmMethodInfo resolve = SemaFunctionCallResolverHelper.resolve(exprFunctionCall, sema, localSymbols);
+      VmDescriptor returnDescriptor = resolve.descriptor.returnDescriptor;
+      if (exprFunctionCall.isDirectFunctionCall() && resolve.name.equals("init") && !resolve.equals(exprFunctionCall.getFunctionNameIdent().ident)) {
+        final VmClassInfo classInfo = sema.findClassInfoWithName(exprFunctionCall.getFunctionNameIdent().ident);
+        exprFunctionCall.descriptor = new VmDescriptor(Type.ANY_REF, classInfo.fqThisClassName);
+      } else {
+        exprFunctionCall.descriptor = returnDescriptor;
+      }
       return;
     }
 

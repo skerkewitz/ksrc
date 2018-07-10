@@ -6,6 +6,7 @@ import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.sema.Sema;
+import de.skerkewitz.ksrc.sema.SemaUtils;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
@@ -14,7 +15,6 @@ import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -61,37 +61,19 @@ public class VmFunctionCallHelper {
       }
     }
 
-    /* Build descriptor for function */
-    VmDescriptor expectedReturnDescriptor = exprFunctionCall.descriptor;
-
     /* If we have a valid return descriptor then we can lookup the function directly, else we need to check for
      * possible matches. */
-    final Vm.Function function;
-    if (expectedReturnDescriptor == null) {
-      List<Vm.Function> matches = vm.getSema().findFunctionsByNameAndParameters(functionName, parameterDescriptors);
-      if (matches.isEmpty()) {
-        throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parameter '" + parameterDescriptors + "'", null);
-      }
-
-      if (matches.size() > 1) {
-        throw new VmRuntimeException("Ambiguous function call of function '" + functionName + "' with parameter '" + parameterDescriptors + "'. Found possible matches: " + matches, null);
-      }
-
-      function = matches.get(0);
+    List<Vm.Function> matches;
+    if (exprFunctionCall.descriptor == null) {
+      matches = vm.getSema().findFunctionsByNameAndParameters(functionName, parameterDescriptors);
     }
     else {
-      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(expectedReturnDescriptor, parameterDescriptors);
-      List<Vm.Function> matches = vm.getSema().getFunctionByName(functionName, methodDescriptor);
-      if (matches.isEmpty()) {
-        throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parameter '" + parameterDescriptors + "'", null);
-      }
+      VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(exprFunctionCall.descriptor, parameterDescriptors);
+      matches = vm.getSema().getFunctionByName(functionName, methodDescriptor);
 
-      if (matches.size() > 1) {
-        throw new VmRuntimeException("Ambiguous function call of function '" + functionName + "' with parameter '" + parameterDescriptors + "'. Found possible matches: " + matches, null);
-      }
-
-      function = matches.get(0);
     }
+
+    final Vm.Function function = SemaUtils.expectExactlyOneFunctionMatch(matches, functionName, parameterDescriptors);
 
     if (function.buildIn == null) {
       AstDeclarationFunction astDeclarationFunction = function.methodInfo.functionDeclaration;
@@ -101,11 +83,11 @@ public class VmFunctionCallHelper {
     /* Call native function and make sure the return value is correct. */
     Vm.Value value = function.buildIn.exec(vm, exprFunctionCall.arguments.list, vmExecContext);
     VmDescriptor actualDescriptor = value.descriptor();
-    if (expectedReturnDescriptor == null || actualDescriptor.equals(expectedReturnDescriptor)) {
+    if (exprFunctionCall.descriptor == null || actualDescriptor.equals(exprFunctionCall.descriptor)) {
       return value;
     }
 
-    throw new VmRuntimeException("Require return type of native function '" + functionName + "' of type '" + expectedReturnDescriptor + "' but found '" + actualDescriptor + "'", null);
+    throw new VmRuntimeException("Require return type of native function '" + functionName + "' of type '" + exprFunctionCall.descriptor + "' but found '" + actualDescriptor + "'", null);
   }
 
   /**

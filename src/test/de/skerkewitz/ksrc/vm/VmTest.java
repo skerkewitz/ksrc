@@ -4,6 +4,7 @@ import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.sema.Sema;
+import de.skerkewitz.ksrc.sema.SemaFactory;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
@@ -31,12 +32,15 @@ public class VmTest {
     ClassLoader classLoader = getClass().getClassLoader();
     URL somefile = classLoader.getResource("fib.ksrc");
     ParseTree treeLib = parserFromInputStream(somefile.openStream()).file_input();
-    AstStatement rootStatementLib = (AstStatement) new Builder().visit(treeLib);
+    AstStatement rootStatement = (AstStatement) new Builder().visit(treeLib);
+
+    final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
+
 
     var vmExecContext = VmExecContextFactory.initialContext();
 
-    Vm vm = new DefaultVm(new Sema());
-    Vm.Value ret = vm.exec(rootStatementLib, vmExecContext);
+    Vm vm = new DefaultVm(sema);
+    Vm.Value ret = vm.exec(rootStatement, vmExecContext);
 
     assertEquals(0, eval("fib(0)\n", vm, vmExecContext).int_value().intValue());
     assertEquals(1, eval("fib(1)\n", vm, vmExecContext).int_value().intValue());
