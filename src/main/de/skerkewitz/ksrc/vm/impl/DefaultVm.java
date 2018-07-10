@@ -11,7 +11,8 @@ import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
 
 /**
- * Quick and dirty default implementation of the ksrc {@link Vm}
+ * Quick and dirty default implementation of the ksrc {@link Vm}. Its actually a interpreter and not a real virtual
+ * machine.
  */
 public class DefaultVm implements Vm {
 
@@ -33,8 +34,8 @@ public class DefaultVm implements Vm {
       throw new IllegalArgumentException("astNode can not be null");
     }
 
-    if (expression instanceof AstExprValue) {
-      final AstExprValue exprValue = (AstExprValue) expression;
+    if (expression instanceof AstExprLiteral) {
+      final AstExprLiteral exprValue = (AstExprLiteral) expression;
       switch (exprValue.descriptor.type) {
         case STRING: return new VmValueString(exprValue.value);
         case INT: return new VmValueInt(VmUtils.integerFromString(exprValue.value));

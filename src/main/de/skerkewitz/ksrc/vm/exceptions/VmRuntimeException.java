@@ -6,7 +6,7 @@ public class VmRuntimeException extends RuntimeException {
   public final SourceLocation sourceLocation;
 
   public VmRuntimeException(String message, SourceLocation sourceLocation) {
-    super(message);
+    super(message + " at " + sourceLocation);
     this.sourceLocation = sourceLocation;
   }
 }

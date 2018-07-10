@@ -6,12 +6,12 @@ import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class SymbolTable {
+public final class SymbolTable<T> {
 
-    private final Map<String, VmDescriptor> symbolTable;
-    private final SymbolTable parent;
+    private final Map<String, T> symbolTable;
+    private final SymbolTable<T> parent;
 
-    public SymbolTable(Map<String, VmDescriptor> symbolTable, SymbolTable parent) {
+    public SymbolTable(Map<String, T> symbolTable, SymbolTable<T> parent) {
       this.symbolTable = symbolTable;
       this.parent = parent;
     }
@@ -20,31 +20,36 @@ public final class SymbolTable {
       this(new HashMap<>(), parent);
     }
 
-    public VmDescriptor getSymbolByName(String name) {
-      VmDescriptor vmDescriptor = this.symbolTable.get(name);
+    public T getSymbolByName(String name) {
+      T vmDescriptor = this.symbolTable.get(name);
       if (vmDescriptor != null) {
         return vmDescriptor;
       }
 
-      VmDescriptor returnDescriptor = parent != null ? parent.getSymbolByName(name) : null;
+      T returnDescriptor = parent != null ? parent.getSymbolByName(name) : null;
       if (returnDescriptor == null) {
         System.out.println("Could no find descriptor for symbol '" + name + "'");
       }
       return returnDescriptor;
     }
 
-    public void declareSymbol(String name, VmDescriptor descriptor, AstNode node) {
+    public void declareSymbol(String name, T descriptor, AstNode node) {
         if (descriptor == null) {
           throw new IllegalArgumentException("descriptor can not be null");
         }
 
         if (this.symbolTable.containsKey(name)) {
-          VmDescriptor symbolByName = getSymbolByName(name);
+          T symbolByName = getSymbolByName(name);
           if (!symbolByName.equals(descriptor)) {
             throw new Sema.SemaException(node, "Invalid type redeclaration of symbol '" + name + "' from " + symbolByName + " to " + descriptor);
           }
         }
 
         this.symbolTable.put(name, descriptor);
+    }
+
+    /** Create a new scope by returning new table and setting this table as the parent. */
+    public SymbolTable<T> createNewScope() {
+      return new SymbolTable<>(this);
     }
 }

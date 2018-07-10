@@ -7,8 +7,7 @@ import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
-
-import java.util.stream.Collectors;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class SemaInferExpressionTypes {
 
@@ -34,7 +33,7 @@ public class SemaInferExpressionTypes {
       localSymbols.declareSymbol(name, declarationFunction.signature.returnType.descriptor, declarationFunction.signature.returnType);
 
       /* Create a new local function table. */
-      final SymbolTable localFunctionSymbolTable = new SymbolTable(localSymbols);
+      final SymbolTable localFunctionSymbolTable = localSymbols.createNewScope();
       for (var p : declarationFunction.signature.params) {
         localFunctionSymbolTable.declareSymbol(p.name.ident, p.type.descriptor, p.name);
       }
@@ -57,7 +56,7 @@ public class SemaInferExpressionTypes {
 
       /* Make sure lhs and rhs side type are the same. */
       if (!exprInfixOp.lhs.descriptor.equals(exprInfixOp.rhs.descriptor)) {
-        throw new Sema.SemaException(node, "Infix operation requieres lsh and rhs to be same of type.");
+        throw new Sema.SemaException(node, "Infix operation " + exprInfixOp.op.name() + " requires lsh (" + exprInfixOp.lhs.descriptor+ ") to be same as rhs (" + exprInfixOp.rhs.descriptor + ").");
       }
       exprInfixOp.descriptor = exprInfixOp.lhs.descriptor;
       return;
@@ -67,8 +66,8 @@ public class SemaInferExpressionTypes {
       exprIdent.descriptor = sema.resolveType(exprIdent, localSymbols);
       return;
     }
-    else if (node instanceof AstExprValue) {
-      AstExprValue exprValue = (AstExprValue) node;
+    else if (node instanceof AstExprLiteral) {
+      AstExprLiteral exprValue = (AstExprLiteral) node;
       return;
     }
     else if (node instanceof AstExprExplicitMemberAccess) {
@@ -103,6 +102,12 @@ public class SemaInferExpressionTypes {
 
     if (node instanceof AstExprFunctionCall) {
       AstExprFunctionCall exprFunctionCall = (AstExprFunctionCall) node;
+
+      /* Resolve all arguments parameter first. */
+      for (var p : exprFunctionCall.arguments.list) {
+        walk(p, sema, localSymbols);
+      }
+
       walk(exprFunctionCall.fnName, sema, localSymbols);
       exprFunctionCall.descriptor = exprFunctionCall.fnName.descriptor;
       return;
@@ -110,25 +115,22 @@ public class SemaInferExpressionTypes {
 
     if (node instanceof AstStatementWhile) {
       AstStatementWhile statementWhile = (AstStatementWhile) node;
-//      ps.print("(while ");
-//      walk(statementWhile.condition);
-//      ps.print(" (");
-//      ps.println("");
-//      ps.pushIdent();
-//      walk(statementWhile.body);
-//      ps.popIdent();
-//      ps.print(")");
+      walk(statementWhile.condition, sema, localSymbols);
+      /* TODO assert the condition is boolean. */
+//      if (statementWhile.condition.descriptor != VmDescriptor.Boolean) {
+//        throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
+//      }
+      walk(statementWhile.body, sema, localSymbols.createNewScope());
       return;
     }
     else if (node instanceof AstStatementIf) {
       AstStatementIf statementWhile = (AstStatementIf) node;
-//      ps.print("(if ");
-//      walk(statementWhile.condition);
-//      ps.println(" (");
-//      ps.pushIdent();
-//      walk(statementWhile.thenStatement);
-//      ps.popIdent();
-//      ps.print(")");
+      walk(statementWhile.condition, sema, localSymbols);
+      /* TODO assert the condition is boolean. */
+//      if (statementWhile.condition.descriptor != VmDescriptor.Boolean) {
+//        throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
+//      }
+      walk(statementWhile.thenStatement, sema, localSymbols.createNewScope());
       return;
     }
     else if (node instanceof AstStatementAssign) {

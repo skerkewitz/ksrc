@@ -118,8 +118,8 @@ public class Walker {
       ps.print(exprIdent.ident);
       return;
     }
-    else if (node instanceof AstExprValue) {
-      AstExprValue exprValue = (AstExprValue) node;
+    else if (node instanceof AstExprLiteral) {
+      AstExprLiteral exprValue = (AstExprLiteral) node;
       if (exprValue.descriptor.type == Type.STRING) {
         ps.print("\"" + exprValue.value + "\"");
       } else {

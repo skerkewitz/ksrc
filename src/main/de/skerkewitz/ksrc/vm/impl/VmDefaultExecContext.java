@@ -88,7 +88,7 @@ public final class VmDefaultExecContext implements VmExecContext {
       return parent.getFunctionByName(name, descriptor);
     }
 
-    throw new VmUnknownSymbol(fqn);
+    throw new VmUnknownFunction(name, descriptor);
   }
 
   @Override

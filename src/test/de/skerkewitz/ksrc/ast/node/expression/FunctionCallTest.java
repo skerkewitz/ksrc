@@ -3,7 +3,7 @@ package de.skerkewitz.ksrc.ast.node.expression;
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprLiteral;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class FunctionCallTest {
 
     assertEquals("myPrint", ((AstExprIdent)sut.fnName).ident);
     assertEquals(2, sut.arguments.list.size());
-    assertEquals("2", ((AstExprValue)sut.arguments.list.get(0)).value);
-    assertEquals("6", ((AstExprValue)sut.arguments.list.get(1)).value);
+    assertEquals("2", ((AstExprLiteral)sut.arguments.list.get(0)).value);
+    assertEquals("6", ((AstExprLiteral)sut.arguments.list.get(1)).value);
   }
 }

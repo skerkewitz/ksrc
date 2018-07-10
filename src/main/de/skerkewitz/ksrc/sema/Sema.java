@@ -8,17 +8,21 @@ import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
+import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;
+import de.skerkewitz.ksrc.vm.impl.VmUnknownFunction;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Sema {
 
   private final List<VmClassInfo> classDeclarations = new ArrayList<>();
+  private final List<Vm.Function> functionDeclarations = new ArrayList<>();
 
   public VmDescriptor resolveType(AstExpr expr, SymbolTable localSymbols) {
 
@@ -30,15 +34,23 @@ public class Sema {
       return resolveTypeForIdent((AstExprIdent) expr, localSymbols);
     }
 
+    if (expr instanceof AstExprLiteral) {
+      if (expr.descriptor == null) {
+        throw new SemaException(expr, "Invalid ast tree, literal has no descriptor '" + expr + "'.");
+      }
+      return expr.descriptor;
+    }
+
     return null;
   }
 
-  private VmDescriptor resolveTypeForIdent(AstExprIdent expr, SymbolTable localSymbols) {
+  // TODO rename method to proper name
+  private VmDescriptor resolveTypeForIdent(AstExprIdent expr, SymbolTable<VmDescriptor> localSymbols) {
     // check for local types.
     return localSymbols.getSymbolByName(expr.ident);
   }
 
-  private VmDescriptor resolveTypeForCall(AstExprFunctionCall exprFunctionCall, SymbolTable localSymbols) {
+  private VmDescriptor resolveTypeForCall(AstExprFunctionCall exprFunctionCall, SymbolTable<VmDescriptor> localSymbols) {
 
     if (exprFunctionCall.fnName instanceof AstExprIdent) {
       return resolveTypeForFunctionCall(exprFunctionCall);
@@ -50,7 +62,7 @@ public class Sema {
     throw new SemaException(exprFunctionCall, "Invalid function calll syntax");
   }
 
-  private VmDescriptor resolveTypeForMethodCall(AstExprFunctionCall exprFunctionCall, SymbolTable localSymbols) {
+  private VmDescriptor resolveTypeForMethodCall(AstExprFunctionCall exprFunctionCall, SymbolTable<VmDescriptor> localSymbols) {
 
     /* Check for Constructor call first. */
     AstExprExplicitMemberAccess member = (AstExprExplicitMemberAccess) exprFunctionCall.fnName;
@@ -118,32 +130,6 @@ public class Sema {
     return null;
   }
 
-
-  public static VmDescriptor getResultType(AstExpr astExpr, VmExecContext vmExecContext) {
-
-    if (astExpr instanceof AstExprValue) {
-      return ((AstExprValue) astExpr).descriptor;
-    }
-    else if (astExpr instanceof AstExprFunctionCall) {
-      AstExprFunctionCall exprFuncCall = (AstExprFunctionCall) astExpr;
-      AstExpr fnName = exprFuncCall.fnName;
-      Vm.Function function = vmExecContext.getFunctionByName(null, null);
-      //return function.signature.returnType;
-
-      return null;
-    }
-    else if (astExpr instanceof AstExprInfixOp) {
-      AstExprInfixOp exprOp = (AstExprInfixOp) astExpr;
-      return getResultType(exprOp.lhs, vmExecContext);
-    }
-    else if (astExpr instanceof AstExprIdent) {
-      AstExprIdent exprIdent = (AstExprIdent) astExpr;
-      return vmExecContext.getSymbolByName(exprIdent.ident).descriptor();
-    }
-
-    throw new SemaCantDetermineTypeException(astExpr);
-  }
-
   public void addClassDeclaration(VmClassInfo classInfo) {
     this.classDeclarations.add(classInfo);
   }
@@ -152,18 +138,36 @@ public class Sema {
     this.classDeclarations.addAll(classInfos);
   }
 
+  public void addFunctionDeclarations(List<Vm.Function> methodInfos) {
+    this.functionDeclarations.addAll(methodInfos);
+  }
+
+  public List<Vm.Function> findFunctionsByNameAndParameters(String functionName, List<VmDescriptor> parameterDescriptors) {
+
+    List<Vm.Function> functions = this.functionDeclarations.stream()
+            .filter(function -> function.methodInfo.name.equals(functionName))
+            .filter(function -> function.methodInfo.descriptor.parameterDescriptor.equals(parameterDescriptors))
+            .collect(Collectors.toList());
+
+    return functions;
+  }
+
+  public List<Vm.Function> getFunctionByName(String functionName, VmMethodDescriptor methodDescriptor) {
+
+    List<Vm.Function> functions = this.functionDeclarations.stream()
+            .filter(function -> function.methodInfo.name.equals(functionName))
+            .filter(function -> function.methodInfo.descriptor.equals(methodDescriptor))
+            .collect(Collectors.toList());
+
+    return functions;
+  }
+
   public static class SemaException extends RuntimeException {
     private final AstNode astNode;
 
     public SemaException(AstNode astNode, String message) {
       super(message + " (" + astNode.srcLocation + ")");
       this.astNode = astNode;
-    }
-  }
-
-  public static class SemaCantDetermineTypeException extends SemaException {
-    public SemaCantDetermineTypeException(AstExpr astExpr) {
-      super(astExpr, "Can not determine type");
     }
   }
 }

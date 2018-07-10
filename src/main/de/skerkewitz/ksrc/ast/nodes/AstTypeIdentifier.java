@@ -19,7 +19,7 @@ public class AstTypeIdentifier extends AstNode {
   public final String name;
   public final VmDescriptor descriptor;
 
-  private static SymbolTable buildInType = new SymbolTable(
+  private static SymbolTable<VmDescriptor> buildInType = new SymbolTable(
           Map.of(
                   "Void", new VmDescriptor(Type.VOID),
                   "Bool", new VmDescriptor(Type.BOOL),

@@ -14,6 +14,7 @@ import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class VmFunctionCallHelper {
 
     final String functionName = ((AstExprIdent) exprFunctionCall.fnName).ident;
     final List<VmDescriptor> parameterDescriptors = exprFunctionCall.arguments.list.stream()
+            .peek(expr -> { if (expr.descriptor == null) throw new VmRuntimeException("Parameter descriptor is null", expr.srcLocation); })
             .map(expr -> expr.descriptor)
             .collect(Collectors.toList());
 
@@ -66,7 +68,7 @@ public class VmFunctionCallHelper {
      * possible matches. */
     final Vm.Function function;
     if (expectedReturnDescriptor == null) {
-      List<Vm.Function> matches = vmExecContext.findFunctionsByNameAndParameters(functionName, parameterDescriptors);
+      List<Vm.Function> matches = vm.getSema().findFunctionsByNameAndParameters(functionName, parameterDescriptors);
       if (matches.isEmpty()) {
         throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parameter '" + parameterDescriptors + "'", null);
       }
@@ -79,7 +81,16 @@ public class VmFunctionCallHelper {
     }
     else {
       VmMethodDescriptor methodDescriptor = new VmMethodDescriptor(expectedReturnDescriptor, parameterDescriptors);
-      function = vmExecContext.getFunctionByName(functionName, methodDescriptor);
+      List<Vm.Function> matches = vm.getSema().getFunctionByName(functionName, methodDescriptor);
+      if (matches.isEmpty()) {
+        throw new VmRuntimeException("Can not find suitable function '" + functionName + "' with parameter '" + parameterDescriptors + "'", null);
+      }
+
+      if (matches.size() > 1) {
+        throw new VmRuntimeException("Ambiguous function call of function '" + functionName + "' with parameter '" + parameterDescriptors + "'. Found possible matches: " + matches, null);
+      }
+
+      function = matches.get(0);
     }
 
     if (function.buildIn == null) {

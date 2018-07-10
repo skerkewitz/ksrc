@@ -9,9 +9,7 @@ import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.*;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import org.antlr.v4.runtime.RuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -230,18 +228,18 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstNode visitLiteralInteger(KSrcParser.LiteralIntegerContext ctx) {
-    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), VmDescriptor.Int);
+    return new AstExprLiteral(SourceLocation.fromContext(ctx), ctx.getText(), VmDescriptor.Int);
   }
 
   @Override
   public AstNode visitLiteralFloat(KSrcParser.LiteralFloatContext ctx) {
-    return new AstExprValue(SourceLocation.fromContext(ctx), ctx.getText(), VmDescriptor.Double);
+    return new AstExprLiteral(SourceLocation.fromContext(ctx), ctx.getText(), VmDescriptor.Double);
   }
 
   @Override
   public AstNode visitString_literal(KSrcParser.String_literalContext ctx) {
     String text = ctx.getText();
     String value = text.substring(1, text.length() - 1);
-    return new AstExprValue(SourceLocation.fromContext(ctx), value, VmDescriptor.String);
+    return new AstExprLiteral(SourceLocation.fromContext(ctx), value, VmDescriptor.String);
   }
 }

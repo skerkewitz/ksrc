@@ -2,7 +2,7 @@ package de.skerkewitz.ksrc.ast.node.expression;
 
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprValue;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprLiteral;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class LiteralTest {
     var input = "55\n";
 
     ParseTree tree = parserFromString(input).statement();
-    var sut = (AstExprValue) new Builder().visit(tree);
+    var sut = (AstExprLiteral) new Builder().visit(tree);
 
     assertEquals("55", sut.value);
     assertEquals(Type.INT, sut.descriptor.type);
@@ -31,7 +31,7 @@ public class LiteralTest {
     var input = "40.0\n";
 
     ParseTree tree = parserFromString(input).statement();
-    var sut = (AstExprValue) new Builder().visit(tree);
+    var sut = (AstExprLiteral) new Builder().visit(tree);
 
     assertEquals("40.0", sut.value);
     assertEquals(Type.DOUBLE, sut.descriptor.type);
