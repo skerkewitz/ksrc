@@ -51,7 +51,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
             .collect(Collectors.toList());
     var fields = ctx.field_declaration()
             .stream()
-            .map(c -> visit(c, AstDeclarationVar.class))
+            .map(c -> visit(c, AstDeclarationNamedValue.class))
             .collect(Collectors.toList());
 
     return new AstDeclarationClass(SourceLocation.fromContext(ctx), ident, functions, fields);
@@ -97,7 +97,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     var ident = visit(ctx.identifier(), AstExprIdent.class);
     var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
     var expr = ctx.initializer() == null ? null : visit(ctx.initializer().expression(), AstExpr.class);
-    return new AstDeclarationVar(SourceLocation.fromContext(ctx), ident, typeIdentifier, expr);
+    return new AstDeclarationNamedValue(SourceLocation.fromContext(ctx), false, ident, typeIdentifier, expr);
   }
 
   @Override
@@ -105,7 +105,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     var ident = visit(ctx.identifier(), AstExprIdent.class);
     var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
     var expr = visit(ctx.initializer().expression(), AstExpr.class);
-    return new AstDeclarationLet(SourceLocation.fromContext(ctx), ident, typeIdentifier, expr);
+    return new AstDeclarationNamedValue(SourceLocation.fromContext(ctx), true, ident, typeIdentifier, expr);
   }
 
   @Override
@@ -248,11 +248,11 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstNode visitDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx) {
-    return visit(ctx.constant_declaration(), AstDeclarationLet.class);
+    return visit(ctx.constant_declaration(), AstDeclarationNamedValue.class);
   }
 
   @Override
   public AstNode visitDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx) {
-    return visit(ctx.variable_declaration(), AstDeclarationVar.class);
+    return visit(ctx.variable_declaration(), AstDeclarationNamedValue.class);
   }
 }

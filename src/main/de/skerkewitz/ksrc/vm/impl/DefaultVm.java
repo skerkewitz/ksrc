@@ -4,9 +4,8 @@ import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationStatement;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
 
@@ -156,14 +155,8 @@ public class DefaultVm implements Vm {
 
   private Value execDeclarationStatement(AstStatement statement, VmExecContext vmExecContext) {
 
-    if (statement instanceof AstDeclarationLet) {
-      final var astStmtDeclLet = (AstDeclarationLet) statement;
-      var value = eval(astStmtDeclLet.initializer, vmExecContext);
-      vmExecContext.declareSymbol(astStmtDeclLet.name.ident, value);
-      return value;
-    }
-    else if (statement instanceof AstDeclarationVar) {
-      final var astDeclarationVar = (AstDeclarationVar) statement;
+    if (statement instanceof AstDeclarationNamedValue) {
+      final var astDeclarationVar = (AstDeclarationNamedValue) statement;
       Value value;
       if (astDeclarationVar.initializer == null) {
         value = astDeclarationVar.typeIdentifier.descriptor.type.getDefault_init_value();

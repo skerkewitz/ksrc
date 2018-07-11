@@ -6,8 +6,7 @@ import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
@@ -77,8 +76,8 @@ public class SemaInferExpressionTypes {
       return;
     }
 
-    if (node instanceof AstDeclarationVar) {
-      AstDeclarationVar declarationVar = (AstDeclarationVar) node;
+    if (node instanceof AstDeclarationNamedValue) {
+      AstDeclarationNamedValue declarationVar = (AstDeclarationNamedValue) node;
 
       if (declarationVar.typeIdentifier != null) {
         declarationVar.descriptor = declarationVar.typeIdentifier.descriptor;
@@ -95,11 +94,6 @@ public class SemaInferExpressionTypes {
         throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
       }
 
-      return;
-    }
-
-    if (node instanceof AstDeclarationLet) {
-      AstDeclarationLet declarationLet = (AstDeclarationLet) node;
       return;
     }
 
