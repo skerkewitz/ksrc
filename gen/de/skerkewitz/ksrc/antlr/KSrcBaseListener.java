@@ -16,13 +16,13 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFile_input(KSrcParser.File_inputContext ctx) { }
+	@Override public void enterTranslation_unit(KSrcParser.Translation_unitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFile_input(KSrcParser.File_inputContext ctx) { }
+	@Override public void exitTranslation_unit(KSrcParser.Translation_unitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -172,6 +172,30 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterConstant_declaration(KSrcParser.Constant_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstant_declaration(KSrcParser.Constant_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariable_declaration(KSrcParser.Variable_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariable_declaration(KSrcParser.Variable_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterClass_declaration(KSrcParser.Class_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -191,6 +215,30 @@ public class KSrcBaseListener implements KSrcListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunction_declaration(KSrcParser.Function_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -448,13 +496,13 @@ public class KSrcBaseListener implements KSrcListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTypename(KSrcParser.TypenameContext ctx) { }
+	@Override public void enterType_literal(KSrcParser.Type_literalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTypename(KSrcParser.TypenameContext ctx) { }
+	@Override public void exitType_literal(KSrcParser.Type_literalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

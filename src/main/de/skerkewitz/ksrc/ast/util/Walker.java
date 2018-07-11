@@ -197,6 +197,9 @@ public class Walker {
       ps.print("(class " + declarationClass.name.ident + " (");
       ps.pushIdent();
       ps.println("");
+      for (var fields : declarationClass.fields) {
+        walk(fields); ps.println("");
+      }
       for (var statement : declarationClass.functions) {
         walk(statement);
       }

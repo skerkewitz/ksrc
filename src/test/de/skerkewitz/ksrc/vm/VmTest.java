@@ -31,7 +31,7 @@ public class VmTest {
 
     ClassLoader classLoader = getClass().getClassLoader();
     URL somefile = classLoader.getResource("fib.ksrc");
-    ParseTree treeLib = parserFromInputStream(somefile.openStream()).file_input();
+    ParseTree treeLib = parserFromInputStream(somefile.openStream()).translation_unit();
     AstStatement rootStatement = (AstStatement) new Builder().visit(treeLib);
 
     final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);

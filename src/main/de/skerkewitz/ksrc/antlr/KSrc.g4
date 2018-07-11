@@ -1,7 +1,7 @@
 // Define a grammar called Hello
 grammar KSrc;
 
-file_input: statements_list EOF;
+
 
 // Keywords
 LET:    'let';
@@ -25,7 +25,12 @@ SEMICOLON:  ';';
 LINE_COMMENT : '#' ~[\r\n]* -> skip;
 BLOCK_COMMENT: '<!--' .*? '-->' -> skip;
 
-/// Statments
+
+// The root element
+translation_unit
+    : statements_list EOF
+    ;
+
 statements
     : statement (SEMICOLON statement)*
     ;
@@ -39,7 +44,7 @@ statement
     // Branch statements
     | if_statement
     | loop_statement
-    | astNode
+    | expression
     | assign_statement
     ;
 
@@ -58,37 +63,49 @@ while_statement
 
 // The initializer of the condition must be of descriptor Bool
 condition
-    : astNode
+    : expression
     ;
 
 return_statement
-    : RETURN astNode                     #ReturnStatement
+    : RETURN expression                     #ReturnStatement
     ;
 
 assign_statement
-    : identifier ASSIGN astNode                              #StatementAssign
+    : identifier ASSIGN expression                              #StatementAssign
     ;
 
 declaration
-    : LET identifier type_annotation? initializer            #DeclarationConstant
-    | VAR identifier type_annotation? initializer?           #DeclarationVariable
+    : constant_declaration                              #DeclarationConstant
+    | variable_declaration                              #DeclarationVariable
 
     // Function declaration looks like fn <functioname>([param_name : param_typename [,.. ]) { <code block> }
     | function_declaration                              #DeclarationFunction
     | class_declaration                                 #DeclarationClass
     ;
 
+constant_declaration
+    : LET identifier type_annotation? initializer
+    ;
+
+variable_declaration
+    : VAR identifier type_annotation? initializer?
+    ;
 
 class_declaration
-    : CLASS identifier ':' (function_declaration)* END
+    : CLASS identifier ':' (field_declaration | function_declaration)* END
     ;
 
 function_declaration
     : FUNC identifier function_signature code_block
     ;
 
-type_annotation: (':' type);
-initializer: (ASSIGN astNode);
+field_declaration
+    : constant_declaration                              #DeclarationFieldVariable
+    | variable_declaration                              #DeclarationFieldConstant
+    ;
+
+type_annotation: (':' type_literal);
+initializer: (ASSIGN expression);
 
 POW:    '^';
 MINUS:  '-';
@@ -109,20 +126,20 @@ NEQ:    '!=';
 AND:    'and';
 OR:     'or';
 
-astNode
+expression
 
     // Binary operator expressions - Arimethric
-    : astNode POW astNode                         #ExprPow
+    : expression POW expression                         #ExprPow
     | postfix_expression                                #ExprPostFix
-    | MINUS astNode                                  #ExprUnaryMinus
-    | NOT astNode                                    #ExprNot
-    | astNode op=(MULT | DIV | MOD) astNode       #ExprMultiplication
-    | astNode op=(PLUS | MINUS) astNode           #ExprAdditive
-    | astNode op=(LTEQ | GTEQ | LT | GT) astNode  #ExprRelational
-    | astNode op=(EQ | NEQ) astNode               #ExprEquality
-    | astNode AND astNode                         #ExprLogicalAnd
-    | astNode OR astNode                          #ExprLogicalOr
-    | astNode IDEQ astNode                        #ExprIdEqual
+    | MINUS expression                                  #ExprUnaryMinus
+    | NOT expression                                    #ExprNot
+    | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
+    | expression op=(PLUS | MINUS) expression           #ExprAdditive
+    | expression op=(LTEQ | GTEQ | LT | GT) expression  #ExprRelational
+    | expression op=(EQ | NEQ) expression               #ExprEquality
+    | expression AND expression                         #ExprLogicalAnd
+    | expression OR expression                          #ExprLogicalOr
+    | expression IDEQ expression                        #ExprIdEqual
 
 
 
@@ -159,9 +176,9 @@ literal_expression
 
 
 function_call_argument_clause: '(' function_call_argument_list ')'    #FunctionCallArgumentClause;
-function_call_argument_list: (astNode (',' astNode)*)?            #FunctionCallArgumentList;
+function_call_argument_list: (expression (',' expression)*)?            #FunctionCallArgumentList;
 
-type: NAME ;
+type_literal: NAME ;
 identifier: NAME ;
 
 
@@ -171,7 +188,7 @@ function_signature
     ;
 
 function_result:
-    type
+    type_literal
     ;
 
 function_parameters
@@ -179,7 +196,7 @@ function_parameters
     ;
 
 function_parameter
-    : identifier ':' type                                #FunctionParameter
+    : identifier ':' type_literal                                #FunctionParameter
     ;
 
 statements_list

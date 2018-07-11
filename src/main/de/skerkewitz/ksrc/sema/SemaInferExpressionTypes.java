@@ -154,7 +154,12 @@ public class SemaInferExpressionTypes {
       return;
     }
     else if (node instanceof AstDeclarationClass) {
-//      for (var statement : declarationClass.functions) {
+      AstDeclarationClass declarationClass = (AstDeclarationClass) node;
+      for (var field : declarationClass.fields) {
+        walk(field, sema, localSymbols);
+      }
+
+      //      for (var statement : declarationClass.functions) {
 //        walk(statement);
 //      }
 //      ps.popIdent();

@@ -21,17 +21,12 @@ public class KSrcAstParser {
     final KSrcLexer lexer = new KSrcLexer(charStream);
     final CommonTokenStream tokens = new CommonTokenStream(lexer);
     final KSrcParser parser = new KSrcParser(tokens);
+    final ParseTree tree = parser.translation_unit();
 
-    // TODO: rename to translationunit
-    ParseTree tree = parser.file_input();
-
-//
-//  ParseTreeWalker.DEFAULT.walk(new TestListener(), tree);
-//    String s = ((KSrcParser.File_inputContext) tree).toStringTree(parser);
-//    System.out.println(s);
+////    ParseTreeWalker.DEFAULT.walk(new TestListener(), tree);
+//    System.out.println(tree.toStringTree(parser));
 
     /* Build AST tree. */
-
     return builder.visit(tree);
   }
 }

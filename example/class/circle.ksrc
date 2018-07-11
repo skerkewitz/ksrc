@@ -1,5 +1,7 @@
 class Circle:
 
+    var i: Int
+
     fn init():
         println("Constructor called!")
     end
