@@ -29,12 +29,7 @@ public class SemaFactory {
     sema.addFunctionDeclarations(VmExecContextFactory.buildInFunctionList());
     sema.addFunctionDeclarations(methodInfos.stream().map(methodInfo -> new Vm.Function(methodInfo, null)).collect(Collectors.toList()));
 
-//    final List<Vm.Function> buildInFunctionList = VmExecContextFactory.buildInFunctionList();
-    final SymbolTable rootSymbolTable = new SymbolTable(null);
-//    for (var f : buildInFunctionList) {
-//      rootSymbolTable.declareSymbol(f.methodInfo.name, f.methodInfo.descriptor.returnDescriptor, null);
-//    }
-    SemaInferExpressionTypes.walk(rootStatement, sema, rootSymbolTable);
+    SemaInferExpressionTypes.walk(rootStatement, sema, new SymbolTable());
 
     return sema;
   }
