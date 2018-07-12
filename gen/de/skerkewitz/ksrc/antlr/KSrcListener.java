@@ -8,15 +8,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface KSrcListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link KSrcParser#file_input}.
+	 * Enter a parse tree produced by {@link KSrcParser#translation_unit}.
 	 * @param ctx the parse tree
 	 */
-	void enterFile_input(KSrcParser.File_inputContext ctx);
+	void enterTranslation_unit(KSrcParser.Translation_unitContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KSrcParser#file_input}.
+	 * Exit a parse tree produced by {@link KSrcParser#translation_unit}.
 	 * @param ctx the parse tree
 	 */
-	void exitFile_input(KSrcParser.File_inputContext ctx);
+	void exitTranslation_unit(KSrcParser.Translation_unitContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link KSrcParser#statements}.
 	 * @param ctx the parse tree
@@ -154,6 +154,26 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitDeclarationClass(KSrcParser.DeclarationClassContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link KSrcParser#constant_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstant_declaration(KSrcParser.Constant_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#constant_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstant_declaration(KSrcParser.Constant_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link KSrcParser#variable_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable_declaration(KSrcParser.Variable_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link KSrcParser#variable_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable_declaration(KSrcParser.Variable_declarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link KSrcParser#class_declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -173,6 +193,30 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunction_declaration(KSrcParser.Function_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DeclarationFieldVariable}
+	 * labeled alternative in {@link KSrcParser#field_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeclarationFieldVariable}
+	 * labeled alternative in {@link KSrcParser#field_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DeclarationFieldConstant}
+	 * labeled alternative in {@link KSrcParser#field_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DeclarationFieldConstant}
+	 * labeled alternative in {@link KSrcParser#field_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link KSrcParser#type_annotation}.
 	 * @param ctx the parse tree
@@ -420,15 +464,15 @@ public interface KSrcListener extends ParseTreeListener {
 	 */
 	void exitFunctionCallArgumentList(KSrcParser.FunctionCallArgumentListContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link KSrcParser#typename}.
+	 * Enter a parse tree produced by {@link KSrcParser#type_literal}.
 	 * @param ctx the parse tree
 	 */
-	void enterTypename(KSrcParser.TypenameContext ctx);
+	void enterType_literal(KSrcParser.Type_literalContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link KSrcParser#typename}.
+	 * Exit a parse tree produced by {@link KSrcParser#type_literal}.
 	 * @param ctx the parse tree
 	 */
-	void exitTypename(KSrcParser.TypenameContext ctx);
+	void exitType_literal(KSrcParser.Type_literalContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link KSrcParser#identifier}.
 	 * @param ctx the parse tree

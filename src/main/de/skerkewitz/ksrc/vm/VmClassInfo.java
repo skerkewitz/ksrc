@@ -61,4 +61,10 @@ public class VmClassInfo {
             .filter(vmMethodInfo -> vmMethodInfo.descriptor.parameterDescriptor.equals(parameterDescriptors))
             .findFirst();
   }
+
+  public Optional<VmFieldInfo> getFieldByName(String fieldname) {
+    return fields.stream()
+            .filter(field -> field.name.equals(fieldname))
+            .findFirst();
+  }
 }

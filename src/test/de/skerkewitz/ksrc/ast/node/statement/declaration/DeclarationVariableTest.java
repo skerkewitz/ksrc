@@ -2,7 +2,7 @@ package de.skerkewitz.ksrc.ast.node.statement.declaration;
 
 import de.skerkewitz.ksrc.ast.Builder;
 import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ public class DeclarationVariableTest {
     var input = "var a \n";
 
     ParseTree tree = parserFromString(input).declaration();
-    var sut = (AstDeclarationVar) new Builder().visit(tree);
+    var sut = (AstDeclarationNamedValue) new Builder().visit(tree);
 
     //assertEquals("myPrint", sut.condition.descriptor == Type.BOOL);
     assertEquals("a", sut.name.ident);
@@ -35,7 +35,7 @@ public class DeclarationVariableTest {
     var input = "var a = 5\n";
 
     ParseTree tree = parserFromString(input).declaration();
-    var sut = (AstDeclarationVar) new Builder().visit(tree);
+    var sut = (AstDeclarationNamedValue) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertNull(sut.typeIdentifier);
@@ -48,7 +48,7 @@ public class DeclarationVariableTest {
     var input = "var a: Int = 5\n";
 
     ParseTree tree = parserFromString(input).declaration();
-    var sut = (AstDeclarationVar) new Builder().visit(tree);
+    var sut = (AstDeclarationNamedValue) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertEquals(Type.INT, sut.typeIdentifier.descriptor.type);
@@ -61,7 +61,7 @@ public class DeclarationVariableTest {
     var input = "var a: Int\n";
 
     ParseTree tree = parserFromString(input).declaration();
-    var sut = (AstDeclarationVar) new Builder().visit(tree);
+    var sut = (AstDeclarationNamedValue) new Builder().visit(tree);
 
     assertEquals("a", sut.name.ident);
     assertEquals(Type.INT, sut.typeIdentifier.descriptor.type);

@@ -37,11 +37,8 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   }
 
   @Override
-  public AstStatements visitFile_input(KSrcParser.File_inputContext ctx) {
-
-    var statements = visit(ctx.statements_list(), AstStatements.class);
-//    return new AstStatements(SourceLocation.fromContext(ctx), statements);
-    return statements;
+  public AstNode visitTranslation_unit(KSrcParser.Translation_unitContext ctx) {
+    return visit(ctx.statements_list(), AstStatements.class);
   }
 
   @Override
@@ -52,8 +49,12 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
             .stream()
             .map(c -> visit(c, AstDeclarationFunction.class))
             .collect(Collectors.toList());
+    var fields = ctx.field_declaration()
+            .stream()
+            .map(c -> visit(c, AstDeclarationNamedValue.class))
+            .collect(Collectors.toList());
 
-    return new AstDeclarationClass(SourceLocation.fromContext(ctx), ident, functions);
+    return new AstDeclarationClass(SourceLocation.fromContext(ctx), ident, functions, fields);
   }
 
   @Override
@@ -87,20 +88,28 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
   @Override
   public AstNode visitFunctionParameter(KSrcParser.FunctionParameterContext ctx) {
     var expr = visit(ctx.identifier(), AstExprIdent.class);
-    var stmt = visit(ctx.typename(), AstTypeIdentifier.class);
+    var stmt = visit(ctx.type_literal(), AstTypeIdentifier.class);
     return new AstDeclarationFunction.Parameter(SourceLocation.fromContext(ctx), expr, stmt);
   }
 
   @Override
-  public AstNode visitDeclarationVariable(KSrcParser.DeclarationVariableContext ctx) {
+  public AstNode visitVariable_declaration(KSrcParser.Variable_declarationContext ctx) {
     var ident = visit(ctx.identifier(), AstExprIdent.class);
     var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
     var expr = ctx.initializer() == null ? null : visit(ctx.initializer().expression(), AstExpr.class);
-    return new AstDeclarationVar(SourceLocation.fromContext(ctx), ident, typeIdentifier, expr);
+    return new AstDeclarationNamedValue(SourceLocation.fromContext(ctx), false, ident, typeIdentifier, expr);
   }
 
   @Override
-  public AstNode visitTypename(KSrcParser.TypenameContext ctx) {
+  public AstNode visitConstant_declaration(KSrcParser.Constant_declarationContext ctx) {
+    var ident = visit(ctx.identifier(), AstExprIdent.class);
+    var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
+    var expr = visit(ctx.initializer().expression(), AstExpr.class);
+    return new AstDeclarationNamedValue(SourceLocation.fromContext(ctx), true, ident, typeIdentifier, expr);
+  }
+
+  @Override
+  public AstNode visitType_literal(KSrcParser.Type_literalContext ctx) {
     return new AstTypeIdentifier(SourceLocation.fromContext(ctx), ctx.NAME().getText());
   }
 
@@ -141,13 +150,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     return new AstStatementReturn(SourceLocation.fromContext(ctx), expression);
   }
 
-  @Override
-  public AstNode visitDeclarationConstant(KSrcParser.DeclarationConstantContext ctx) {
-    var ident = visit(ctx.identifier(), AstExprIdent.class);
-    var typeIdentifier = visit(ctx.type_annotation(), AstTypeIdentifier.class);
-    var expr = visit(ctx.initializer().expression(), AstExpr.class);
-    return new AstDeclarationLet(SourceLocation.fromContext(ctx), ident, typeIdentifier, expr);
-  }
+
 
   @Override
   public AstExprInfixOp visitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx) {
@@ -198,7 +201,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
 
   @Override
   public AstNode visitStatementAssign(KSrcParser.StatementAssignContext ctx) {
-    var ident = visit(ctx.identifier(), AstExprIdent.class);
+    var ident = visit(ctx.postfix_expression(), AstExpr.class);
     var expression = visit(ctx.expression(), AstExpr.class);
     return new AstStatementAssign(SourceLocation.fromContext(ctx), ident, expression);
   }
@@ -241,5 +244,15 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     String text = ctx.getText();
     String value = text.substring(1, text.length() - 1);
     return new AstExprLiteral(SourceLocation.fromContext(ctx), value, VmDescriptor.String);
+  }
+
+  @Override
+  public AstNode visitDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx) {
+    return visit(ctx.constant_declaration(), AstDeclarationNamedValue.class);
+  }
+
+  @Override
+  public AstNode visitDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx) {
+    return visit(ctx.variable_declaration(), AstDeclarationNamedValue.class);
   }
 }

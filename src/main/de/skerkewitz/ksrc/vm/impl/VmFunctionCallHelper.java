@@ -53,7 +53,7 @@ public class VmFunctionCallHelper {
         AstDeclarationFunction astDeclarationFunction = matches.get().functionDeclaration;
 
         /* Create instance 'self' */
-        VmValueRef vmValueRef_Self = new VmValueRef(null, classInfo.fqThisClassName);
+        VmValueRef vmValueRef_Self = new VmValueRef(new VmClassInstance(classInfo), classInfo.fqThisClassName);
         callResolvedFunction(exprFunctionCall, astDeclarationFunction, vm, vmExecContext);
 
         /* Constructor always returns void, but this is basically a new call so return self. */

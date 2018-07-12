@@ -6,15 +6,27 @@ import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
+import de.skerkewitz.ksrc.vm.VmFieldInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
+import de.skerkewitz.ksrc.vm.impl.VmClassInstance;
+
+import java.util.Optional;
 
 public class SemaInferExpressionTypes {
 
+  static int foo = 7;
+
+
+  public static int foo() {
+    return 5;
+  }
+
   public static void walk(AstNode node, Sema sema, SymbolTable localSymbols) {
+
+    int c = foo();
 
     if (node instanceof AstStatements) {
       AstStatements statements = (AstStatements) node;
@@ -74,11 +86,37 @@ public class SemaInferExpressionTypes {
       return;
     }
     else if (node instanceof AstExprExplicitMemberAccess) {
+      AstExprExplicitMemberAccess exprExplicitMemberAccess = (AstExprExplicitMemberAccess) node;
+      VmDescriptor baseType = sema.resolveType(exprExplicitMemberAccess.lhs, localSymbols);
+      if (baseType.type != Type.ANY_REF) {
+        throw new Sema.SemaException(exprExplicitMemberAccess.lhs, "lhs of member access is not a reference type '" + exprExplicitMemberAccess.lhs + "'");
+      }
+
+      final VmClassInfo classInfo = sema.findClassInfoWithName(baseType.fqClassName);
+      if (classInfo == null) {
+        throw new Sema.SemaException(exprExplicitMemberAccess.lhs, "lhs references unknown class '" + baseType.fqClassName + "'");
+      }
+
+      AstExprIdent exprIdent = (AstExprIdent) exprExplicitMemberAccess.rhs;
+      String membername = exprIdent.ident;
+
+      if (exprExplicitMemberAccess.isFieldAccess) {
+        Optional<VmFieldInfo> fieldInfo = classInfo.getFieldByName(membername);
+        if (!fieldInfo.isPresent()) {
+          throw new Sema.SemaException(exprExplicitMemberAccess.lhs, "rhs references unknown field " + membername + " of class '" + baseType.fqClassName + "'");
+        }
+
+        // TODO: field has no descriptor yet.
+        exprExplicitMemberAccess.descriptor = VmDescriptor.Int;
+      } else {
+        // TODO: fix methods.
+        exprExplicitMemberAccess.descriptor = VmDescriptor.Int;
+      }
       return;
     }
 
-    if (node instanceof AstDeclarationVar) {
-      AstDeclarationVar declarationVar = (AstDeclarationVar) node;
+    if (node instanceof AstDeclarationNamedValue) {
+      AstDeclarationNamedValue declarationVar = (AstDeclarationNamedValue) node;
 
       if (declarationVar.typeIdentifier != null) {
         declarationVar.descriptor = declarationVar.typeIdentifier.descriptor;
@@ -95,11 +133,6 @@ public class SemaInferExpressionTypes {
         throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
       }
 
-      return;
-    }
-
-    if (node instanceof AstDeclarationLet) {
-      AstDeclarationLet declarationLet = (AstDeclarationLet) node;
       return;
     }
 
@@ -154,7 +187,12 @@ public class SemaInferExpressionTypes {
       return;
     }
     else if (node instanceof AstDeclarationClass) {
-//      for (var statement : declarationClass.functions) {
+      AstDeclarationClass declarationClass = (AstDeclarationClass) node;
+      for (var field : declarationClass.fields) {
+        walk(field, sema, localSymbols);
+      }
+
+      //      for (var statement : declarationClass.functions) {
 //        walk(statement);
 //      }
 //      ps.popIdent();
@@ -162,6 +200,6 @@ public class SemaInferExpressionTypes {
       return;
     }
 
-    throw new Sema.SemaException(node, "UnknownAstNode");
+    throw new Sema.SemaException(node, "UnknownAstNode " + node.getClass());
   }
 }

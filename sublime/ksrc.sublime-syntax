@@ -51,7 +51,7 @@ contexts:
       scope: keyword.control.ksrc    
       set:
         - match: \b{{name}}\b
-          scope: entity.name.constant
+          scope: entity.name.constantValue
           pop: true
 
     # Declaration fn
@@ -61,12 +61,12 @@ contexts:
 
     # Numbers
     - match: '\b(-)?[0-9.]+\b'
-      scope: constant.numeric.ksrc
+      scope: constantValue.numeric.ksrc
 
   double_quoted_string:
     - meta_scope: string.quoted.double.ksrc
     - match: '\\.'
-      scope: constant.character.escape.ksrc
+      scope: constantValue.character.escape.ksrc
     - match: '"'
       scope: punctuation.definition.string.end.ksrc
       pop: true

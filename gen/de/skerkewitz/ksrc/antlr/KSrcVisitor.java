@@ -6,16 +6,16 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * This interface defines a complete generic visitor for a parse tree produced
  * by {@link KSrcParser}.
  *
- * @param <T> The return descriptor of the visit operation. Use {@link Void} for
- * operations with no return descriptor.
+ * @param <T> The return type of the visit operation. Use {@link Void} for
+ * operations with no return type.
  */
 public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link KSrcParser#file_input}.
+	 * Visit a parse tree produced by {@link KSrcParser#translation_unit}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFile_input(KSrcParser.File_inputContext ctx);
+	T visitTranslation_unit(KSrcParser.Translation_unitContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link KSrcParser#statements}.
 	 * @param ctx the parse tree
@@ -97,6 +97,18 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclarationClass(KSrcParser.DeclarationClassContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link KSrcParser#constant_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConstant_declaration(KSrcParser.Constant_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link KSrcParser#variable_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariable_declaration(KSrcParser.Variable_declarationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link KSrcParser#class_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -108,6 +120,20 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunction_declaration(KSrcParser.Function_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DeclarationFieldVariable}
+	 * labeled alternative in {@link KSrcParser#field_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationFieldVariable(KSrcParser.DeclarationFieldVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DeclarationFieldConstant}
+	 * labeled alternative in {@link KSrcParser#field_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclarationFieldConstant(KSrcParser.DeclarationFieldConstantContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link KSrcParser#type_annotation}.
 	 * @param ctx the parse tree
@@ -253,11 +279,11 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionCallArgumentList(KSrcParser.FunctionCallArgumentListContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link KSrcParser#typename}.
+	 * Visit a parse tree produced by {@link KSrcParser#type_literal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypename(KSrcParser.TypenameContext ctx);
+	T visitType_literal(KSrcParser.Type_literalContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link KSrcParser#identifier}.
 	 * @param ctx the parse tree

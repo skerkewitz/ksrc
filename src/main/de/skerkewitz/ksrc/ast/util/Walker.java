@@ -6,8 +6,7 @@ import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationLet;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationVar;
+import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -137,20 +136,16 @@ public class Walker {
       ps.print(")");
       return;
     }
-    else if (node instanceof AstDeclarationVar) {
-      AstDeclarationVar declarationVar = (AstDeclarationVar) node;
+    else if (node instanceof AstDeclarationNamedValue) {
+      AstDeclarationNamedValue declarationVar = (AstDeclarationNamedValue) node;
       String typeIdentifier = declarationVar.descriptor == null ? "?inferred?" : declarationVar.descriptor.toString();
-      ps.print("(var " + declarationVar.name.ident + " " + typeIdentifier);
+      String varLet = declarationVar.constantValue ? "let" : "var";
+      ps.print("(" + varLet + " " + declarationVar.name.ident + " " + typeIdentifier);
       if (declarationVar.initializer != null) {
         ps.print(" ");
         walk(declarationVar.initializer);
       }
       ps.print(")");
-      return;
-    }
-    else if (node instanceof AstDeclarationLet) {
-      AstDeclarationLet declarationLet = (AstDeclarationLet) node;
-      ps.print("(let " + declarationLet.name.ident + ")");
       return;
     }
     else if (node instanceof AstExprFunctionCall) {
@@ -187,7 +182,9 @@ public class Walker {
     }
     else if (node instanceof AstStatementAssign) {
       AstStatementAssign assignStatement = (AstStatementAssign) node;
-      ps.print("(= " + assignStatement.ident.ident + " ");
+      ps.print("(= ");
+      walk(assignStatement.ident);
+      ps.print(" ");
       walk(assignStatement.expression);
       ps.print(")");
       return;
@@ -197,6 +194,9 @@ public class Walker {
       ps.print("(class " + declarationClass.name.ident + " (");
       ps.pushIdent();
       ps.println("");
+      for (var fields : declarationClass.fields) {
+        walk(fields); ps.println("");
+      }
       for (var statement : declarationClass.functions) {
         walk(statement);
       }

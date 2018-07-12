@@ -3,6 +3,7 @@ package de.skerkewitz.ksrc.sema;
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
+import de.skerkewitz.ksrc.vm.VmFieldInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 
 import java.util.ArrayList;
@@ -21,12 +22,16 @@ public class SemaClassScanner {
 
       VmClassInfo classInfo = new VmClassInfo(className);
 
-      List<VmMethodInfo> methodInfos = stmtDeclClass.functions
+      classInfo.methods = stmtDeclClass.functions
               .stream()
               .map(astDeclarationFunction -> SemaMethodScanner.scanSingleMethod(astDeclarationFunction))
               .collect(Collectors.toList());
 
-      classInfo.methods = methodInfos;
+
+      classInfo.fields = stmtDeclClass.fields
+              .stream()
+              .map(astDeclarationNamedValue -> SemaFieldScanner.scanSingleField(astDeclarationNamedValue))
+              .collect(Collectors.toList());
 
       classInfos.add(classInfo);
 
