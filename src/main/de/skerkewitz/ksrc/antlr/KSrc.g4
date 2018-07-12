@@ -71,7 +71,7 @@ return_statement
     ;
 
 assign_statement
-    : identifier ASSIGN expression                              #StatementAssign
+    : postfix_expression ASSIGN expression                              #StatementAssign
     ;
 
 declaration
@@ -130,7 +130,6 @@ expression
 
     // Binary operator expressions - Arimethric
     : expression POW expression                         #ExprPow
-    | postfix_expression                                #ExprPostFix
     | MINUS expression                                  #ExprUnaryMinus
     | NOT expression                                    #ExprNot
     | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
@@ -140,6 +139,7 @@ expression
     | expression AND expression                         #ExprLogicalAnd
     | expression OR expression                          #ExprLogicalOr
     | expression IDEQ expression                        #ExprIdEqual
+    | postfix_expression                                #ExprPostFix
 
 
 
@@ -154,7 +154,7 @@ postfix_expression
     // A function call astNode consists of a function name followed by a comma-separated list of the function’s
     // arguments in parentheses. The function name can be any astNode whose value is of a function descriptor.
     : primary_expression                                #ExprPrimary
-    | lhs=postfix_expression '.' rhs=postfix_expression         #ExprExplicitMemberAccess
+    | lhs=postfix_expression '.' rhs=postfix_expression #ExprExplicitMemberAccess
     | postfix_expression function_call_argument_clause  #ExprCall
     ;
 

@@ -15,6 +15,11 @@ public class AstExprFunctionCall extends AstExpr {
     super(sourceLocation, null);
     this.fnName = fnName;
     this.arguments = arguments;
+
+    if (fnName instanceof AstExprExplicitMemberAccess) {
+      /* Must be a call! */
+      ((AstExprExplicitMemberAccess) fnName).isFieldAccess = false;
+    }
   }
 
   public static class Arguments extends AstNode {

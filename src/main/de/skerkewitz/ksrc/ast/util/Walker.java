@@ -182,7 +182,9 @@ public class Walker {
     }
     else if (node instanceof AstStatementAssign) {
       AstStatementAssign assignStatement = (AstStatementAssign) node;
-      ps.print("(= " + assignStatement.ident.ident + " ");
+      ps.print("(= ");
+      walk(assignStatement.ident);
+      ps.print(" ");
       walk(assignStatement.expression);
       ps.print(")");
       return;

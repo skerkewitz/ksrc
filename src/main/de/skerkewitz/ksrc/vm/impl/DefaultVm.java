@@ -1,6 +1,7 @@
 package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
+import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.*;
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
@@ -79,9 +80,27 @@ public class DefaultVm implements Vm {
       final AstExprIdent exprIdent = (AstExprIdent) expression;
       return vmExecContext.getSymbolByName(exprIdent.ident);
     }
-    else if (expression instanceof AstExprFunctionCall) {
+    if (expression instanceof AstExprFunctionCall) {
       final AstExprFunctionCall exprFuncCall = (AstExprFunctionCall) expression;
       return VmFunctionCallHelper.exec(exprFuncCall, this, vmExecContext);
+    }
+
+    if (expression instanceof AstExprExplicitMemberAccess) {
+      AstExprExplicitMemberAccess memberAccess = (AstExprExplicitMemberAccess)expression;
+
+      Value baseType = eval(memberAccess.lhs, vmExecContext);
+
+      if (baseType == null) {
+        throw new Sema.SemaException(memberAccess.lhs, "Could not resolve type for '" + memberAccess.lhs + "'");
+      }
+
+      if (baseType.descriptor().type != Type.ANY_REF) {
+        throw new Sema.SemaException(memberAccess.lhs, "lhs of member acccess is not a reference type '" + memberAccess.lhs + "'");
+      }
+
+      VmClassInstance classInstance = (VmClassInstance) baseType.ref_value();
+      String fieldname = ((AstExprIdent) memberAccess.rhs).ident;
+      return classInstance.getFieldValue(fieldname);
     }
 
     throw new UnknownExpression(expression);
@@ -100,7 +119,7 @@ public class DefaultVm implements Vm {
     }
     else if (statement instanceof AstStatements) {
       AstStatements stmtList = (AstStatements) statement;
-      Vm.Value result = VmValueVoid.shared;
+      Value result = VmValueVoid.shared;
       for (AstStatement stmt : stmtList.statements) {
         if (stmt == null) {
           continue;
@@ -146,7 +165,27 @@ public class DefaultVm implements Vm {
     else if (statement instanceof AstStatementAssign) {
       final var assignStatement = (AstStatementAssign) statement;
       var value = eval(assignStatement.expression, vmExecContext);
-      vmExecContext.setSymbolToValue(assignStatement.ident.ident, value);
+      if (assignStatement.ident instanceof AstExprIdent) {
+        AstExprIdent ident = (AstExprIdent)assignStatement.ident;
+        vmExecContext.setSymbolToValue(ident.ident, value);
+      } else {
+        AstExprExplicitMemberAccess memberAccess = (AstExprExplicitMemberAccess)assignStatement.ident;
+
+        Value baseType = eval(memberAccess.lhs, vmExecContext);
+
+        if (baseType == null) {
+          throw new Sema.SemaException(memberAccess.lhs, "Could not resolve type for '" + memberAccess.lhs + "'");
+        }
+
+        if (baseType.descriptor().type != Type.ANY_REF) {
+          throw new Sema.SemaException(memberAccess.lhs, "lhs of member acccess is not a reference type '" + memberAccess.lhs + "'");
+        }
+
+        VmClassInstance classInstance = (VmClassInstance) baseType.ref_value();
+        String fieldname = ((AstExprIdent) memberAccess.rhs).ident;
+        classInstance.setFieldValue(fieldname, value);
+      }
+
       return VmValueVoid.shared;
     }
 

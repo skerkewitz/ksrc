@@ -24,10 +24,12 @@ var cl = Circle()
 var n = cl.get-radius()
 var x = cl.foo().foo().get-radius()
 var b = n
+b = n
+cl.i = 5
 
-print("Hallo")
+print("Hallo " + str(cl.i))
 
-cl.foo()
+cl.i
 
 
 
