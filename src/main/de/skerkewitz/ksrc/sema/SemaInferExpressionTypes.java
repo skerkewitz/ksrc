@@ -17,16 +17,9 @@ import java.util.Optional;
 
 public class SemaInferExpressionTypes {
 
-  static int foo = 7;
-
-
-  public static int foo() {
-    return 5;
-  }
 
   public static void walk(AstNode node, Sema sema, SymbolTable localSymbols) {
 
-    int c = foo();
 
     if (node instanceof AstStatements) {
       AstStatements statements = (AstStatements) node;
