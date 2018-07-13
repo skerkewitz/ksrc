@@ -13,7 +13,7 @@ public class VmUtils {
     try {
       return Double.parseDouble(value);
     } catch (NumberFormatException e) {
-      // e.printStackTrace();
+      e.printStackTrace();
       return 0.0;
     }
   }
@@ -26,7 +26,7 @@ public class VmUtils {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
-      // e.printStackTrace();
+      e.printStackTrace();
       return 0;
     }
   }

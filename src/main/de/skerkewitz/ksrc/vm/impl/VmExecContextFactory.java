@@ -4,6 +4,7 @@ import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 
+import java.io.PrintStream;
 import java.util.List;
 
 public final class VmExecContextFactory {
@@ -13,13 +14,15 @@ public final class VmExecContextFactory {
 
   private final static Vm.Function.BuildIn print_f = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args.get(0), execContext);
-    System.out.print(eval.string_value());
+    PrintStream p = new PrintStream(VmDefaultExecContext.stdout);
+    p.print(eval.string_value());
     return VmValueVoid.shared;
   };
 
   private final static Vm.Function.BuildIn println_f = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args.get(0), execContext);
-    System.out.println(eval.string_value());
+    PrintStream p = new PrintStream(VmDefaultExecContext.stdout);
+    p.println(eval.string_value());
     return VmValueVoid.shared;
   };
 

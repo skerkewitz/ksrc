@@ -5,11 +5,15 @@ import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
+import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class VmDefaultExecContext implements VmExecContext {
+
+    public static OutputStream stdout = System.out;
+    public static OutputStream stderr = System.err;
 
     /** The parent is always readonly. If null then this is the global layer. */
     private final VmExecContext parent;
