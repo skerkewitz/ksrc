@@ -17,6 +17,7 @@ public class VmDescriptor {
   public static final VmDescriptor String = new VmDescriptor(Type.STRING);
   public static final VmDescriptor Int = new VmDescriptor(Type.INT);
   public static final VmDescriptor Double = new VmDescriptor(Type.DOUBLE);
+  public static final VmDescriptor Bool = new VmDescriptor(Type.BOOL);
 
   public VmDescriptor(Type type, String fqClassName) {
 

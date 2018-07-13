@@ -67,10 +67,10 @@ public class DefaultVm implements Vm {
           }
         }
         case PLUS: return lhs.add(rhs);
-        case LTEQ: return new VmValueDouble(lhs.double_value() <= rhs.double_value() ? 1.0 : 0.0);
-        case GTEQ: return new VmValueDouble(lhs.double_value() >= rhs.double_value() ? 1.0 : 0.0);
-        case LT: return new VmValueDouble(lhs.double_value() < rhs.double_value() ? 1.0 : 0.0);
-        case GT: return new VmValueDouble(lhs.double_value() > rhs.double_value() ? 1.0 : 0.0);
+        case LTEQ: return new VmValueBool(lhs.double_value() <= rhs.double_value());
+        case GTEQ: return new VmValueBool(lhs.double_value() >= rhs.double_value());
+        case LT: return new VmValueBool(lhs.double_value() < rhs.double_value());
+        case GT: return new VmValueBool(lhs.double_value() > rhs.double_value());
         case EQ: return new VmValueBool(lhs.eq(rhs));
         case IDEQ: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
         case NEQ: return new VmValueBool(!lhs.eq(rhs));

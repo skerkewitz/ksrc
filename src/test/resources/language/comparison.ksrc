@@ -1,0 +1,29 @@
+println("<")
+println(4 < 20)
+println(40 < 2)
+println(4 < 4)
+
+println("<=")
+println(4 <= 20)
+println(40 <= 2)
+println(4 <= 4)
+
+println(">")
+println(4 > 20)
+println(40 > 2)
+println(4 > 4)
+
+println(">=")
+println(4 >= 20)
+println(40 >= 2)
+println(4 >= 4)
+
+println("==")
+println(4 == 20)
+println(40 == 2)
+println(4 == 4)
+
+println("!=")
+println(4 != 20)
+println(40 != 2)
+println(4 != 4)

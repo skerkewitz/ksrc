@@ -50,7 +50,6 @@ public class TestLanguage {
     List<File> fileList = List.of(files);
 
 
-
     Map<String, File> expectedOutput = fileList.stream().filter(file -> file.getName().endsWith(".out")).collect(Collectors.toMap(f -> f.getName().substring(0, f.getName().length() - 4), o -> o));
 
 
@@ -91,6 +90,43 @@ public class TestLanguage {
         throw new RuntimeException("Could not access file " + file.getName() + " because of:", e);
       }
     });
+  }
+
+  @Test
+  void testSingleLanguageFile() throws URISyntaxException {
+    ClassLoader classLoader = getClass().getClassLoader();
+    var directory = classLoader.getResource("language").toURI();
+
+    File[] files = new File(directory).listFiles();
+    List<File> fileList = List.of(files);
+    Stream<File> sourceStream = fileList.stream().filter(file -> file.getName().endsWith("comparison.ksrc"));
+
+    /* Run each source and compare if with the result. */
+    sourceStream.forEach(file -> {
+      System.out.println("Testing file: " + file.getName());
+
+      try {
+        ParseTree treeLib = parserFromInputStream(new FileInputStream(file)).translation_unit();
+        AstStatement rootStatement = (AstStatement) new Builder().visit(treeLib);
+
+        final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
+
+        var vmExecContext = VmExecContextFactory.initialContext();
+
+        Vm vm = new DefaultVm(sema);
+        Vm.Value ret = vm.exec(rootStatement, vmExecContext);
+
+        /* Assert equals of capture with ".out" file. */
+
+      } catch (IOException e) {
+        throw new RuntimeException("Could not access file " + file.getName() + " because of:", e);
+      }
+    });
+  }
+}
+
+
+
 
 
 //
@@ -119,8 +155,8 @@ public class TestLanguage {
 //    assertEquals(5, eval("fib(5)\n", vm, vmExecContext).int_value().intValue());
 //    assertEquals(8, eval("fib(6)\n", vm, vmExecContext).int_value().intValue());
 //    assertEquals(13, eval("fib(7)\n", vm, vmExecContext).int_value().intValue());
-  }
-
-
-
-}
+//  }
+//
+//
+//
+//}

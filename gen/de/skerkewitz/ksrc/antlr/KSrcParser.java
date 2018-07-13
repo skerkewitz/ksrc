@@ -52,7 +52,7 @@ public class KSrcParser extends Parser {
 		null, "':'", "'.'", "','", "'->'", "'true'", "'false'", "'nil'", "'let'", 
 		"'var'", "'fn'", "'if'", "'return'", "'break'", "'while'", "'class'", 
 		"'='", "'else:'", "'end'", "'('", "')'", "';'", null, null, "'^'", "'-'", 
-		"'!'", "'*'", "'/'", "'%'", "'+'", "'=<'", "'>='", "'<'", "'>'", "'=='", 
+		"'!'", "'*'", "'/'", "'%'", "'+'", "'<='", "'>='", "'<'", "'>'", "'=='", 
 		"'==='", "'!='", "'and'", "'or'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {

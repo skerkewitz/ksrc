@@ -12,6 +12,7 @@ import de.skerkewitz.ksrc.vm.VmFieldInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.impl.VmClassInstance;
+import de.skerkewitz.ksrc.vm.impl.VmValueBool;
 
 import java.util.Optional;
 
@@ -69,7 +70,24 @@ public class SemaInferExpressionTypes {
       if (!exprInfixOp.lhs.descriptor.equals(exprInfixOp.rhs.descriptor)) {
         throw new Sema.SemaException(node, "Infix operation " + exprInfixOp.op.name() + " requires lsh (" + exprInfixOp.lhs.descriptor+ ") to be same as rhs (" + exprInfixOp.rhs.descriptor + ").");
       }
-      exprInfixOp.descriptor = exprInfixOp.lhs.descriptor;
+
+      /* Some operations result always in a boolean. */
+      switch (exprInfixOp.op) {
+        case LTEQ:
+        case GTEQ:
+        case LT:
+        case GT:
+        case EQ:
+        case IDEQ:
+        case NEQ:
+        case AND:
+        case OR:
+          exprInfixOp.descriptor = VmDescriptor.Bool;
+          break;
+        default:
+          exprInfixOp.descriptor = exprInfixOp.lhs.descriptor;
+      }
+
       return;
     }
     else if (node instanceof AstExprIdent) {
