@@ -151,7 +151,10 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     return new AstStatementReturn(SourceLocation.fromContext(ctx), expression);
   }
 
-
+  @Override
+  public AstNode visitBreakStatement(KSrcParser.BreakStatementContext ctx) {
+    return new AstStatementBreak(SourceLocation.fromContext(ctx));
+  }
 
   @Override
   public AstExprInfixOp visitExprMultiplication(KSrcParser.ExprMultiplicationContext ctx) {

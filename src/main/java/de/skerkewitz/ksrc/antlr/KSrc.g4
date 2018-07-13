@@ -8,6 +8,7 @@ VAR:    'var';
 FUNC:   'fn';
 IF:     'if';
 RETURN: 'return';
+BREAK: 'break';
 WHILE: 'while';
 
 CLASS:  'class';
@@ -36,7 +37,7 @@ statements
 
 statement
     : declaration
-    | return_statement
+    | return_statement | break_statement
 
     | LINE_COMMENT
 
@@ -67,6 +68,10 @@ condition
 
 return_statement
     : RETURN expression                     #ReturnStatement
+    ;
+
+break_statement
+    : BREAK                                                             #BreakStatement
     ;
 
 assign_statement

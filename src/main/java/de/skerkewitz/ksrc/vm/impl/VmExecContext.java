@@ -17,9 +17,15 @@ public interface VmExecContext {
   void declareFunc(Vm.Function function);
 
   boolean shouldLeaveFrame();
-  void markLeaveFrame();
+  void resetLeaveFrame();
 
+  Vm.Value getReturnValue();
 
+  /**
+   * Specifies the value the frame should return null. Null indicate a break instead of a return.
+   * Use(or {@link de.skerkewitz.ksrc.vm.impl.VmValueVoid#shared} to return void.
+   */
+  void markLeaveFrame(Vm.Value returnValue);
 
 
   class VmUnknownSymbol extends RuntimeException {

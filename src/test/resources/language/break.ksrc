@@ -1,0 +1,12 @@
+fn loop() -> Int:
+  var i = 0
+  while i < 1000:
+    if i >= 942:
+      break
+    end
+    i = i + 1
+  end
+  return i
+end
+
+println(loop())

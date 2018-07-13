@@ -1,5 +1,6 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import com.ibm.icu.impl.coll.SharedObject;
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
@@ -9,6 +10,7 @@ import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationStatemen
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 /**
  * Quick and dirty default implementation of the ksrc {@link Vm}. Its actually a interpreter and not a real virtual
@@ -127,7 +129,7 @@ public class DefaultVm implements Vm {
 
         result = exec(stmt, vmExecContext);
         if (vmExecContext.shouldLeaveFrame()) {
-          return result;
+          return vmExecContext.getReturnValue();
         }
       }
       return result;
@@ -135,8 +137,12 @@ public class DefaultVm implements Vm {
     else if (statement instanceof AstStatementReturn) {
       AstStatementReturn stmtReturn = (AstStatementReturn) statement;
       Value value = eval(stmtReturn.expr, vmExecContext);
-      vmExecContext.markLeaveFrame();
+      vmExecContext.markLeaveFrame(value);
       return value;
+    }
+    else if (statement instanceof AstStatementBreak) {
+      vmExecContext.markLeaveFrame(null);
+      return VmValueVoid.shared;
     }
     else if (statement instanceof AstDeclarationStatement) {
         return execDeclarationStatement(statement, vmExecContext);
@@ -157,6 +163,15 @@ public class DefaultVm implements Vm {
       var value = eval(statementWhile.condition, vmExecContext);
       while (value.bool_value()) {
         exec(statementWhile.body, vmExecContext);
+
+        /* Check for break or return. */
+        if (vmExecContext.shouldLeaveFrame()) {
+          if (vmExecContext.getReturnValue() == null) {
+            vmExecContext.resetLeaveFrame();
+          }
+          return vmExecContext.getReturnValue();
+        }
+
         value = eval(statementWhile.condition, vmExecContext);
       }
 

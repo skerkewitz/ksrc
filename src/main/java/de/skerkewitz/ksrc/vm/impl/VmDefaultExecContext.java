@@ -23,8 +23,9 @@ public final class VmDefaultExecContext implements VmExecContext {
     private final Map<VmMethodInfo, Vm.Function> funcTable = new HashMap<>();
 
     private boolean _leaveFrame = false;
+  private Vm.Value _returnValue;
 
-    public VmDefaultExecContext(VmExecContext parent) {
+  public VmDefaultExecContext(VmExecContext parent) {
         this.parent = parent;
     }
 
@@ -39,7 +40,7 @@ public final class VmDefaultExecContext implements VmExecContext {
           return parent.getSymbolByName(name);
         }
 
-        throw new VmUnknownSymbol(name);
+         throw new VmUnknownSymbol(name);
     }
 
     @Override
@@ -128,8 +129,19 @@ public final class VmDefaultExecContext implements VmExecContext {
   }
 
   @Override
-  public void markLeaveFrame() {
-      _leaveFrame = true;
+  public void markLeaveFrame(Vm.Value returnValue) {
+    _returnValue = returnValue;
+    _leaveFrame = true;
   }
 
+  @Override
+  public Vm.Value getReturnValue() {
+    return _returnValue;
+  }
+
+  @Override
+  public void resetLeaveFrame() {
+    _leaveFrame = false;
+    _returnValue = null;
+  }
 }

@@ -196,6 +196,10 @@ public class SemaInferExpressionTypes {
       return;
     }
 
+    else if (node instanceof AstStatementBreak) {
+      return;
+    }
+
     throw new Sema.SemaException(node, "UnknownAstNode " + node.getClass());
   }
 }

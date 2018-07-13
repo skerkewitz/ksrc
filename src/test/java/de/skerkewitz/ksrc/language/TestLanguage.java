@@ -84,8 +84,8 @@ public class TestLanguage {
         System.out.println("Capture: ");
         System.out.println(capture);
 
-        final var actual = IOUtils.toString(outFile.toURI(), "ISO-8859-1");
-        assertEquals(capture, actual);
+        final var expected = IOUtils.toString(outFile.toURI(), "ISO-8859-1");
+        assertEquals(expected, capture);
 
       } catch (IOException e) {
         throw new RuntimeException("Could not access file " + file.getName() + " because of:", e);

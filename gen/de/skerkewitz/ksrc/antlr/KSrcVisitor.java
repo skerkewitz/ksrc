@@ -62,6 +62,13 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReturnStatement(KSrcParser.ReturnStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code BreakStatement}
+	 * labeled alternative in {@link KSrcParser#break_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBreakStatement(KSrcParser.BreakStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code StatementAssign}
 	 * labeled alternative in {@link KSrcParser#assign_statement}.
 	 * @param ctx the parse tree
