@@ -73,6 +73,16 @@ public class AstExprInfixOp extends AstExpr {
 
   public AstExprInfixOp(SourceLocation srcLocation, AstExpr lhs, AstExpr rhs, Token op) {
     super(srcLocation, null);
+
+    if (lhs == null) {
+      throw new IllegalArgumentException("lhs can not be null");
+    }
+
+    if (rhs == null) {
+      throw new IllegalArgumentException("rhs can not be null");
+    }
+
+
     this.lhs = lhs;
     this.rhs = rhs;
     this.op = op;

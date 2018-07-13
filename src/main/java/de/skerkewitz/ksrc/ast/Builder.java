@@ -31,6 +31,7 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
    var statements = ctx.statement()
             .stream()
             .map(c -> visit(c, AstStatement.class))
+            .peek(s -> {if (s == null) throw new IllegalArgumentException("Error at token: " + SourceLocation.fromContext(ctx).toString());})
             .collect(Collectors.toList());
 
     return new AstStatements(SourceLocation.fromContext(ctx), statements);
@@ -166,6 +167,11 @@ public class Builder extends KSrcBaseVisitor<AstNode> {
     var rhs = (AstExpr) visit(ctx.expression(1));
     var op = AstExprInfixOp.Token.fromAstToken(ctx.op.getType());
     return new AstExprInfixOp(SourceLocation.fromContext(ctx), lhs, rhs, op);
+  }
+
+  @Override
+  public AstNode visitExprParens(KSrcParser.ExprParensContext ctx) {
+    return visit(ctx.expression(), AstExpr.class);
   }
 
   @Override

@@ -1,4 +1,4 @@
-// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/main/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
+// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/main/java/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
 package de.skerkewitz.ksrc.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -160,6 +160,13 @@ public interface KSrcVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExprPow(KSrcParser.ExprPowContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprParens}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprParens(KSrcParser.ExprParensContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code ExprMultiplication}
 	 * labeled alternative in {@link KSrcParser#expression}.

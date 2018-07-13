@@ -1,6 +1,7 @@
 package de.skerkewitz.ksrc.vm.impl;
 
 import de.skerkewitz.ksrc.vm.Vm;
+import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
@@ -19,7 +20,7 @@ public final class VmDefaultExecContext implements VmExecContext {
     private final VmExecContext parent;
 
     private final Map<String, Vm.Value> symbolTable = new HashMap<>();
-    private final Map<String, Vm.Function> funcTable = new HashMap<>();
+    private final Map<VmMethodInfo, Vm.Function> funcTable = new HashMap<>();
 
     private boolean _leaveFrame = false;
 
@@ -114,11 +115,11 @@ public final class VmDefaultExecContext implements VmExecContext {
   @Override
   public void declareFunc(Vm.Function function) {
     String fqn = function.methodInfo.name;
-    if (this.funcTable.containsKey(fqn)) {
+    if (this.funcTable.containsKey(function.methodInfo)) {
       throw new VmSymbolAlreadyDeclared(fqn);
     }
 
-    this.funcTable.put(fqn, function);
+    this.funcTable.put(function.methodInfo, function);
   }
 
   @Override

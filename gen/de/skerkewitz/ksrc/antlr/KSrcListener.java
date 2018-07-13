@@ -1,4 +1,4 @@
-// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/main/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
+// Generated from C:/Users/stefa/IdeaProjects/ksrc/src/main/java/de/skerkewitz/ksrc/antlr\KSrc.g4 by ANTLR 4.7
 package de.skerkewitz.ksrc.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -261,6 +261,18 @@ public interface KSrcListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExprPow(KSrcParser.ExprPowContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprParens}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprParens(KSrcParser.ExprParensContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprParens}
+	 * labeled alternative in {@link KSrcParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprParens(KSrcParser.ExprParensContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code ExprMultiplication}
 	 * labeled alternative in {@link KSrcParser#expression}.

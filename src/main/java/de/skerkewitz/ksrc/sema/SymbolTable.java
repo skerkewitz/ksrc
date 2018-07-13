@@ -7,7 +7,7 @@ import java.util.Map;
 
 public final class SymbolTable<T> {
 
-  private final Map<String, T> symbolTable;
+  private final Map<String, T> symbolTable; // Can only contain unique symbols.
   private final SymbolTable<T> parent;
 
   public SymbolTable(Map<String, T> symbolTable, SymbolTable<T> parent) {

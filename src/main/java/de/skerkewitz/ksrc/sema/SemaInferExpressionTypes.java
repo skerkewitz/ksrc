@@ -20,6 +20,9 @@ public class SemaInferExpressionTypes {
 
   public static void walk(AstNode node, Sema sema, SymbolTable localSymbols) {
 
+    if (node == null) {
+      throw new IllegalArgumentException("Node can not be null");
+    }
 
     if (node instanceof AstStatements) {
       AstStatements statements = (AstStatements) node;

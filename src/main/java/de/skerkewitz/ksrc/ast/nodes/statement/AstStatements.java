@@ -15,6 +15,9 @@ public class AstStatements extends AstStatement {
     this.statements = Collections.unmodifiableList(statements);
 
     for (var statement : statements) {
+      if (statement == null) {
+        throw new IllegalArgumentException("sub statement can not be null");
+      }
       this.addChild(statement);
     }
   }

@@ -2,7 +2,6 @@
 grammar KSrc;
 
 
-
 // Keywords
 LET:    'let';
 VAR:    'var';
@@ -132,6 +131,7 @@ expression
     : expression POW expression                         #ExprPow
     | MINUS expression                                  #ExprUnaryMinus
     | NOT expression                                    #ExprNot
+    | LPARENS expression RPARENS                        #ExprParens
     | expression op=(MULT | DIV | MOD) expression       #ExprMultiplication
     | expression op=(PLUS | MINUS) expression           #ExprAdditive
     | expression op=(LTEQ | GTEQ | LT | GT) expression  #ExprRelational
