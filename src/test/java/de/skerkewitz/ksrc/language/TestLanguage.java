@@ -94,7 +94,7 @@ public class TestLanguage {
   @Test
   void testSingleLanguageFile() throws URISyntaxException, IOException {
 
-    final var filename = "language/loop-object.ksrc";
+    final var filename = "language/sum-call.ksrc6666666666";
     final var classLoader = getClass().getClassLoader();
     final var sourceStream = classLoader.getResource(filename).openStream();
 

@@ -38,8 +38,8 @@ public class SemaMethodScanner {
   }
 
   public static List<VmMethodInfo> scan(AstNode statement) {
-    SemaMethodScanner classScanner = new SemaMethodScanner();
-    classScanner.scanInternal(statement);
-    return classScanner.methodInfos;
+    SemaMethodScanner semaMethodScanner = new SemaMethodScanner();
+    semaMethodScanner.scanInternal(statement);
+    return semaMethodScanner.methodInfos;
   }
 }

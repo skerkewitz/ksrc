@@ -54,6 +54,7 @@ public final class VmExecContextFactory {
   public static List<Vm.Function> buildInFunctionList() {
     return List.of(
             new Vm.Function(new VmMethodInfo("print", VmMethodDescriptor.fromString("(S)V"), null), print_f),
+            new Vm.Function(new VmMethodInfo("print", VmMethodDescriptor.fromString("(I)V"), null), print_f),
             new Vm.Function(new VmMethodInfo("println", VmMethodDescriptor.fromString("(S)V"), null), println_f),
             new Vm.Function(new VmMethodInfo("println", VmMethodDescriptor.fromString("(I)V"), null), println_f_i),
             new Vm.Function(new VmMethodInfo("println", VmMethodDescriptor.fromString("(Z)V"), null), println_f_z),

@@ -1,6 +1,7 @@
 # Factorial example
 fn factorial(n:Int) -> Int:
     if n == 0:
+        print(44)
         return 1
     end
 

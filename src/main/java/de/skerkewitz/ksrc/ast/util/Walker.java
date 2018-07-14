@@ -91,7 +91,7 @@ public class Walker {
       String returnType = declarationFunction.signature.returnType.name;
       ps.println("(func " + name + " " + returnType + " (" + parameters + ") (");
       ps.pushIdent();
-      walk(declarationFunction.body);
+      walk(declarationFunction.body); // build in functions have no bodies.
       ps.popIdent();
       ps.println(")");
       return;

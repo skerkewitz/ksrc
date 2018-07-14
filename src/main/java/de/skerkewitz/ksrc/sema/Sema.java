@@ -8,16 +8,12 @@ import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
-import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
-import de.skerkewitz.ksrc.vm.impl.VmExecContext;
-import de.skerkewitz.ksrc.vm.impl.VmUnknownFunction;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Sema {
 
@@ -169,5 +165,9 @@ public class Sema {
       super(message + " (" + (astNode != null ? astNode.srcLocation : "unknown ast") + ")");
       this.astNode = astNode;
     }
+  }
+
+  public List<Vm.Function> getFunctionsDeclarations() {
+    return Collections.unmodifiableList(this.functionDeclarations);
   }
 }
