@@ -1,0 +1,36 @@
+fn a -> Int:
+    return 42
+end
+
+fn b -> Int:
+    return a()
+end
+
+fn c -> Int:
+    return b()
+end
+
+fn d -> Int:
+    return c()
+end
+
+fn e -> Int:
+    return c()
+end
+
+fn f -> Int:
+    return c()
+end
+
+fn g -> Int:
+    return d() + e() + f()
+end
+
+var i = 0
+var result = 0
+while i < 10000:
+    result = result + g()
+    i = i + 1
+end
+return result
+

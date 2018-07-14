@@ -1,0 +1,22 @@
+let t = 10 == 10 # true
+let f = 10 != 10 # false
+
+println(left(f) and right(f))
+println(left(f) and right(t))
+println(left(t) and right(f))
+println(left(t) and right(t))
+println("");
+println(left(f) or right(f))
+println(left(f) or right(t))
+println(left(t) or right(f))
+println(left(t) or right(t))
+
+fn left(x: Bool) -> Bool:
+  println("left")
+  return x
+end
+
+fn right(x: Bool) -> Bool:
+  println("right")
+  return x
+end

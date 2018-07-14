@@ -72,8 +72,8 @@ public class DefaultVm implements Vm {
         case EQ: return new VmValueBool(lhs.eq(rhs));
         case IDEQ: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
         case NEQ: return new VmValueBool(!lhs.eq(rhs));
-        case AND: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
-        case OR: throw new RuntimeException("Infix operator " + infixOp + " no implemented yet");
+        case AND: return new VmValueBool(lhs.bool_value() && rhs.bool_value());
+        case OR: return new VmValueBool(lhs.bool_value() || rhs.bool_value());
       }
     }
     else if (expression instanceof AstExprIdent) {

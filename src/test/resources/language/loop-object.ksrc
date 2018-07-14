@@ -1,0 +1,24 @@
+class obj:
+    var i: Int
+
+    fn init:
+    end
+end
+
+
+fn loop(n: Int) -> Int:
+  let obj = obj()
+  obj.i = 0
+  while obj.i < n:
+    obj.i = obj.i + 1
+  end
+  return obj.i
+end
+
+var i = 0;
+while i < 20:
+    loop(1000)
+    i = i + 1
+end
+println(loop(1000))
+

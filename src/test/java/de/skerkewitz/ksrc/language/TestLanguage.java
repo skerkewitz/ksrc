@@ -93,26 +93,22 @@ public class TestLanguage {
 
   @Test
   void testSingleLanguageFile() throws URISyntaxException, IOException {
-    ClassLoader classLoader = getClass().getClassLoader();
-    var directory = classLoader.getResource("language").toURI();
 
-    File[] files = new File(directory).listFiles();
-    List<File> fileList = List.of(files);
-    List<File> sourceStream = fileList.stream().filter(file -> file.getName().endsWith("fibonacci.ksrc")).collect(Collectors.toList());
+    final var filename = "language/loop-object.ksrc";
+    final var classLoader = getClass().getClassLoader();
+    final var sourceStream = classLoader.getResource(filename).openStream();
 
     /* Run each source and compare if with the result. */
-    for (var file : sourceStream) {
-      System.out.println("Testing file: " + file.getName());
+    System.out.println("Testing file: " + filename);
 
-      ParseTree treeLib = parserFromInputStream(new FileInputStream(file)).translation_unit();
-      AstStatement rootStatement = (AstStatement) new Builder().visit(treeLib);
+    ParseTree treeLib = parserFromInputStream(sourceStream).translation_unit();
+    AstStatement rootStatement = (AstStatement) new Builder().visit(treeLib);
 
-      final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
+    final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
 
-      var vmExecContext = VmExecContextFactory.initialContext();
+    var vmExecContext = VmExecContextFactory.initialContext();
 
-      Vm vm = new DefaultVm(sema);
-      Vm.Value ret = vm.exec(rootStatement, vmExecContext);
-    }
+    Vm vm = new DefaultVm(sema);
+    Vm.Value ret = vm.exec(rootStatement, vmExecContext);
   }
 }
