@@ -9,8 +9,8 @@ import java.util.*;
 
 public final class VmDefaultExecContext implements VmExecContext {
 
-  public static OutputStream stdout = System.out;
-  public static OutputStream stderr = System.err;
+  private OutputStream stdout = System.out;
+  private OutputStream stderr = System.err;
 
   private Deque<VmStackFrame> stackFrames = new ArrayDeque<>();
 
@@ -105,5 +105,23 @@ public final class VmDefaultExecContext implements VmExecContext {
   @Override
   public void resetLeaveFrame() {
     stackFrames.peek().resetLeaveFrame();
+  }
+
+  @Override
+  public OutputStream getStdout() {
+    return stdout;
+  }
+
+  public void setStdout(OutputStream stdout) {
+    this.stdout = stdout;
+  }
+
+  @Override
+  public OutputStream getStderr() {
+    return stderr;
+  }
+
+  public void setStderr(OutputStream stderr) {
+    this.stderr = stderr;
   }
 }

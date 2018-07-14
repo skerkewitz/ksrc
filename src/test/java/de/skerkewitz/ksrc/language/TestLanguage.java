@@ -7,7 +7,6 @@ import de.skerkewitz.ksrc.sema.SemaFactory;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
 import de.skerkewitz.ksrc.vm.impl.VmDefaultExecContext;
-import de.skerkewitz.ksrc.vm.impl.VmExecContext;
 import de.skerkewitz.ksrc.vm.impl.VmExecContextFactory;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.io.IOUtils;
@@ -67,11 +66,11 @@ public class TestLanguage {
 
         final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
 
-        var vmExecContext = VmExecContextFactory.initialContext();
+        var vmExecContext = (VmDefaultExecContext)VmExecContextFactory.initialContext();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        VmDefaultExecContext.stdout = new TeeOutStream(System.out, outputStream);
-        VmDefaultExecContext.stderr = new TeeOutStream(System.err, outputStream);
+        vmExecContext.setStdout(new TeeOutStream(System.out, outputStream));
+        vmExecContext.setStderr(new TeeOutStream(System.err, outputStream));
 
         Vm vm = new DefaultVm(sema);
         Vm.Value ret = vm.exec(rootStatement, vmExecContext);
@@ -117,39 +116,3 @@ public class TestLanguage {
     }
   }
 }
-
-
-
-
-
-//
-//    for (File file : files) {
-//      if (file.isFile()) {
-//        System.out.println(file.getName());
-//      }
-//    }
-
-//    ParseTree treeLib = parserFromInputStream(somefile.openStream()).translation_unit();
-//    AstStatement rootStatement = (AstStatement) new Builder().visit(treeLib);
-//
-//    final Sema sema = SemaFactory.buildSemaFromRootStatement(rootStatement);
-//
-//
-//    var vmExecContext = VmExecContextFactory.initialContext();
-//
-//    Vm vm = new DefaultVm(sema);
-//    Vm.Value ret = vm.exec(rootStatement, vmExecContext);
-//
-//    assertEquals(0, eval("fib(0)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(1, eval("fib(1)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(1, eval("fib(2)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(2, eval("fib(3)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(3, eval("fib(4)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(5, eval("fib(5)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(8, eval("fib(6)\n", vm, vmExecContext).int_value().intValue());
-//    assertEquals(13, eval("fib(7)\n", vm, vmExecContext).int_value().intValue());
-//  }
-//
-//
-//
-//}

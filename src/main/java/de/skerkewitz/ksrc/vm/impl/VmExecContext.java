@@ -4,6 +4,8 @@ import de.skerkewitz.ksrc.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.vm.Vm;
 
+import java.io.OutputStream;
+
 public interface VmExecContext {
 
   Vm.Value getSymbolByName(String name);
@@ -26,6 +28,10 @@ public interface VmExecContext {
   VmStackFrame popFrame();
 
   VmStackFrame getCurrentFrame();
+
+  OutputStream getStdout();
+
+  OutputStream getStderr();
 
 
   class VmUnknownSymbol extends RuntimeException {

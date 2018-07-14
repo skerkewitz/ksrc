@@ -14,28 +14,28 @@ public final class VmExecContextFactory {
 
   private final static Vm.Function.BuildIn print_f = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args.get(0), execContext);
-    PrintStream p = new PrintStream(VmDefaultExecContext.stdout);
+    PrintStream p = new PrintStream(execContext.getStdout());
     p.print(eval.string_value());
     return VmValueVoid.shared;
   };
 
   private final static Vm.Function.BuildIn println_f = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args.get(0), execContext);
-    PrintStream p = new PrintStream(VmDefaultExecContext.stdout);
+    PrintStream p = new PrintStream(execContext.getStdout());
     p.println(eval.string_value());
     return VmValueVoid.shared;
   };
 
   private final static Vm.Function.BuildIn println_f_i = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args.get(0), execContext);
-    PrintStream p = new PrintStream(VmDefaultExecContext.stdout);
+    PrintStream p = new PrintStream(execContext.getStdout());
     p.println(eval.int_value());
     return VmValueVoid.shared;
   };
 
   private final static Vm.Function.BuildIn println_f_z = (vm, args, execContext) -> {
     Vm.Value eval = vm.eval(args.get(0), execContext);
-    PrintStream p = new PrintStream(VmDefaultExecContext.stdout);
+    PrintStream p = new PrintStream(execContext.getStdout());
     p.println(eval.bool_value());
     return VmValueVoid.shared;
   };
