@@ -32,4 +32,9 @@ public abstract class AbstractVmValue<T> implements Vm.Value {
   public Object ref_value() {
     throw new RuntimeException("Operation add is not supported on descriptor " + descriptor.toString());
   }
+
+  @Override
+  public String toString() {
+    return "VmValue(" + descriptor + ", value: " + string_value() + ")";
+  }
 }

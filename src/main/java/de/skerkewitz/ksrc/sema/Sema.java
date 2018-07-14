@@ -166,7 +166,7 @@ public class Sema {
     private final AstNode astNode;
 
     public SemaException(AstNode astNode, String message) {
-      super(message + " (" + astNode.srcLocation + ")");
+      super(message + " (" + (astNode != null ? astNode.srcLocation : "unknown ast") + ")");
       this.astNode = astNode;
     }
   }

@@ -102,14 +102,17 @@ public class VmFunctionCallHelper {
   private static Vm.Value callResolvedFunction(AstExprFunctionCall exprFunctionCall, AstDeclarationFunction astDeclarationFunction, Vm vm, VmExecContext vmExecContext) {
     /* Create a new VmExeContext for the function call. And resolve parameter. */
     int i = 0;
-    var localVmExecContext = new VmDefaultExecContext(vmExecContext);
 
-    for (var pIdent : astDeclarationFunction.signature.params) {
-      localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFunctionCall.arguments.list.get(i), vmExecContext));
+    var vmStackFrame = new VmStackFrame(astDeclarationFunction.name.ident + " at " + astDeclarationFunction.srcLocation);
+    for (var parameter : astDeclarationFunction.signature.params) {
+      vmStackFrame.locals.declareSymbol(parameter.name.ident, vm.eval(exprFunctionCall.arguments.list.get(i), vmExecContext), parameter);
       i += 1;
     }
 
-    return vm.exec(astDeclarationFunction.body, localVmExecContext);
+    vmExecContext.pushFrame(vmStackFrame);
+    Vm.Value exec = vm.exec(astDeclarationFunction.body, vmExecContext);
+    vmExecContext.popFrame();
+    return exec;
   }
 
   private static Vm.Value execMethodCall(AstExprFunctionCall exprFunctionCall, Vm vm, VmExecContext vmExecContext) {
@@ -147,110 +150,10 @@ public class VmFunctionCallHelper {
       throw new Sema.SemaException(exprFunctionCall, "Ambiguous function call");
     }
 
-    /* The method to call. */
-    VmMethodInfo vmMethodInfo = methodInfos.get(0);
-
-    /* Create a new VmExeContext for the function call. And resolve parameter. */
-    var localVmExecContext = new VmDefaultExecContext(vmExecContext);
-    int i = 0;
-    for (var pIdent : vmMethodInfo.functionDeclaration.signature.params) {
-      localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFunctionCall.arguments.list.get(i), vmExecContext));
-      i += 1;
-    }
-
     /* Call the function. */
-    return vm.exec(vmMethodInfo.functionDeclaration.body, localVmExecContext);
+    VmMethodInfo vmMethodInfo = methodInfos.get(0);
+    return callResolvedFunction(exprFunctionCall, vmMethodInfo.functionDeclaration, vm, vmExecContext);
   }
-
-    //
-//      var types = Arrays.stream(exprFuncCall.arguments)
-//              .map((AstExpr astExpr) -> Sema.getResultType(astExpr, vmExecContext))
-//              .toArray(Type[]::new);
-//
-//      FunctionSignature functionSignature = new FunctionSignature(Type.VOID, types);
-//
-//      final String fnName;
-//      if (exprFuncCall.fnName instanceof AstExprIdent) {
-//        fnName = ((AstExprIdent) exprFuncCall.fnName).ident;
-//      } else if (exprFuncCall.fnName instanceof AstExprExplicitMemberAccess) {
-//        //fnName = ((AstExprExplicitMemberAccess) exprFuncCall).lhs;
-//        fnName = ((AstExprExplicitMemberAccess) exprFuncCall.fnName).rhs.toString();
-//      } else {
-//        throw new VmRuntimeException("Can not resolve function call base", exprFuncCall.srcLocation);
-//      }
-//
-//      var stmts = vmExecContext.getFunctionByName(fnName, functionSignature);
-//      if (stmts != null) {
-//        if (stmts instanceof Vm.FunctionRef) {
-//          var vmFuncRef = (Vm.FunctionRef) stmts;
-//
-//          /* Create a new VmExeContext for the function call. And resolve parameter. */
-//          var localVmExecContext = new VmDefaultExecContext(vmExecContext);
-//          int i = 0;
-//          for (var pIdent : vmFuncRef.funcRef.signature.list) {
-//            localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFuncCall.arguments[i], vmExecContext));
-//            i += 1;
-//          }
-//
-//          Vm.Value exec = vm.exec(vmFuncRef.funcRef.body, localVmExecContext);
-//          return exec;
-//        }
-//
-//        var vmFuncBuildIn = (Vm.FunctionBuildInRef) stmts;
-//        return vmFuncBuildIn.funcRef.exec(vm, exprFuncCall.arguments, vmExecContext);
-//      }
-//
-//
-//      return null;
-
-
-//
-//    }
-//  }
-//
-//  private static Vm.Value execFunctionCall(AstExprFunctionCall exprFuncCall, Vm vm, VmExecContext vmExecContext) {
-//
-//
-//
-//    var types = Arrays.stream(exprFuncCall.arguments)
-//            .map((AstExpr astExpr) -> Sema.getResultType(astExpr, vmExecContext))
-//            .toArray(Type[]::new);
-//
-//    FunctionSignature functionSignature = new FunctionSignature(Type.VOID, types);
-//
-//    final String fnName;
-//    if (exprFuncCall.fnName instanceof AstExprIdent) {
-//      fnName = ((AstExprIdent) exprFuncCall.fnName).ident;
-//    }
-//    else if (exprFuncCall.fnName instanceof AstExprExplicitMemberAccess) {
-//      //fnName = ((AstExprExplicitMemberAccess) exprFuncCall).lhs;
-//      fnName = ((AstExprExplicitMemberAccess) exprFuncCall.fnName).rhs.toString();
-//    } else {
-//      throw new VmRuntimeException("Can not resolve function call base", exprFuncCall.srcLocation);
-//    }
-//
-//    var stmts = vmExecContext.getFunctionByName(fnName,functionSignature);
-//    if (stmts != null) {
-//      if (stmts instanceof Vm.FunctionRef) {
-//        var vmFuncRef = (Vm.FunctionRef) stmts;
-//
-//        /* Create a new VmExeContext for the function call. And resolve parameter. */
-//        var localVmExecContext = new VmDefaultExecContext(vmExecContext);
-//        int i = 0;
-//        for (var pIdent : vmFuncRef.funcRef.signature.list) {
-//          localVmExecContext.declareSymbol(pIdent.name.ident, vm.eval(exprFuncCall.arguments[i], vmExecContext));
-//          i += 1;
-//        }
-//
-//        Vm.Value exec = vm.exec(vmFuncRef.funcRef.body, localVmExecContext);
-//        return exec;
-//      }
-//
-//      var vmFuncBuildIn = (Vm.FunctionBuildInRef) stmts;
-//      return vmFuncBuildIn.funcRef.exec(vm, exprFuncCall.arguments, vmExecContext);
-//    }
-//    return null;
-//  }
 
   private static class UnknownFunctionCallType extends Vm.VmException {
     public UnknownFunctionCallType(AstExprFunctionCall exprFuncCall) {

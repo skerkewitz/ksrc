@@ -178,20 +178,15 @@ public class SemaInferExpressionTypes {
     if (node instanceof AstStatementWhile) {
       AstStatementWhile statementWhile = (AstStatementWhile) node;
       walk(statementWhile.condition, sema, localSymbols);
-      /* TODO assert the condition is boolean. */
-//      if (statementWhile.condition.descriptor != VmDescriptor.Boolean) {
-//        throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
-//      }
+      SemaAssert.expectExpressionDescriptor(statementWhile.condition, VmDescriptor.Bool);
       walk(statementWhile.body, sema, localSymbols.createNewScope());
       return;
     }
     else if (node instanceof AstStatementIf) {
       AstStatementIf statementWhile = (AstStatementIf) node;
       walk(statementWhile.condition, sema, localSymbols);
-      /* TODO assert the condition is boolean. */
-//      if (statementWhile.condition.descriptor != VmDescriptor.Boolean) {
-//        throw new Sema.SemaException(declarationVar, "Variable declarations need either explicit type declaration or type must be inferable from initializer.");
-//      }
+      SemaAssert.expectExpressionDescriptor(statementWhile.condition, VmDescriptor.Bool);
+
       walk(statementWhile.thenStatement, sema, localSymbols.createNewScope());
       return;
     }

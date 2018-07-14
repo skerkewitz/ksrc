@@ -1,35 +1,27 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.AstDeclarationClass;
-import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.expr.*;
-import de.skerkewitz.ksrc.ast.nodes.statement.*;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
-import de.skerkewitz.ksrc.vm.VmClassInfo;
-import de.skerkewitz.ksrc.vm.VmFieldInfo;
-import de.skerkewitz.ksrc.vm.VmMethodInfo;
-import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
-
-import java.util.Optional;
+import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
 
 
+public class AstWalker {
 
-public class AstWalker<Ctx> {
+  public interface AstWalkerVisitor {
+    AstNode visit(AstStatements statements);
+  }
 
-//  private Listener<Ctx> l = null;
+  private final AstWalkerVisitor visitor;
+
+  public AstWalker(AstWalkerVisitor visitor) {
+    this.visitor = visitor;
+  }
 
 
-  public AstNode walk(AstNode node, Ctx ctx) {
+  public AstNode walk(AstNode node) {
 
-//    if (node instanceof AstStatements) {
-//      AstStatements statements = (AstStatements) node;
-////      for (var statement : statements.statements) {
-//        this.l.walk(statements, ctx);
-////      }
-//      return statements;
-    return null;
+    if (node instanceof AstStatements) {
+      final AstStatements statements = (AstStatements) node;
+      return this.visitor.visit(statements);
     }
 
 //    if (node instanceof AstDeclarationFunction) {
@@ -196,17 +188,18 @@ public class AstWalker<Ctx> {
 //      return;
 //    }
 
-//    throw new Sema.SemaException(node, "UnknownAstNode " + node.getClass());
+    throw new Sema.SemaException(node, "UnknownAstNode " + node.getClass());
+  }
 }
 
-//
-//
-//public class Listener<Ctx> {
-//
-//  public AstNode walk(AstStatements astStatements, Ctx ctx, AstWalker<Ctx> walker) {
-//    for (var statement : astStatements.statements) {
+
+abstract class BaseListener implements AstWalker.AstWalkerVisitor {
+
+  public AstNode walk(AstStatements astStatements) {
+
+    for (var statement : astStatements.statements) {
 //      walker.walk(statement, ctx);
-//    }
-//    return astStatements;
-//  }
-//}
+    }
+    return astStatements;
+  }
+}

@@ -1,6 +1,5 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import com.ibm.icu.impl.coll.SharedObject;
 import de.skerkewitz.ksrc.ast.AstDeclarationClass;
 import de.skerkewitz.ksrc.ast.Type;
 import de.skerkewitz.ksrc.ast.nodes.expr.*;
@@ -10,7 +9,6 @@ import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationStatemen
 import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.Vm;
-import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 /**
  * Quick and dirty default implementation of the ksrc {@link Vm}. Its actually a interpreter and not a real virtual
@@ -82,6 +80,8 @@ public class DefaultVm implements Vm {
       final AstExprIdent exprIdent = (AstExprIdent) expression;
       return vmExecContext.getSymbolByName(exprIdent.ident);
     }
+
+    // -- Function call
     if (expression instanceof AstExprFunctionCall) {
       final AstExprFunctionCall exprFuncCall = (AstExprFunctionCall) expression;
       return VmFunctionCallHelper.exec(exprFuncCall, this, vmExecContext);
@@ -162,8 +162,9 @@ public class DefaultVm implements Vm {
       final var statementWhile = (AstStatementWhile) statement;
       var value = eval(statementWhile.condition, vmExecContext);
       while (value.bool_value()) {
+        vmExecContext.getCurrentFrame().pushLexcialScope();
         exec(statementWhile.body, vmExecContext);
-
+        vmExecContext.getCurrentFrame().popLexcialScope();
         /* Check for break or return. */
         if (vmExecContext.shouldLeaveFrame()) {
           if (vmExecContext.getReturnValue() == null) {
@@ -182,7 +183,7 @@ public class DefaultVm implements Vm {
       var value = eval(assignStatement.expression, vmExecContext);
       if (assignStatement.ident instanceof AstExprIdent) {
         AstExprIdent ident = (AstExprIdent)assignStatement.ident;
-        vmExecContext.setSymbolToValue(ident.ident, value);
+        vmExecContext.setSymbolToValue(ident.ident, value, ident);
       } else {
         AstExprExplicitMemberAccess memberAccess = (AstExprExplicitMemberAccess)assignStatement.ident;
 
@@ -217,7 +218,7 @@ public class DefaultVm implements Vm {
       } else {
         value = eval(astDeclarationVar.initializer, vmExecContext);
       }
-      vmExecContext.declareSymbol(astDeclarationVar.name.ident, value);
+      vmExecContext.declareSymbol(astDeclarationVar.name.ident, value, astDeclarationVar);
       return value;
     }
     else if (statement instanceof AstDeclarationFunction) {

@@ -46,12 +46,8 @@ public final class VmExecContextFactory {
   };
 
   public static VmExecContext initialContext() {
-    var context = new VmDefaultExecContext(null);
-
-    for (var f : buildInFunctionList()) {
-      context.declareFunc(f);
-    }
-
+    var context = new VmDefaultExecContext();
+    context.pushFrame(new VmStackFrame("___global.scope"));
     return context;
   }
 

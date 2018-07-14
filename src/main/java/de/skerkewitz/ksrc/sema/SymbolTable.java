@@ -8,7 +8,7 @@ import java.util.Map;
 public final class SymbolTable<T> {
 
   private final Map<String, T> symbolTable; // Can only contain unique symbols.
-  private final SymbolTable<T> parent;
+  public final SymbolTable<T> parent;
 
   public SymbolTable(Map<String, T> symbolTable, SymbolTable<T> parent) {
     this.symbolTable = symbolTable;
@@ -36,20 +36,38 @@ public final class SymbolTable<T> {
     return returnDescriptor;
   }
 
-  public void declareSymbol(String name, T descriptor, AstNode node) {
-    if (descriptor == null) {
-      throw new IllegalArgumentException("descriptor can not be null");
+  public void declareSymbol(String name, T symbolValue, AstNode node) {
+    if (symbolValue == null) {
+      throw new IllegalArgumentException("symbolValue can not be null");
     }
 
     if (this.symbolTable.containsKey(name)) {
       T symbolByName = getSymbolByName(name);
-      if (!symbolByName.equals(descriptor)) {
-        throw new Sema.SemaException(node, "Invalid type redeclaration of symbol '" + name + "' from " + symbolByName + " to " + descriptor);
+      if (!symbolByName.equals(symbolValue)) {
+        throw new Sema.SemaException(node, "Invalid type redeclaration of symbol '" + name + "' from " + symbolByName + " to " + symbolValue);
       }
     }
 
-    this.symbolTable.put(name, descriptor);
+    this.symbolTable.put(name, symbolValue);
   }
+
+  public void redeclareSymbol(String name, T symbolValue, AstNode node) {
+    if (symbolValue == null) {
+      throw new IllegalArgumentException("symbolValue can not be null");
+    }
+
+    if (this.symbolTable.containsKey(name)) {
+      this.symbolTable.put(name, symbolValue);
+      return;
+    }
+
+    if (parent != null) {
+      parent.redeclareSymbol(name, symbolValue, node);
+      return;
+    }
+
+    throw new Sema.SemaException(node, "Invalid type redeclaration of unknown symbol '" + name + "' to " + symbolValue);
+}
 
   /**
    * Create a new scope by returning new table and setting this table as the parent.

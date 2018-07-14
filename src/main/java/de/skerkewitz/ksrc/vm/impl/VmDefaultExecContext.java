@@ -1,147 +1,109 @@
 package de.skerkewitz.ksrc.vm.impl;
 
+import de.skerkewitz.ksrc.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.vm.Vm;
-import de.skerkewitz.ksrc.vm.VmMethodInfo;
-import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
-import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
-import de.skerkewitz.ksrc.vm.exceptions.VmRuntimeException;
 
 import java.io.OutputStream;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class VmDefaultExecContext implements VmExecContext {
 
-    public static OutputStream stdout = System.out;
-    public static OutputStream stderr = System.err;
+  public static OutputStream stdout = System.out;
+  public static OutputStream stderr = System.err;
 
-    /** The parent is always readonly. If null then this is the global layer. */
-    private final VmExecContext parent;
+  private Deque<VmStackFrame> stackFrames = new ArrayDeque<>();
 
-    private final Map<String, Vm.Value> symbolTable = new HashMap<>();
-    private final Map<VmMethodInfo, Vm.Function> funcTable = new HashMap<>();
-
-    private boolean _leaveFrame = false;
-  private Vm.Value _returnValue;
-
-  public VmDefaultExecContext(VmExecContext parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public Vm.Value getSymbolByName(String name) {
-        var symbol = this.symbolTable.get(name);
-        if (symbol != null) {
-          return symbol;
-        }
-
-        if (parent != null) {
-          return parent.getSymbolByName(name);
-        }
-
-         throw new VmUnknownSymbol(name);
-    }
-
-    @Override
-    public void declareSymbol(String name, Vm.Value value) {
-        if (value == null) {
-          // use Vm.NullValue instead
-          throw new IllegalArgumentException("value can not be null");
-        }
-
-        if (this.symbolTable.containsKey(name)) {
-          throw new VmSymbolAlreadyDeclared(name);
-        }
-
-        this.symbolTable.put(name, value);
-    }
 
   @Override
-  public void setSymbolToValue(String ident, Vm.Value value) {
+  public Vm.Value getSymbolByName(String name) {
+    /* Check the current frame first. */
+    VmStackFrame currentStackFrame = stackFrames.peek();
+    var localSymbol = currentStackFrame.locals.getSymbolByName(name);
+    if (localSymbol != null) {
+      return localSymbol;
+    }
+
+    /* if the localSymbol is not declared in the current stack frame check the global stack frame. */
+    VmStackFrame globalStackFrame = stackFrames.peekLast();
+    var globalSymbol = globalStackFrame.locals.getSymbolByName(name);
+    if (globalSymbol != null) {
+      return globalSymbol;
+    }
+
+    throw new VmUnknownSymbol(name);
+  }
+
+  @Override
+  public void declareSymbol(String name, Vm.Value value, AstNode node) {
     if (value == null) {
       // use Vm.NullValue instead
       throw new IllegalArgumentException("value can not be null");
     }
 
-    if (this.symbolTable.containsKey(ident)) {
-      this.symbolTable.put(ident, value);
+    /* Check the current frame first. */
+    VmStackFrame currentStackFrame = stackFrames.peek();
+    currentStackFrame.locals.declareSymbol(name, value, node);
+  }
+
+  @Override
+  public void setSymbolToValue(String name, Vm.Value value, AstExprIdent astExprIdent) {
+    if (value == null) {
+      // use Vm.NullValue instead
+      throw new IllegalArgumentException("value can not be null");
+    }
+
+    /* Check the current frame first. */
+    VmStackFrame currentStackFrame = stackFrames.peek();
+    var localSymbol = currentStackFrame.locals.getSymbolByName(name);
+    if (localSymbol != null) {
+      currentStackFrame.locals.redeclareSymbol(name, value, astExprIdent);
       return;
     }
 
-    if (parent != null) {
-      parent.setSymbolToValue(ident, value);
+    /* if the localSymbol is not declared in the current stack frame check the global stack frame. */
+    VmStackFrame globalStackFrame = stackFrames.peekLast();
+    var globalSymbol = globalStackFrame.locals.getSymbolByName(name);
+    if (globalSymbol != null) {
+      globalStackFrame.locals.redeclareSymbol(name, value, astExprIdent);
       return;
     }
 
-    throw new VmUnknownSymbol(ident);
-  }
-
-  @Override
-  public Vm.Function getFunctionByName(String name, VmMethodDescriptor descriptor) {
-    String fqn = name;
-    var symbol = this.funcTable.get(fqn);
-    if (symbol != null) {
-      /* Make sure the descriptor matches. */
-      if (symbol.methodInfo.descriptor.equals(descriptor)) {
-        return symbol;
-      }
-
-      throw new VmRuntimeException("Require function of type '" + descriptor + "' but found '" + symbol.methodInfo.descriptor + "'", null);
-    }
-
-    if (parent != null) {
-      return parent.getFunctionByName(name, descriptor);
-    }
-
-    throw new VmUnknownFunction(name, descriptor);
-  }
-
-  @Override
-  public List<Vm.Function> findFunctionsByNameAndParameters(String functionName, List<VmDescriptor> parameterDescriptors) {
-
-    Stream<Vm.Function> functionStream = this.funcTable.values().stream()
-            .filter(function -> function.methodInfo.name.equals(functionName))
-            .filter(function -> function.methodInfo.descriptor.parameterDescriptor.equals(parameterDescriptors));
-
-
-    List<Vm.Function> parents = Collections.EMPTY_LIST;
-    if (parent != null) {
-      parents = parent.findFunctionsByNameAndParameters(functionName, parameterDescriptors);
-    }
-
-    return Stream.concat(functionStream, parents.stream()).distinct().collect(Collectors.toList());
-  }
-
-  @Override
-  public void declareFunc(Vm.Function function) {
-    String fqn = function.methodInfo.name;
-    if (this.funcTable.containsKey(function.methodInfo)) {
-      throw new VmSymbolAlreadyDeclared(fqn);
-    }
-
-    this.funcTable.put(function.methodInfo, function);
+    throw new VmUnknownSymbol(name);
   }
 
   @Override
   public boolean shouldLeaveFrame() {
-    return _leaveFrame;
+    return stackFrames.peek().shouldLeaveFrame();
   }
 
   @Override
   public void markLeaveFrame(Vm.Value returnValue) {
-    _returnValue = returnValue;
-    _leaveFrame = true;
+    stackFrames.peek().markLeaveFrame(returnValue);
+  }
+
+  @Override
+  public void pushFrame(VmStackFrame vmStackFrame) {
+    stackFrames.push(vmStackFrame);
+  }
+
+  @Override
+  public VmStackFrame popFrame() {
+    return stackFrames.pop();
+  }
+
+  @Override
+  public VmStackFrame getCurrentFrame() {
+    return stackFrames.peek();
   }
 
   @Override
   public Vm.Value getReturnValue() {
-    return _returnValue;
+    return stackFrames.peek().getReturnValue();
   }
 
   @Override
   public void resetLeaveFrame() {
-    _leaveFrame = false;
-    _returnValue = null;
+    stackFrames.peek().resetLeaveFrame();
   }
 }
