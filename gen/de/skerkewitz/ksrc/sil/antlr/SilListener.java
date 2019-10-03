@@ -92,16 +92,6 @@ public interface SilListener extends ParseTreeListener {
 	 */
 	void exitSil_identifier(SilParser.Sil_identifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SilParser#sil_value_name}.
-	 * @param ctx the parse tree
-	 */
-	void enterSil_value_name(SilParser.Sil_value_nameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SilParser#sil_value_name}.
-	 * @param ctx the parse tree
-	 */
-	void exitSil_value_name(SilParser.Sil_value_nameContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SilParser#sil_value}.
 	 * @param ctx the parse tree
 	 */
@@ -141,16 +131,6 @@ public interface SilListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSil_function_name(SilParser.Sil_function_nameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SilParser#sil_name}.
-	 * @param ctx the parse tree
-	 */
-	void enterSil_name(SilParser.Sil_nameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SilParser#sil_name}.
-	 * @param ctx the parse tree
-	 */
-	void exitSil_name(SilParser.Sil_nameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SilParser#sil_basic_block}.
 	 * @param ctx the parse tree
@@ -252,23 +232,53 @@ public interface SilListener extends ParseTreeListener {
 	 */
 	void exitSil_instruction(SilParser.Sil_instructionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SilParser#valuename}.
+	 * Enter a parse tree produced by {@link SilParser#sil_instruction_integer_literal}.
 	 * @param ctx the parse tree
 	 */
-	void enterValuename(SilParser.ValuenameContext ctx);
+	void enterSil_instruction_integer_literal(SilParser.Sil_instruction_integer_literalContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SilParser#valuename}.
+	 * Exit a parse tree produced by {@link SilParser#sil_instruction_integer_literal}.
 	 * @param ctx the parse tree
 	 */
-	void exitValuename(SilParser.ValuenameContext ctx);
+	void exitSil_instruction_integer_literal(SilParser.Sil_instruction_integer_literalContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SilParser#functioname}.
+	 * Enter a parse tree produced by {@link SilParser#sil_instruction_buildin}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctioname(SilParser.FunctionameContext ctx);
+	void enterSil_instruction_buildin(SilParser.Sil_instruction_buildinContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SilParser#functioname}.
+	 * Exit a parse tree produced by {@link SilParser#sil_instruction_buildin}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctioname(SilParser.FunctionameContext ctx);
+	void exitSil_instruction_buildin(SilParser.Sil_instruction_buildinContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SilParser#sil_instruction_function_ref}.
+	 * @param ctx the parse tree
+	 */
+	void enterSil_instruction_function_ref(SilParser.Sil_instruction_function_refContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SilParser#sil_instruction_function_ref}.
+	 * @param ctx the parse tree
+	 */
+	void exitSil_instruction_function_ref(SilParser.Sil_instruction_function_refContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SilParser#sil_instruction_apply}.
+	 * @param ctx the parse tree
+	 */
+	void enterSil_instruction_apply(SilParser.Sil_instruction_applyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SilParser#sil_instruction_apply}.
+	 * @param ctx the parse tree
+	 */
+	void exitSil_instruction_apply(SilParser.Sil_instruction_applyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SilParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	void enterInteger(SilParser.IntegerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SilParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	void exitInteger(SilParser.IntegerContext ctx);
 }

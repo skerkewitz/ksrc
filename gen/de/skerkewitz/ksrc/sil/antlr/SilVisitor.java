@@ -61,12 +61,6 @@ public interface SilVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSil_identifier(SilParser.Sil_identifierContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SilParser#sil_value_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSil_value_name(SilParser.Sil_value_nameContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SilParser#sil_value}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -90,12 +84,6 @@ public interface SilVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSil_function_name(SilParser.Sil_function_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SilParser#sil_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSil_name(SilParser.Sil_nameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SilParser#sil_basic_block}.
 	 * @param ctx the parse tree
@@ -157,15 +145,33 @@ public interface SilVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSil_instruction(SilParser.Sil_instructionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SilParser#valuename}.
+	 * Visit a parse tree produced by {@link SilParser#sil_instruction_integer_literal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitValuename(SilParser.ValuenameContext ctx);
+	T visitSil_instruction_integer_literal(SilParser.Sil_instruction_integer_literalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SilParser#functioname}.
+	 * Visit a parse tree produced by {@link SilParser#sil_instruction_buildin}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunctioname(SilParser.FunctionameContext ctx);
+	T visitSil_instruction_buildin(SilParser.Sil_instruction_buildinContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SilParser#sil_instruction_function_ref}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSil_instruction_function_ref(SilParser.Sil_instruction_function_refContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SilParser#sil_instruction_apply}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSil_instruction_apply(SilParser.Sil_instruction_applyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SilParser#integer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInteger(SilParser.IntegerContext ctx);
 }

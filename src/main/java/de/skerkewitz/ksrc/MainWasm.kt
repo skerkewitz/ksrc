@@ -52,7 +52,7 @@ object MainWasm {
 
 
         println("Writing binary...")
-        //TranslateUtil.astToStream(System.out, TranslateUtil.WasmFormat.Text,false, Script(arrayListOf(Script.Cmd.Module(walkerWasm.createModule(), "testModule"))))
+        TranslateUtil.astToStream(System.out, TranslateUtil.WasmFormat.Text,false, Script(arrayListOf(Script.Cmd.Module(module, "testModule"))))
         TranslateUtil.astToOut("test.wasm", "wasm",false, Script(arrayListOf(Script.Cmd.Module(module, "testModule"))))
 
         println("Exceuting...")

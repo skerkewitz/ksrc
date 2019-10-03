@@ -73,13 +73,6 @@ public class SilBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Si
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitSil_value_name(SilParser.Sil_value_nameContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitSil_value(SilParser.Sil_valueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -102,13 +95,6 @@ public class SilBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Si
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSil_function_name(SilParser.Sil_function_nameContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitSil_name(SilParser.Sil_nameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -185,12 +171,33 @@ public class SilBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Si
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitValuename(SilParser.ValuenameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSil_instruction_integer_literal(SilParser.Sil_instruction_integer_literalContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunctioname(SilParser.FunctionameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSil_instruction_buildin(SilParser.Sil_instruction_buildinContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSil_instruction_function_ref(SilParser.Sil_instruction_function_refContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSil_instruction_apply(SilParser.Sil_instruction_applyContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInteger(SilParser.IntegerContext ctx) { return visitChildren(ctx); }
 }

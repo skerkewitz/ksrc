@@ -4,6 +4,7 @@ import de.skerkewitz.ksrc.sil.antlr.SilParser
 import de.skerkewitz.ksrc.sil.antlr.SilParser.Translation_unitContext
 import de.skerkewitz.ksrc.sil.antlr.SilParserUtil
 import de.skerkewitz.ksrc.sil.ast.SilAstNodeFunction
+import de.skerkewitz.ksrc.sil.validator.ErrorEmitter
 import de.skerkewitz.ksrc.sil.validator.FunctionValidatorImpl
 import org.antlr.v4.runtime.CharStreams
 import org.junit.jupiter.api.Test
@@ -18,12 +19,12 @@ internal class SilParserUtilTest {
   @Test
   @Throws(IOException::class)
   fun parseLanguage() {
-    val resource: URL = this.javaClass.getResource("test.sil")
+    val resource: URL = this.javaClass.getResource("fib.sil")
     val inputStream: InputStream? = resource.openStream()
     val parse = SilAstParser.parse(CharStreams.fromStream(inputStream)) as SilAstNodeFunction
     println("${parse.toSilString()}")
 
-    FunctionValidatorImpl().validate(parse)
+    FunctionValidatorImpl.validate(parse, ErrorEmitter)
   }
 
   @Test

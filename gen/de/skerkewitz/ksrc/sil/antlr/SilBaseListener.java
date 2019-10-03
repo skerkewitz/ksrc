@@ -112,18 +112,6 @@ public class SilBaseListener implements SilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSil_value_name(SilParser.Sil_value_nameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSil_value_name(SilParser.Sil_value_nameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSil_value(SilParser.Sil_valueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -167,18 +155,6 @@ public class SilBaseListener implements SilListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSil_function_name(SilParser.Sil_function_nameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSil_name(SilParser.Sil_nameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSil_name(SilParser.Sil_nameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -304,25 +280,61 @@ public class SilBaseListener implements SilListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValuename(SilParser.ValuenameContext ctx) { }
+	@Override public void enterSil_instruction_integer_literal(SilParser.Sil_instruction_integer_literalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValuename(SilParser.ValuenameContext ctx) { }
+	@Override public void exitSil_instruction_integer_literal(SilParser.Sil_instruction_integer_literalContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctioname(SilParser.FunctionameContext ctx) { }
+	@Override public void enterSil_instruction_buildin(SilParser.Sil_instruction_buildinContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctioname(SilParser.FunctionameContext ctx) { }
+	@Override public void exitSil_instruction_buildin(SilParser.Sil_instruction_buildinContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSil_instruction_function_ref(SilParser.Sil_instruction_function_refContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSil_instruction_function_ref(SilParser.Sil_instruction_function_refContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSil_instruction_apply(SilParser.Sil_instruction_applyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSil_instruction_apply(SilParser.Sil_instruction_applyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInteger(SilParser.IntegerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInteger(SilParser.IntegerContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
