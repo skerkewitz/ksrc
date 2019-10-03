@@ -1,9 +1,9 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprFunctionCall;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.impl.VmExecContext;

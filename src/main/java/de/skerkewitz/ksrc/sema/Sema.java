@@ -1,8 +1,8 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.expr.*;
+import de.skerkewitz.ksrc.parse.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.*;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;

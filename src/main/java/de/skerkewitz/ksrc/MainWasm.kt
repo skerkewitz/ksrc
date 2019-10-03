@@ -6,9 +6,10 @@ import asmble.cli.TranslateUtil
 import asmble.run.jvm.Module
 import asmble.run.jvm.interpret.Interpreter
 import asmble.run.jvm.interpret.RunModule
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement
-import de.skerkewitz.ksrc.ast.util.Walker
-import de.skerkewitz.ksrc.ast.util.WasmCompiler
+import de.skerkewitz.ksrc.parse.KSrcAstParser
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatement
+import de.skerkewitz.ksrc.parse.ast.util.Walker
+import de.skerkewitz.ksrc.parse.ast.util.WasmCompiler
 import de.skerkewitz.ksrc.sema.SemaFactory
 import org.antlr.v4.runtime.CharStreams
 import java.io.IOException

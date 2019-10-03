@@ -1,7 +1,8 @@
 package de.skerkewitz.ksrc;
 
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
-import de.skerkewitz.ksrc.ast.util.Walker;
+import de.skerkewitz.ksrc.parse.KSrcAstParser;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.parse.ast.util.Walker;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.sema.SemaFactory;
 import de.skerkewitz.ksrc.vm.Vm;

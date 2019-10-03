@@ -1,10 +1,10 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprExplicitMemberAccess;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.parse.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprExplicitMemberAccess;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprFunctionCall;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprIdent;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.sema.SemaUtils;
 import de.skerkewitz.ksrc.vm.Vm;

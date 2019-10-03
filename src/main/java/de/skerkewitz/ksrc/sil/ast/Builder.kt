@@ -1,0 +1,83 @@
+package de.skerkewitz.ksrc.sil.ast
+
+import de.skerkewitz.ksrc.common.SourceLocation
+import de.skerkewitz.ksrc.sil.antlr.SilBaseVisitor
+import de.skerkewitz.ksrc.sil.antlr.SilParser.*
+import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.RuleContext
+
+class Builder : SilBaseVisitor<SilAstNode?>() {
+
+  /* Util method. */
+  private fun <T> visit(ctx: RuleContext, type: Class<T>): T {
+    return type.cast(visit(ctx))
+  }
+
+  override fun visitTranslation_unit(ctx: Translation_unitContext): SilAstNode {
+
+    val sil_functionContext: Sil_functionContext = ctx.sil_function()
+
+    /* Convert all blocks */
+    val blocks = sil_functionContext.sil_basic_block().mapNotNull { visit(it, SilAstNodeBlock::class.java) }
+    val functionName: String = sil_functionContext.sil_function_name().functioname().VALUENAME().text
+    val type = visit(sil_functionContext.sil_type(), SilAstNodeType.Function::class.java)
+    return SilAstNodeFunction(SourceLocation.fromContext(ctx), functionName, type, blocks)
+  }
+
+  override fun visitSil_function_type(ctx: Sil_function_typeContext): SilAstNode {
+    val map = ctx.sil_function_type_arguments().sil_types().mapNotNull { visit(it, SilAstNodeType::class.java) }
+    val returnType = visit(ctx.returnType, SilAstNodeType::class.java)
+    return SilAstNodeType.Function(src(ctx), map, returnType)
+  }
+
+  override fun visitSimple(ctx: SimpleContext): SilAstNode {
+    return SilAstNodeType.Simple(src(ctx), ctx.sil_identifier().valuename().VALUENAME().text)
+  }
+
+  override fun visitSil_basic_block(ctx: Sil_basic_blockContext): SilAstNode {
+
+    val silLabel = ctx.sil_label()
+
+    val identifier = silLabel.sil_identifier().valuename().VALUENAME().text
+    val arguments = silLabel.sil_operand().mapNotNull { visit(it, SilAstNodeOperand::class.java) }
+
+    val instructions = ctx.sil_instruction_def().mapNotNull { visit(it, SilAstNode::class.java) }
+    val terminator = visit(ctx.sil_terminator(), SilAstNode::class.java)
+
+    return SilAstNodeBlock(src(ctx), identifier, arguments, terminator)
+  }
+
+  override fun visitSil_terminator_return(ctx: Sil_terminator_returnContext): SilAstNode {
+    val operand = visit(ctx.sil_operand(), SilAstNodeOperand::class.java)
+    return SilAstNodeTerminator.Return(src(ctx), operand)
+  }
+
+  override fun visitSil_terminator_br(ctx: Sil_terminator_brContext): SilAstNode {
+    val jumpTarget = visit(ctx.sil_label_target(), SilAstNodeJumpTarget::class.java)
+    return SilAstNodeTerminator.Branch(src(ctx), jumpTarget)
+  }
+
+  override fun visitSil_terminator_cond_br(ctx: Sil_terminator_cond_brContext): SilAstNode {
+
+    val condition = visit(ctx.condition, SilAstNodeOperand::class.java)
+    val thenLabel = visit(ctx.thenLabel, SilAstNodeJumpTarget::class.java)
+    val elseLabel = visit(ctx.elseLabel, SilAstNodeJumpTarget::class.java)
+
+    return SilAstNodeTerminator.BranchConditionally(src(ctx), condition, thenLabel, elseLabel)
+  }
+
+  override fun visitSil_operand(ctx: Sil_operandContext): SilAstNode {
+    val type = visit(ctx.sil_type(), SilAstNodeType::class.java)
+    return SilAstNodeOperand(src(ctx), ctx.sil_value().text, type)
+  }
+
+  override fun visitSil_label_target(ctx: Sil_label_targetContext): SilAstNode {
+    val identifier = ctx.sil_identifier().valuename().VALUENAME().text
+    val operands = ctx.sil_operand().mapNotNull { visit(it, SilAstNodeOperand::class.java) }
+    return SilAstNodeJumpTarget(src(ctx), identifier, operands)
+  }
+
+  private fun src(ctx: ParserRuleContext): SourceLocation {
+    return SourceLocation.fromContext(ctx)
+  }
+}

@@ -1,7 +1,7 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatements;
 
 
 public class AstWalker {

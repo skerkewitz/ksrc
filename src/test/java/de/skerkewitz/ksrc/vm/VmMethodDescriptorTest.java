@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.Type;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 import org.junit.jupiter.api.Test;

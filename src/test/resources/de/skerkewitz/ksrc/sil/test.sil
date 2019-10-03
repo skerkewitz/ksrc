@@ -1,0 +1,12 @@
+sil @myfunc : $(Builtin.Int1, Builtin.Int64, Builtin.Int64) -> Builtin.Int64 {
+   entry(%cond : $Builtin.Int1, %ifTrue : $Builtin.Int64, %ifFalse : $Builtin.Int64):
+    cond_br %0 : $Builtin.Int1,
+                    true_label (%a : $A, %b : $B),
+                    false_label (%x : $X, %y : $Y)
+   true_label(%a : $A, %b : $B):
+     br finish(%ifTrue : $Builtin.Int64)
+   false_label(%a : $A, %b : $B):
+     br finish(%ifFalse : $Builtin.Int64)
+   finish(%result : $Builtin.Int64):
+     return %result : $Builtin.Int64
+}

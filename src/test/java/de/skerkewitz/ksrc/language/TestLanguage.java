@@ -1,7 +1,7 @@
 package de.skerkewitz.ksrc.language;
 
-import de.skerkewitz.ksrc.ast.Builder;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.parse.ast.Builder;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.sema.SemaFactory;
 import de.skerkewitz.ksrc.vm.Vm;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromInputStream;
+import static de.skerkewitz.ksrc.parse.antlr.KsrcParserUtil.parserFromInputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestLanguage {
@@ -94,7 +94,7 @@ public class TestLanguage {
   @Test
   void testSingleLanguageFile() throws URISyntaxException, IOException {
 
-    final var filename = "language/sum-call.ksrc6666666666";
+    final var filename = "language/sum-call.ksrc";
     final var classLoader = getClass().getClassLoader();
     final var sourceStream = classLoader.getResource(filename).openStream();
 

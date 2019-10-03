@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;

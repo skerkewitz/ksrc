@@ -1,7 +1,7 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprIdent;
 import de.skerkewitz.ksrc.vm.Vm;
 
 import java.io.OutputStream;

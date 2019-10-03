@@ -1,16 +1,16 @@
 package de.skerkewitz.ksrc.backend.wasm
 
 import asmble.ast.Node
-import de.skerkewitz.ksrc.ast.nodes.AstNode
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprIdent
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprInfixOp
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprLiteral
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementIf
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatementReturn
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatements
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction
-import de.skerkewitz.ksrc.ast.util.WasmCompiler
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprFunctionCall
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprIdent
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprInfixOp
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprLiteral
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatementIf
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatementReturn
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatements
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction
+import de.skerkewitz.ksrc.parse.ast.util.WasmCompiler
 import java.lang.IllegalArgumentException
 
 object FunctionCompiler {

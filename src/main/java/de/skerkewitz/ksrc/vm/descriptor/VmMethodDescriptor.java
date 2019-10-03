@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.vm.descriptor;
 
-import de.skerkewitz.ksrc.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.Type;
 
 import java.util.ArrayList;
 import java.util.List;

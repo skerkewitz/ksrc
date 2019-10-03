@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.vm.exceptions;
 
-import de.skerkewitz.ksrc.antlr.SourceLocation;
+import de.skerkewitz.ksrc.common.SourceLocation;
 
 public class VmRuntimeException extends RuntimeException {
   public final SourceLocation sourceLocation;

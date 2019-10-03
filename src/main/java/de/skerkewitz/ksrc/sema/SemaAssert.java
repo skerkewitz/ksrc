@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExpr;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 
 public class SemaAssert {

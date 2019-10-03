@@ -1,16 +1,12 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.vm.VmFieldInfo;
-import de.skerkewitz.ksrc.vm.VmMethodInfo;
-import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
-import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SemaFieldScanner {
 

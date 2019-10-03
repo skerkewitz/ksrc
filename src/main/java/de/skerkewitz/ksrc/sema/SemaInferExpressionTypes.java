@@ -1,18 +1,16 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.AstDeclarationClass;
-import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.expr.*;
-import de.skerkewitz.ksrc.ast.nodes.statement.*;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationNamedValue;
+import de.skerkewitz.ksrc.parse.ast.AstDeclarationClass;
+import de.skerkewitz.ksrc.parse.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.*;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.*;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationNamedValue;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmFieldInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
-import de.skerkewitz.ksrc.vm.impl.VmClassInstance;
-import de.skerkewitz.ksrc.vm.impl.VmValueBool;
 
 import java.util.Optional;
 

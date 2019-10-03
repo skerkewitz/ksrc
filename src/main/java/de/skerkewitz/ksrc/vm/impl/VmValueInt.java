@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.vm.impl;
 
-import de.skerkewitz.ksrc.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.Type;
 import de.skerkewitz.ksrc.vm.Vm;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 

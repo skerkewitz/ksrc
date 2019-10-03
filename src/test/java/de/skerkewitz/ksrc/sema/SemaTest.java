@@ -1,9 +1,9 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.Builder;
-import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExpr;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.parse.ast.Builder;
+import de.skerkewitz.ksrc.parse.ast.Type;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExpr;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromString;
+import static de.skerkewitz.ksrc.parse.antlr.KsrcParserUtil.parserFromString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 

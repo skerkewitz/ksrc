@@ -1,7 +1,7 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.vm.VmMethodInfo;
 import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;

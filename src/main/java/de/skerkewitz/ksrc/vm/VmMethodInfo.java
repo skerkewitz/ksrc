@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.nodes.statement.declaration.AstDeclarationFunction;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.declaration.AstDeclarationFunction;
 import de.skerkewitz.ksrc.vm.descriptor.VmMethodDescriptor;
 
 import java.util.Objects;

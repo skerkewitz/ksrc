@@ -1,6 +1,6 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
 
 import java.util.HashMap;
 import java.util.Map;

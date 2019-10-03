@@ -1,8 +1,8 @@
 package de.skerkewitz.ksrc.vm;
 
-import de.skerkewitz.ksrc.ast.Builder;
-import de.skerkewitz.ksrc.ast.nodes.expr.AstExprFunctionCall;
-import de.skerkewitz.ksrc.ast.nodes.statement.AstStatement;
+import de.skerkewitz.ksrc.parse.ast.Builder;
+import de.skerkewitz.ksrc.parse.ast.nodes.expr.AstExprFunctionCall;
+import de.skerkewitz.ksrc.parse.ast.nodes.statement.AstStatement;
 import de.skerkewitz.ksrc.sema.Sema;
 import de.skerkewitz.ksrc.sema.SemaFactory;
 import de.skerkewitz.ksrc.vm.impl.DefaultVm;
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URL;
 
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromInputStream;
-import static de.skerkewitz.ksrc.antlr.KsrcParserUtil.parserFromString;
+import static de.skerkewitz.ksrc.parse.antlr.KsrcParserUtil.parserFromInputStream;
+import static de.skerkewitz.ksrc.parse.antlr.KsrcParserUtil.parserFromString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VmTest {

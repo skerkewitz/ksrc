@@ -1,7 +1,6 @@
 package de.skerkewitz.ksrc.vm.descriptor;
 
-import de.skerkewitz.ksrc.ast.Type;
-import de.skerkewitz.ksrc.vm.descriptor.VmDescriptor;
+import de.skerkewitz.ksrc.parse.ast.Type;
 
 /**
  * A field descriptor represents the descriptor of a class, instance, or local variable.

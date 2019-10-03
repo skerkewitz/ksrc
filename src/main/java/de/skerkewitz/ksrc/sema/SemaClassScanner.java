@@ -1,10 +1,8 @@
 package de.skerkewitz.ksrc.sema;
 
-import de.skerkewitz.ksrc.ast.AstDeclarationClass;
-import de.skerkewitz.ksrc.ast.nodes.AstNode;
+import de.skerkewitz.ksrc.parse.ast.AstDeclarationClass;
+import de.skerkewitz.ksrc.parse.ast.nodes.AstNode;
 import de.skerkewitz.ksrc.vm.VmClassInfo;
-import de.skerkewitz.ksrc.vm.VmFieldInfo;
-import de.skerkewitz.ksrc.vm.VmMethodInfo;
 
 import java.util.ArrayList;
 import java.util.List;
