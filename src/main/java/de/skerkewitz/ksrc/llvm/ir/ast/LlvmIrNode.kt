@@ -7,7 +7,7 @@ class LlvmIr {
 
   data class Module(val name: String)
 
-  sealed class AstNode(open val srcLocation: SourceLocation) {
+  sealed class Node(open val srcLocation: SourceLocation) {
     abstract fun toLlvmIrString(): String
 
     data class Function(
@@ -15,7 +15,7 @@ class LlvmIr {
             val functionName: String,
             val returnType: Type,
             val arguments: List<Operand>,
-            val blocks: List<AstNode>) : AstNode(sourceLocation) {
+            val blocks: List<Node>) : Node(sourceLocation) {
 
       override fun toLlvmIrString(): String {
         return """
@@ -26,13 +26,13 @@ class LlvmIr {
       }
     }
 
-    data class Operand(override val srcLocation: SourceLocation, val identifier: String, val type: Type) : AstNode(srcLocation) {
+    data class Operand(override val srcLocation: SourceLocation, val identifier: String, val type: Type) : Node(srcLocation) {
       override fun toLlvmIrString(): String {
         return "${type.toLlvmIrString()} %$identifier"
       }
     }
 
-    sealed class Type(srcLocation: SourceLocation) : AstNode(srcLocation) {
+    sealed class Type(srcLocation: SourceLocation) : Node(srcLocation) {
 
       data class Simple(val sourceLocation: SourceLocation, val name: String) : Type(sourceLocation) {
         override fun toLlvmIrString(): String = this.name
@@ -58,7 +58,7 @@ class LlvmIr {
       }
     }
 
-    data class BasicBlock(override val srcLocation: SourceLocation, val identifier: String, val instructionsDefinitions: List<AstNode>, val terminator: TerminatorInstruction) : AstNode(srcLocation) {
+    data class BasicBlock(override val srcLocation: SourceLocation, val identifier: String, val instructionsDefinitions: List<Node>, val terminator: TerminatorInstruction) : Node(srcLocation) {
 
       override fun toLlvmIrString(): String {
         val stringBuilder = StringBuilder()
@@ -72,32 +72,32 @@ class LlvmIr {
       }
     }
 
-    sealed class TerminatorInstruction(srcLocation: SourceLocation) : AstNode(srcLocation) {
+    sealed class TerminatorInstruction(srcLocation: SourceLocation) : Node(srcLocation) {
 
       data class Return(val sourceLocation: SourceLocation, val operand: Operand) : TerminatorInstruction(sourceLocation) {
         override fun toLlvmIrString(): String = "ret ${operand.toLlvmIrString()}"
       }
 
-//      data class Branch(val sourceLocation: SourceLocation, val jumpTarget: SilAstNodeJumpTarget) : SilAstNodeTerminator(sourceLocation) {
-//        override fun toSilString(): String {
-//          return "br ${jumpTarget.toSilString()}"
-//        }
-//      }
-//
-//      data class BranchConditionally(val sourceLocation: SourceLocation, val condition: SilAstNodeOperand, val thenJumpTarget: SilAstNodeJumpTarget, val elseJumpTarget: SilAstNodeJumpTarget) : SilAstNodeTerminator(sourceLocation) {
-//        override fun toSilString(): String {
-//          return "cond_br ${condition.toSilString()}, ${thenJumpTarget.toSilString()}, ${elseJumpTarget.toSilString()}"
-//        }
-//      }
+      data class UnconditionalBranch(val sourceLocation: SourceLocation, val jumpTarget: String) : TerminatorInstruction(sourceLocation) {
+        override fun toLlvmIrString(): String {
+          return "br label %$jumpTarget"
+        }
+      }
+
+      data class ConditionalBranch(val sourceLocation: SourceLocation, val condition: Operand, val thenJumpTarget: String, val elseJumpTarget: String) : TerminatorInstruction(sourceLocation) {
+        override fun toLlvmIrString(): String {
+          return "br " + condition.toLlvmIrString() + ", label " + thenJumpTarget + ", label " + elseJumpTarget
+        }
+      }
     }
 
-    data class InstructionDefinition(override val srcLocation: SourceLocation, val result: String, val instruction: Instruction) : AstNode(srcLocation) {
+    data class InstructionDefinition(override val srcLocation: SourceLocation, val result: String, val instruction: Instruction) : Node(srcLocation) {
       override fun toLlvmIrString(): String {
         return "%$result = ${instruction.toLlvmIrString()}"
       }
     }
 
-    sealed class Instruction(srcLocation: SourceLocation) : AstNode(srcLocation) {
+    sealed class Instruction(srcLocation: SourceLocation) : Node(srcLocation) {
       //
 //  data class IntegerLiteral(val sourceLocation: SourceLocation, val integer: Int, val type: SilAstNodeType.Simple) : SilAstNodeInstruction(sourceLocation) {
 //    override fun toSilString(): String = "integer_literal ${type.toSilString()}, $integer"
@@ -113,6 +113,14 @@ class LlvmIr {
 //
       data class Mul(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
         override fun toLlvmIrString(): String = "mul ${returnType.toLlvmIrString()} %$lhs, %$rhs"
+      }
+
+      data class Sub(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "sub ${returnType.toLlvmIrString()} %$lhs, %$rhs"
+      }
+
+      data class Add(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "add ${returnType.toLlvmIrString()} %$lhs, %$rhs"
       }
 
       data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<String>, val returnType: Type.Function) : Instruction(sourceLocation) {
