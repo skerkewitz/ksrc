@@ -69,7 +69,7 @@ class Builder : SilBaseVisitor<SilAstNode?>() {
   override fun visitSil_instruction_def(ctx: Sil_instruction_defContext): SilAstNode {
 
     val instruction = visit(ctx.sil_instruction(), SilAstNodeInstruction::class.java)
-    val result = ctx.sil_instruction_result().SIL_VALUE_NAME().text
+    val result = ctx.sil_instruction_result().SIL_VALUE_NAME().text.drop(1)
 
     return SilAstNodeInstructionDefinition(src(ctx), result, instruction)
   }
@@ -110,7 +110,7 @@ class Builder : SilBaseVisitor<SilAstNode?>() {
 
   override fun visitSil_operand(ctx: Sil_operandContext): SilAstNode {
     val type = visit(ctx.sil_type(), SilAstNodeType::class.java)
-    return SilAstNodeOperand(src(ctx), ctx.sil_value().text, type)
+    return SilAstNodeOperand(src(ctx), ctx.sil_value().text.drop(1), type)
   }
 
   override fun visitSil_label_target(ctx: Sil_label_targetContext): SilAstNode {

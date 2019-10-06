@@ -8,7 +8,6 @@ internal class LlvmIrTest {
 
   @Test
   fun test() {
-
     val sourceLocation = SourceLocation(null, null)
 
     val typeI32 = LlvmIr.Node.Type.Simple(sourceLocation, "i32")
@@ -24,8 +23,9 @@ internal class LlvmIrTest {
     val f = LlvmIr.Node.Function(sourceLocation, "test", typeI32, arguments, arrayListOf(basicBlock))
 
     println(f.toLlvmIrString())
-
   }
+
+
 
 
 

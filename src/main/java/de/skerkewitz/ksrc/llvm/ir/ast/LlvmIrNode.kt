@@ -35,6 +35,7 @@ class LlvmIr {
     sealed class Type(srcLocation: SourceLocation) : Node(srcLocation) {
 
       data class Simple(val sourceLocation: SourceLocation, val name: String) : Type(sourceLocation) {
+
         override fun toLlvmIrString(): String = this.name
         override fun equals(other: Any?): Boolean {
           if (this === other) return true
@@ -86,7 +87,7 @@ class LlvmIr {
 
       data class ConditionalBranch(val sourceLocation: SourceLocation, val condition: Operand, val thenJumpTarget: String, val elseJumpTarget: String) : TerminatorInstruction(sourceLocation) {
         override fun toLlvmIrString(): String {
-          return "br " + condition.toLlvmIrString() + ", label " + thenJumpTarget + ", label " + elseJumpTarget
+          return "br ${condition.toLlvmIrString()}, label %$thenJumpTarget, label %$elseJumpTarget"
         }
       }
     }
@@ -111,6 +112,48 @@ class LlvmIr {
 //    override fun toSilString(): String = "function_ref @$name : \$${type.toSilString()}"
 //  }
 //
+      /**
+       * The ‘icmp’ instruction returns a boolean value or a vector of boolean values based on comparison of its two integer,
+       * integer vector, pointer, or pointer vector operands.
+       */
+      data class IntegerCompare(val sourceLocation: SourceLocation, val condition: Condition, val type: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
+
+        /** The ‘icmp’ compares op1 and op2 according to the given condition. */
+        enum class Condition(val s: String) {
+
+          /** yields true if the operands are equal, false otherwise. No sign interpretation is necessary or performed. */
+          Equal("eq"),
+
+          /** yields true if the operands are unequal, false otherwise. No sign interpretation is necessary or performed. */
+          NotEqual("ne"),
+
+          /** interprets the operands as unsigned values and yields true if op1 is greater than op2. */
+          UnsignedGreaterThan("ugt"),
+
+          /** uge: interprets the operands as unsigned values and yields true if op1 is greater than or equal to op2. */
+          UnsignedGreaterOrEqual("uge"),
+
+          /** ult: interprets the operands as unsigned values and yields true if op1 is less than op2. */
+          UnsignedLessThan("ult"),
+
+          /** ule: interprets the operands as unsigned values and yields true if op1 is less than or equal to op2. */
+          UnsignedLessOrEqual("ule"),
+
+          /** interprets the operands as signed values and yields true if op1 is greater than op2. */
+          SignedGreaterThan("sgt"),
+
+          /** interprets the operands as signed values and yields true if op1 is greater than or equal to op2. */
+          SignedGreaterOrEqual("sge"),
+
+          /** interprets the operands as signed values and yields true if op1 is less than op2. */
+          SignedLessThan("slt"),
+
+          /** sle: interprets the operands as signed values and yields true if op1 is less than or equal to op2. */
+          SignedLessOrEqual("sle")
+        }
+        override fun toLlvmIrString(): String = "icmp ${condition.s} ${type.toLlvmIrString()} %$lhs, %$rhs"
+      }
+
       data class Mul(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
         override fun toLlvmIrString(): String = "mul ${returnType.toLlvmIrString()} %$lhs, %$rhs"
       }
