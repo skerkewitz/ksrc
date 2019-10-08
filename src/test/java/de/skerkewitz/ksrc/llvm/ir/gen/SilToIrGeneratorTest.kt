@@ -2,6 +2,7 @@ package de.skerkewitz.ksrc.llvm.ir.gen
 
 import de.skerkewitz.ksrc.sil.antlr.SilParserUtil
 import de.skerkewitz.ksrc.sil.ast.Builder
+import de.skerkewitz.ksrc.sil.ast.SilAstNodeBlock
 import de.skerkewitz.ksrc.sil.ast.SilAstNodeInstructionDefinition
 import de.skerkewitz.ksrc.sil.ast.SilAstNodeTerminator
 import org.junit.jupiter.api.Test
@@ -46,6 +47,28 @@ internal class SilToIrGeneratorTest {
     println("IR:  $output")
 
     assertEquals(expected, output)
+  }
+
+  @Test
+  fun basicBlock() {
+
+    val input =    """
+      is_zero(%n: §Builtin.Int):
+        return %n : §Builtin.Int
+    """.replace('§', '$')
+    val expected = "br i1 %0, label %is_zero, label %is_not_zero"
+
+    val node = SilParserUtil.parserFromString(input).sil_basic_block()
+    val silTerminatorNode = Builder().visitSil_basic_block(node) as SilAstNodeBlock
+
+    println("SIL: ${silTerminatorNode.toSilString()}")
+
+    val irInstructionDef = SilToIrGenerator.basicBlock(silTerminatorNode)
+//
+    val output = irInstructionDef.toLlvmIrString()
+    println("IR:  $output")
+//
+//    assertEquals(expected, output)
   }
 
 
