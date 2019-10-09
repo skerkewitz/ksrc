@@ -1,10 +1,7 @@
 package de.skerkewitz.ksrc.llvm.ir.gen
 
 import de.skerkewitz.ksrc.sil.antlr.SilParserUtil
-import de.skerkewitz.ksrc.sil.ast.Builder
-import de.skerkewitz.ksrc.sil.ast.SilAstNodeBlock
-import de.skerkewitz.ksrc.sil.ast.SilAstNodeInstructionDefinition
-import de.skerkewitz.ksrc.sil.ast.SilAstNodeTerminator
+import de.skerkewitz.ksrc.sil.ast.*
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -17,12 +14,12 @@ internal class SilToIrGeneratorTest {
     val input =    "%eq = builtin \"eq\"(%zero : \$Builtin.Int, %n : \$Builtin.Int) : \$Builtin.Int"
     val expected = "%eq = icmp eq i32 %zero, %n"
 
-    val node = SilParserUtil.parserFromString(input).sil_instruction_def()
-    val silInstructionNode = Builder().visitSil_instruction_def(node) as SilAstNodeInstructionDefinition
+    val instructionDef = SilParserUtil.parserFromString(input).sil_instruction_def()
+    val instructionDefAst = Builder().visitSil_instruction_def(instructionDef) as SilAstNodeInstructionDefinition
 
-    println("SIL: ${silInstructionNode.toSilString()}")
+    println("SIL: ${instructionDefAst.toSilString()}")
 
-    val irInstructionDef = SilToIrGenerator.intructionDefinition(silInstructionNode)
+    val irInstructionDef = SilToIrGenerator.intructionDefinition(instructionDefAst)
 
     val output = irInstructionDef.toLlvmIrString()
     println("IR:  $output")
@@ -54,6 +51,7 @@ internal class SilToIrGeneratorTest {
 
     val input =    """
       is_zero(%n: §Builtin.Int):
+        %0 = builtin "eq"(%zero : §Builtin.Int, %n : §Builtin.Int) : §Builtin.Int
         return %n : §Builtin.Int
     """.replace('§', '$')
     val expected = "br i1 %0, label %is_zero, label %is_not_zero"
@@ -70,6 +68,33 @@ internal class SilToIrGeneratorTest {
 //
 //    assertEquals(expected, output)
   }
+
+  @Test
+  fun function() {
+
+    val input =    """
+    sil @fib : ${'$'}(Builtin.Int) -> Builtin.Int {
+      is_zero(%n: §Builtin.Int):
+        %0 = builtin "eq"(%zero : §Builtin.Int, %n : §Builtin.Int) : §Builtin.Int
+        return %n : §Builtin.Int
+    """.replace('§', '$')
+
+    val expected = "br i1 %0, label %is_zero, label %is_not_zero"
+
+    val node = SilParserUtil.parserFromString(input).translation_unit()
+    val silTerminatorNode = Builder().visitTranslation_unit(node) as SilAstNodeFunction
+
+    println("SIL: ${silTerminatorNode.toSilString()}")
+
+    val irInstructionDef = SilToIrGenerator.function(silTerminatorNode)
+//
+    val output = irInstructionDef.toLlvmIrString()
+    println("IR:  $output")
+//
+//    assertEquals(expected, output)
+  }
+
+
 
 
 

@@ -15,7 +15,7 @@ class LlvmIr {
             val functionName: String,
             val returnType: Type,
             val arguments: List<Operand>,
-            val blocks: List<Node>) : Node(sourceLocation) {
+            val blocks: List<BasicBlock>) : Node(sourceLocation) {
 
       override fun toLlvmIrString(): String {
         return """

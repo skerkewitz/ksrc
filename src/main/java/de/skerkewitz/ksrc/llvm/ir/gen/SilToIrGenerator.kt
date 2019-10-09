@@ -71,4 +71,13 @@ object SilToIrGenerator {
     return LlvmIr.Node.BasicBlock(basicBlock.srcLocation, basicBlock.identifier,
             instructions, terminatorInstruction(basicBlock.terminator) )
   }
+
+  fun function(function: SilAstNodeFunction): LlvmIr.Node.Function {
+
+    val blocks = function.blocks.map { basicBlock(it) }
+
+    return LlvmIr.Node.Function(function.sourceLocation, function.functionName,
+            type(function.type.returnType), arrayListOf(), blocks)
+
+  }
 }
