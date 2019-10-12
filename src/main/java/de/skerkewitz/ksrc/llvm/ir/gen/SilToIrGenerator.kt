@@ -12,6 +12,9 @@ object SilToIrGenerator {
    */
   fun intructionDefinition(input: SilAstNodeInstructionDefinition) : LlvmIr.Node.InstructionDefinition {
     val irInstruction = instruction(input.instruction)
+//    if (irInstruction is LlvmIr.Node.Instruction.Nop) {
+//
+//    }
     return LlvmIr.Node.InstructionDefinition(input.srcLocation, input.result, irInstruction)
   }
 
@@ -20,15 +23,15 @@ object SilToIrGenerator {
    */
   private fun instruction(instruction: SilAstNodeInstruction): LlvmIr.Node.Instruction {
     return when(instruction) {
-      is SilAstNodeInstruction.IntegerLiteral -> TODO()
+      is SilAstNodeInstruction.IntegerLiteral -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
       is SilAstNodeInstruction.Builtin -> {
         val i32 = LlvmIr.Node.Type.Simple(instruction.operands.first().type.srcLocation, "i32")
         val lhs = instruction.operands[0].identifier
         val rhs = instruction.operands[1].identifier
         LlvmIr.Node.Instruction.IntegerCompare(instruction.sourceLocation, LlvmIr.Node.Instruction.IntegerCompare.Condition.Equal, i32, lhs, rhs)
       }
-      is SilAstNodeInstruction.FunctionRef -> TODO()
-      is SilAstNodeInstruction.Apply -> TODO()
+      is SilAstNodeInstruction.FunctionRef -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
+      is SilAstNodeInstruction.Apply -> LlvmIr.Node.Instruction.Call(instruction.sourceLocation, instruction.functionValue, arrayListOf(), type(instruction.returnType.returnType))
     }
   }
 
@@ -66,7 +69,9 @@ object SilToIrGenerator {
 
   fun basicBlock(basicBlock: SilAstNodeBlock): LlvmIr.Node.BasicBlock {
 
-    val instructions = basicBlock.instructionsDefinitions.map { intructionDefinition(it) }
+    val instructions = basicBlock.instructionsDefinitions
+            .map { intructionDefinition(it) }
+            .filter { it.instruction !is LlvmIr.Node.Instruction.Nop }
 
     return LlvmIr.Node.BasicBlock(basicBlock.srcLocation, basicBlock.identifier,
             instructions, terminatorInstruction(basicBlock.terminator) )

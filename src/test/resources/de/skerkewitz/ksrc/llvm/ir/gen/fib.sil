@@ -1,0 +1,41 @@
+//# Fibonacci example
+//fn fib(n:Int) -> Int:
+//    if n == 0:
+//        return 0
+//    end
+//
+//    if n == 1:
+//        return 1
+//    end
+//
+//    return fib(n - 1) + fib(n - 2) # Compute fib
+//end
+
+sil @fib : $(Builtin.Int) -> Builtin.Int {
+  entry(%n : $Builtin.Int):
+    %zero = integer_literal $Builtin.Int, 0
+    %0 = builtin "eq"(%zero : $Builtin.Int, %n : $Builtin.Int) : $Builtin.Int
+    cond_br %0 : $Builtin.Int, is_zero (%n :  $Builtin.Int), is_not_zero (%n : $Builtin.Int)
+
+  is_zero(%n: $Builtin.Int):
+    return %n : $Builtin.Int
+
+  is_not_zero(%n : $Builtin.Int):
+    %one = integer_literal $Builtin.Int, 1
+    %0 = builtin "eq"(%one : $Builtin.Int, %n : $Builtin.Int) : $Builtin.Int
+    cond_br %0 : $Builtin.Int, is_one (%n : $Builtin.Int), is_not_one (%n : $Builtin.Int)
+
+  is_one(%n : $Builtin.Int):
+    return %n : $Builtin.Int
+
+  is_not_one(%n : $Builtin.Int):
+    %fib = function_ref @foo : $(Builtin.Int) -> Builtin.Int
+    %1 = integer_literal $Builtin.Int, 1
+    %first = builtin "sub"(%n : $Builtin.Int, %1 : $Builtin.Int) : $Builtin.Int
+    %first_result = apply %fib(%first) : $(Builtin.Int) -> Builtin.Int
+    %2 = integer_literal $Builtin.Int, 2
+    %second = builtin "sub"(%n : $Builtin.Int, %2 : $Builtin.Int) : $Builtin.Int
+    %second_result = apply %fib(%second) : $(Builtin.Int) -> Builtin.Int
+    %result = builtin "add"(%first_result : $Builtin.Int, %seconds_result : $Builtin.Int) : $Builtin.Int
+    return %result : $Builtin.Int
+}

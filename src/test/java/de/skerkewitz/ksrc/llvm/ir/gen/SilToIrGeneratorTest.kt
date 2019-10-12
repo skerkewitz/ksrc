@@ -1,10 +1,16 @@
 package de.skerkewitz.ksrc.llvm.ir.gen
 
+import de.skerkewitz.ksrc.sil.SilAstParser
 import de.skerkewitz.ksrc.sil.antlr.SilParserUtil
 import de.skerkewitz.ksrc.sil.ast.*
+import de.skerkewitz.ksrc.sil.validator.ErrorEmitter
+import de.skerkewitz.ksrc.sil.validator.FunctionValidatorImpl
+import org.antlr.v4.runtime.CharStreams
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import java.io.InputStream
+import java.net.URL
 
 internal class SilToIrGeneratorTest {
 
@@ -89,6 +95,26 @@ internal class SilToIrGeneratorTest {
     val irInstructionDef = SilToIrGenerator.function(silTerminatorNode)
 //
     val output = irInstructionDef.toLlvmIrString()
+    println("IR:  $output")
+//
+//    assertEquals(expected, output)
+  }
+
+  @Test
+  fun functionFib() {
+
+    val resource: URL = this.javaClass.getResource("fib.sil")
+    val inputStream: InputStream? = resource.openStream()
+    val silFunction = SilAstParser.parse(CharStreams.fromStream(inputStream)) as SilAstNodeFunction
+    println("${silFunction.toSilString()}")
+
+    FunctionValidatorImpl.validate(silFunction, ErrorEmitter)
+
+    println("SIL: ${silFunction.toSilString()}")
+
+    val irFunction = SilToIrGenerator.function(silFunction)
+//
+    val output = irFunction.toLlvmIrString()
     println("IR:  $output")
 //
 //    assertEquals(expected, output)

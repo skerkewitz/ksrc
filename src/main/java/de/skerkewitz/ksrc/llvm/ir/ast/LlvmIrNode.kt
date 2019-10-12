@@ -1,6 +1,7 @@
 package de.skerkewitz.ksrc.llvm.ir.ast
 
 import de.skerkewitz.ksrc.common.SourceLocation
+import de.skerkewitz.ksrc.sil.ast.SilAstNodeInstruction
 
 
 class LlvmIr {
@@ -94,11 +95,20 @@ class LlvmIr {
 
     data class InstructionDefinition(override val srcLocation: SourceLocation, val result: String, val instruction: Instruction) : Node(srcLocation) {
       override fun toLlvmIrString(): String {
-        return "%$result = ${instruction.toLlvmIrString()}"
+        return if (instruction is Instruction.Nop) {
+          "; %$result = ${instruction.toLlvmIrString()}"
+        } else {
+          "%$result = ${instruction.toLlvmIrString()}"
+        }
       }
     }
 
     sealed class Instruction(srcLocation: SourceLocation) : Node(srcLocation) {
+
+      data class Nop(val sourceLocation: SourceLocation, val comment: String) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "; nop: $comment"
+      }
+
       //
 //  data class IntegerLiteral(val sourceLocation: SourceLocation, val integer: Int, val type: SilAstNodeType.Simple) : SilAstNodeInstruction(sourceLocation) {
 //    override fun toSilString(): String = "integer_literal ${type.toSilString()}, $integer"
@@ -166,8 +176,8 @@ class LlvmIr {
         override fun toLlvmIrString(): String = "add ${returnType.toLlvmIrString()} %$lhs, %$rhs"
       }
 
-      data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<String>, val returnType: Type.Function) : Instruction(sourceLocation) {
-        override fun toLlvmIrString(): String = "apply $functionValue (${argumentValues.joinToString(", ")}) : \$${returnType.toLlvmIrString()}"
+      data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<String>, val returnType: Type) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "call ${returnType.toLlvmIrString() }$functionValue (${argumentValues.joinToString(", ")})"
       }
     }
 
