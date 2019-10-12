@@ -15,7 +15,7 @@ internal class LlvmIrTest {
 
     val returnInstruction = LlvmIr.Node.TerminatorInstruction.Return(sourceLocation, LlvmIr.Node.Operand(sourceLocation, "1", typeI32))
 
-    val mul = LlvmIr.Node.Instruction.Mul(sourceLocation, typeI32, "a", "a")
+    val mul = LlvmIr.Node.Instruction.Mul(sourceLocation, typeI32, LlvmIr.Node.Value.Ref(sourceLocation, "a"), LlvmIr.Node.Value.Ref(sourceLocation, "a"))
     val instructionDef =  LlvmIr.Node.InstructionDefinition(sourceLocation, "1", mul)
 
     val basicBlock = LlvmIr.Node.BasicBlock(sourceLocation, "entry", arrayListOf(instructionDef), returnInstruction)

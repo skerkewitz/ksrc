@@ -103,6 +103,22 @@ class LlvmIr {
       }
     }
 
+    sealed class Value(srcLocation: SourceLocation) : Node(srcLocation) {
+
+      /** It's a reference to a assigned value. */
+      data class Ref(val sourceLocation: SourceLocation, val name: String) : Value(sourceLocation) {
+        override fun toLlvmIrString(): String = "%$name"
+      }
+
+      data class ConstInt(val sourceLocation: SourceLocation, val intValue: Int) : Value(sourceLocation) {
+        override fun toLlvmIrString(): String = "$intValue"
+      }
+
+      data class ConstReal(val sourceLocation: SourceLocation, val realValue: Double) : Value(sourceLocation) {
+        override fun toLlvmIrString(): String = "$realValue"
+      }
+    }
+
     sealed class Instruction(srcLocation: SourceLocation) : Node(srcLocation) {
 
       data class Nop(val sourceLocation: SourceLocation, val comment: String) : Instruction(sourceLocation) {
@@ -126,7 +142,7 @@ class LlvmIr {
        * The ‘icmp’ instruction returns a boolean value or a vector of boolean values based on comparison of its two integer,
        * integer vector, pointer, or pointer vector operands.
        */
-      data class IntegerCompare(val sourceLocation: SourceLocation, val condition: Condition, val type: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
+      data class IntegerCompare(val sourceLocation: SourceLocation, val condition: Condition, val type: Type.Simple, val lhs: Value, val rhs: Value) : Instruction(sourceLocation) {
 
         /** The ‘icmp’ compares op1 and op2 according to the given condition. */
         enum class Condition(val s: String) {
@@ -161,22 +177,22 @@ class LlvmIr {
           /** sle: interprets the operands as signed values and yields true if op1 is less than or equal to op2. */
           SignedLessOrEqual("sle")
         }
-        override fun toLlvmIrString(): String = "icmp ${condition.s} ${type.toLlvmIrString()} %$lhs, %$rhs"
+        override fun toLlvmIrString(): String = "icmp ${condition.s} ${type.toLlvmIrString()} ${lhs.toLlvmIrString()}, ${rhs.toLlvmIrString()}"
       }
 
-      data class Mul(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
-        override fun toLlvmIrString(): String = "mul ${returnType.toLlvmIrString()} %$lhs, %$rhs"
+      data class Mul(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: Value, val rhs: Value) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "mul ${returnType.toLlvmIrString()} ${lhs.toLlvmIrString()}, ${rhs.toLlvmIrString()}"
       }
 
-      data class Sub(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
-        override fun toLlvmIrString(): String = "sub ${returnType.toLlvmIrString()} %$lhs, %$rhs"
+      data class Sub(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: Value, val rhs: Value) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "sub ${returnType.toLlvmIrString()} ${lhs.toLlvmIrString()}, ${rhs.toLlvmIrString()}"
       }
 
-      data class Add(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: String, val rhs: String) : Instruction(sourceLocation) {
-        override fun toLlvmIrString(): String = "add ${returnType.toLlvmIrString()} %$lhs, %$rhs"
+      data class Add(val sourceLocation: SourceLocation, val returnType: Type.Simple, val lhs: Value, val rhs: Value) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "add ${returnType.toLlvmIrString()} ${lhs.toLlvmIrString()}, ${rhs.toLlvmIrString()}"
       }
 
-      data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<String>, val returnType: Type) : Instruction(sourceLocation) {
+      data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<Value>, val returnType: Type) : Instruction(sourceLocation) {
         override fun toLlvmIrString(): String = "call ${returnType.toLlvmIrString() }$functionValue (${argumentValues.joinToString(", ")})"
       }
     }

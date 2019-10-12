@@ -25,7 +25,7 @@ internal class SilToIrGeneratorTest {
 
     println("SIL: ${instructionDefAst.toSilString()}")
 
-    val irInstructionDef = SilToIrGenerator.intructionDefinition(instructionDefAst)
+    val irInstructionDef = SilToIrGenerator.intructionDefinition(instructionDefAst, emptyMap())
 
     val output = irInstructionDef.toLlvmIrString()
     println("IR:  $output")
@@ -67,7 +67,7 @@ internal class SilToIrGeneratorTest {
 
     println("SIL: ${silTerminatorNode.toSilString()}")
 
-    val irInstructionDef = SilToIrGenerator.basicBlock(silTerminatorNode)
+    val irInstructionDef = SilToIrGenerator.basicBlock(silTerminatorNode, emptyMap())
 //
     val output = irInstructionDef.toLlvmIrString()
     println("IR:  $output")

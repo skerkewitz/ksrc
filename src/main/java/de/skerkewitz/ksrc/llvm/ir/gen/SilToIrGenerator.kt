@@ -4,34 +4,51 @@ import de.skerkewitz.ksrc.llvm.ir.ast.LlvmIr
 import de.skerkewitz.ksrc.sil.ast.*
 import java.lang.IllegalArgumentException
 
+typealias TConstTable = Map<String, SilAstNodeInstructionDefinition>
 
 object SilToIrGenerator {
 
   /**
    * Converts the Sil instruction definition into a IR instruction definition.
    */
-  fun intructionDefinition(input: SilAstNodeInstructionDefinition) : LlvmIr.Node.InstructionDefinition {
-    val irInstruction = instruction(input.instruction)
+  fun intructionDefinition(input: SilAstNodeInstructionDefinition, constTable: TConstTable) : LlvmIr.Node.InstructionDefinition {
+    val irInstruction = instruction(input.instruction, constTable)
 //    if (irInstruction is LlvmIr.Node.Instruction.Nop) {
 //
 //    }
     return LlvmIr.Node.InstructionDefinition(input.srcLocation, input.result, irInstruction)
   }
 
+
+
+
   /**
    * Converts the Sil instruction into a IR instruction definition.
    */
-  private fun instruction(instruction: SilAstNodeInstruction): LlvmIr.Node.Instruction {
+  private fun instruction(instruction: SilAstNodeInstruction, constTable: TConstTable): LlvmIr.Node.Instruction {
     return when(instruction) {
       is SilAstNodeInstruction.IntegerLiteral -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
       is SilAstNodeInstruction.Builtin -> {
         val i32 = LlvmIr.Node.Type.Simple(instruction.operands.first().type.srcLocation, "i32")
-        val lhs = instruction.operands[0].identifier
-        val rhs = instruction.operands[1].identifier
+        val lhs = value(instruction.operands[0], constTable)
+        val rhs = value(instruction.operands[1], constTable)
+
         LlvmIr.Node.Instruction.IntegerCompare(instruction.sourceLocation, LlvmIr.Node.Instruction.IntegerCompare.Condition.Equal, i32, lhs, rhs)
       }
       is SilAstNodeInstruction.FunctionRef -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
       is SilAstNodeInstruction.Apply -> LlvmIr.Node.Instruction.Call(instruction.sourceLocation, instruction.functionValue, arrayListOf(), type(instruction.returnType.returnType))
+    }
+  }
+
+  private fun value(identifier: SilAstNodeOperand, constTable: TConstTable): LlvmIr.Node.Value {
+
+    val item = constTable[identifier.identifier]
+            ?: return LlvmIr.Node.Value.Ref(identifier.srcLocation, identifier.identifier)
+
+    return when(item.instruction) {
+      is SilAstNodeInstruction.IntegerLiteral -> LlvmIr.Node.Value.ConstInt(item.instruction.sourceLocation, item.instruction.integer)
+
+      else -> TODO("should not happen")
     }
   }
 
@@ -67,22 +84,42 @@ object SilToIrGenerator {
     }
   }
 
-  fun basicBlock(basicBlock: SilAstNodeBlock): LlvmIr.Node.BasicBlock {
+  fun basicBlock(basicBlock: SilAstNodeBlock, constTable: TConstTable): LlvmIr.Node.BasicBlock {
 
     val instructions = basicBlock.instructionsDefinitions
-            .map { intructionDefinition(it) }
+            .map { intructionDefinition(it, constTable) }
             .filter { it.instruction !is LlvmIr.Node.Instruction.Nop }
 
-    return LlvmIr.Node.BasicBlock(basicBlock.srcLocation, basicBlock.identifier,
-            instructions, terminatorInstruction(basicBlock.terminator) )
+    return LlvmIr.Node.BasicBlock(basicBlock.srcLocation, basicBlock.identifier, instructions, terminatorInstruction(basicBlock.terminator) )
   }
 
   fun function(function: SilAstNodeFunction): LlvmIr.Node.Function {
 
-    val blocks = function.blocks.map { basicBlock(it) }
+    /* We need to build a const and a function table. */
+    val constTable = buildConstTable(function)
+
+    val blocks = function.blocks.map { basicBlock(it, constTable) }
 
     return LlvmIr.Node.Function(function.sourceLocation, function.functionName,
             type(function.type.returnType), arrayListOf(), blocks)
 
+  }
+
+
+  private fun buildConstTable(function: SilAstNodeFunction): TConstTable {
+
+    return function.blocks
+            .map { buildConstTableFromBlock(it) }
+            .reduce { acc, map -> acc + map }
+            .also { println(it) }
+
+  }
+
+  private fun buildConstTableFromBlock(block: SilAstNodeBlock): TConstTable {
+
+    return block.instructionsDefinitions
+            .filter { it.instruction is SilAstNodeInstruction.IntegerLiteral }
+            .map { it.result to it }
+            .toMap()
   }
 }
