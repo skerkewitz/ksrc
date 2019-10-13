@@ -28,15 +28,38 @@ object SilToIrGenerator {
   private fun instruction(instruction: SilAstNodeInstruction, constTable: TConstTable): LlvmIr.Node.Instruction {
     return when(instruction) {
       is SilAstNodeInstruction.IntegerLiteral -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
-      is SilAstNodeInstruction.Builtin -> {
-        val i32 = LlvmIr.Node.Type.Simple(instruction.operands.first().type.srcLocation, "i32")
-        val lhs = value(instruction.operands[0], constTable)
-        val rhs = value(instruction.operands[1], constTable)
-
-        LlvmIr.Node.Instruction.IntegerCompare(instruction.sourceLocation, LlvmIr.Node.Instruction.IntegerCompare.Condition.Equal, i32, lhs, rhs)
-      }
+      is SilAstNodeInstruction.Builtin -> builtIn(instruction, constTable)
       is SilAstNodeInstruction.FunctionRef -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
       is SilAstNodeInstruction.Apply -> LlvmIr.Node.Instruction.Call(instruction.sourceLocation, instruction.functionValue, arrayListOf(), type(instruction.returnType.returnType))
+    }
+  }
+
+  private fun builtIn(builtin: SilAstNodeInstruction.Builtin, constTable: TConstTable): LlvmIr.Node.Instruction {
+
+    return when(builtin.opName) {
+      "eq" -> {
+        val i32 = LlvmIr.Node.Type.Simple(builtin.operands.first().type.srcLocation, "i32")
+        val lhs = value(builtin.operands[0], constTable)
+        val rhs = value(builtin.operands[1], constTable)
+
+        LlvmIr.Node.Instruction.IntegerCompare(builtin.sourceLocation, LlvmIr.Node.Instruction.IntegerCompare.Condition.Equal, i32, lhs, rhs)
+      }
+      "sub" -> {
+        val i32 = LlvmIr.Node.Type.Simple(builtin.operands.first().type.srcLocation, "i32")
+        val lhs = value(builtin.operands[0], constTable)
+        val rhs = value(builtin.operands[1], constTable)
+
+        LlvmIr.Node.Instruction.Sub(builtin.sourceLocation, i32, lhs, rhs)
+      }
+      "add" -> {
+        val i32 = LlvmIr.Node.Type.Simple(builtin.operands.first().type.srcLocation, "i32")
+        val lhs = value(builtin.operands[0], constTable)
+        val rhs = value(builtin.operands[1], constTable)
+
+        LlvmIr.Node.Instruction.Add(builtin.sourceLocation, i32, lhs, rhs)
+      }
+
+      else -> TODO("Unknown builtin ${builtin.opName}")
     }
   }
 
@@ -54,7 +77,7 @@ object SilToIrGenerator {
 
   fun typeMapper(typename: String): String {
     return when(typename) {
-      "Builtin.Int" -> "int32"
+      "Builtin.Int" -> "i32"
       else -> throw IllegalArgumentException("Unknown type '$typename'")
     }
   }

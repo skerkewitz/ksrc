@@ -82,7 +82,7 @@ class Builder : SilBaseVisitor<SilAstNode?>() {
   }
 
   override fun visitSil_instruction_buildin(ctx: Sil_instruction_buildinContext): SilAstNode {
-    val opName = ctx.STRING().text
+    val opName = ctx.STRING().text.drop(1).dropLast(1) // remove "
 
     val operands = ctx.sil_operand().mapNotNull { visit(it, SilAstNodeOperand::class.java) }
     val returnType = visit(ctx.sil_type(), SilAstNodeType::class.java)

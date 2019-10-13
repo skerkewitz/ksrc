@@ -193,7 +193,7 @@ class LlvmIr {
       }
 
       data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<Value>, val returnType: Type) : Instruction(sourceLocation) {
-        override fun toLlvmIrString(): String = "call ${returnType.toLlvmIrString() }$functionValue (${argumentValues.joinToString(", ")})"
+        override fun toLlvmIrString(): String = "call ${returnType.toLlvmIrString()} @$functionValue(${argumentValues.joinToString(", ")})"
       }
     }
 
