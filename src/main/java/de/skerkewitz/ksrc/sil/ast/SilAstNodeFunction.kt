@@ -19,7 +19,7 @@ data class SilAstNodeBlock(override val srcLocation: SourceLocation, val identif
 
 data class SilAstNodeOperand(override val srcLocation: SourceLocation, val identifier: String, val type: SilAstNodeType) : SilAstNode(srcLocation) {
   override fun toSilString(): String {
-    return "$identifier : ${type.toSilString()}"
+    return "%$identifier : ${type.toSilString()}"
   }
 }
 
@@ -31,7 +31,7 @@ data class SilAstNodeJumpTarget(override val srcLocation: SourceLocation, val id
 
 data class SilAstNodeInstructionDefinition(override val srcLocation: SourceLocation, val result: String, val instruction: SilAstNodeInstruction) : SilAstNode(srcLocation) {
   override fun toSilString(): String {
-    return "$result = ${instruction.toSilString()}"
+    return "%$result = ${instruction.toSilString()}"
   }
 }
 

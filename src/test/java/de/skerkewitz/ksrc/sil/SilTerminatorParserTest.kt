@@ -21,7 +21,7 @@ internal class SilTerminatorParserTest {
 
         print("SIL: ${silInstructionNode.toSilString()}")
 
-        assertEquals("%0", silInstructionNode.condition.identifier)
+        assertEquals("0", silInstructionNode.condition.identifier)
         assertEquals("Builtin.Int", silInstructionNode.condition.type.toSilString())
     }
 

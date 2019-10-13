@@ -3,6 +3,12 @@
 ; External declaration of the puts function
 declare i32 @puts(i8* nocapture) nounwind
 
+define i32 @test (i32 %a) {
+  entry:
+    %s1 = mul i32 %a, %a
+    ret i32 %s1
+}
+
 define i32 @square_unsigned(i32 %a) {
   %1 = mul i32 %a, %a
   ret i32 %1

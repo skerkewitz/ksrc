@@ -21,7 +21,7 @@ internal class SilInstructionParserTest {
     print("SIL: ${silInstructionNode.toSilString()}")
 
     assertNotNull(silInstructionNode)
-    assertEquals("%zero", silInstructionNode.result)
+    assertEquals("zero", silInstructionNode.result)
 
     val integerLiteral = silInstructionNode.instruction as SilAstNodeInstruction.IntegerLiteral
     assertEquals(0, integerLiteral.integer)
@@ -40,7 +40,7 @@ internal class SilInstructionParserTest {
     print("SIL: ${silInstructionNode.toSilString()}")
 
     assertNotNull(silInstructionNode)
-    assertEquals("%0", silInstructionNode.result)
+    assertEquals("0", silInstructionNode.result)
 
     val integerLiteral = silInstructionNode.instruction as SilAstNodeInstruction.Builtin
     assertEquals("\"eq\"", integerLiteral.opName)
@@ -58,7 +58,7 @@ internal class SilInstructionParserTest {
     print("SIL: ${silInstructionNode.toSilString()}")
 
     assertNotNull(silInstructionNode)
-    assertEquals("%fib", silInstructionNode.result)
+    assertEquals("fib", silInstructionNode.result)
 
     val integerLiteral = silInstructionNode.instruction as SilAstNodeInstruction.FunctionRef
     assertEquals("foo", integerLiteral.name)
@@ -75,11 +75,11 @@ internal class SilInstructionParserTest {
     print("SIL: ${silInstructionNode.toSilString()}")
 
     assertNotNull(silInstructionNode)
-    assertEquals("%result", silInstructionNode.result)
+    assertEquals("result", silInstructionNode.result)
 
     val integerLiteral = silInstructionNode.instruction as SilAstNodeInstruction.Apply
-    assertEquals("%fib", integerLiteral.functionValue)
-    assertEquals("%first, %second", integerLiteral.argumentValues.joinToString(", "))
+    assertEquals("fib", integerLiteral.functionValue)
+    assertEquals("first, second", integerLiteral.argumentValues.joinToString(", "))
     assertEquals("(Builtin.Int) -> Builtin.Int", integerLiteral.returnType.toSilString())
   }
 
