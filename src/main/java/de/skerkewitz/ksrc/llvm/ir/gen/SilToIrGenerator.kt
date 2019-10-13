@@ -30,7 +30,14 @@ object SilToIrGenerator {
       is SilAstNodeInstruction.IntegerLiteral -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
       is SilAstNodeInstruction.Builtin -> builtIn(instruction, constTable)
       is SilAstNodeInstruction.FunctionRef -> LlvmIr.Node.Instruction.Nop(instruction.sourceLocation, instruction.javaClass.simpleName)
-      is SilAstNodeInstruction.Apply -> LlvmIr.Node.Instruction.Call(instruction.sourceLocation, instruction.functionValue, arrayListOf(), type(instruction.returnType.returnType))
+      is SilAstNodeInstruction.Apply -> {
+
+        val arguments = instruction.returnType.arguments
+                .map { type(it) }
+                .zip(instruction.argumentValues) { a: LlvmIr.Node.Type, b: String -> LlvmIr.Node.Operand(a.srcLocation, b, a) }
+
+        LlvmIr.Node.Instruction.Call(instruction.sourceLocation, instruction.functionValue, arguments, type(instruction.returnType.returnType))
+      }
     }
   }
 
@@ -123,8 +130,10 @@ object SilToIrGenerator {
 
     val blocks = function.blocks.map { basicBlock(it, constTable) }
 
+    val arguments = function.blocks.first().arguments.map { operand(it) }
+
     return LlvmIr.Node.Function(function.sourceLocation, function.functionName,
-            type(function.type.returnType), arrayListOf(), blocks)
+            type(function.type.returnType), arguments, blocks)
 
   }
 

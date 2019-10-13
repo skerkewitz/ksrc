@@ -192,8 +192,8 @@ class LlvmIr {
         override fun toLlvmIrString(): String = "add ${returnType.toLlvmIrString()} ${lhs.toLlvmIrString()}, ${rhs.toLlvmIrString()}"
       }
 
-      data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<Value>, val returnType: Type) : Instruction(sourceLocation) {
-        override fun toLlvmIrString(): String = "call ${returnType.toLlvmIrString()} @$functionValue(${argumentValues.joinToString(", ")})"
+      data class Call(val sourceLocation: SourceLocation, val functionValue: String, val argumentValues: List<Operand>, val returnType: Type) : Instruction(sourceLocation) {
+        override fun toLlvmIrString(): String = "call ${returnType.toLlvmIrString()} @$functionValue(${argumentValues.joinToString(", ") {it.toLlvmIrString()}})"
       }
     }
 

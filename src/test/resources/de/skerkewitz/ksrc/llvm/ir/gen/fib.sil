@@ -36,6 +36,6 @@ sil @fib : $(Builtin.Int) -> Builtin.Int {
     %const2 = integer_literal $Builtin.Int, 2
     %second = builtin "sub"(%n : $Builtin.Int, %const2 : $Builtin.Int) : $Builtin.Int
     %second_result = apply %fib(%second) : $(Builtin.Int) -> Builtin.Int
-    %result = builtin "add"(%first_result : $Builtin.Int, %seconds_result : $Builtin.Int) : $Builtin.Int
+    %result = builtin "add"(%first_result : $Builtin.Int, %second_result : $Builtin.Int) : $Builtin.Int
     return %result : $Builtin.Int
 }

@@ -1,4 +1,4 @@
-define i32 @fib () {
+define i32 @fib (i32 %n) {
   entry: 
     %comp1 = icmp eq i32 0, %n
     br i1 %comp1, label %is_zero, label %is_not_zero
@@ -15,10 +15,10 @@ define i32 @fib () {
 
   is_not_one: 
     %first = sub i32 %n, 1
-    %first_result = call i32 @fib()
+    %first_result = call i32 @fib(i32 %first)
     %second = sub i32 %n, 2
-    %second_result = call i32 @fib()
-    %result = add i32 %first_result, %seconds_result
+    %second_result = call i32 @fib(i32 %second)
+    %result = add i32 %first_result, %second_result
     ret i32 %result
 
 }
